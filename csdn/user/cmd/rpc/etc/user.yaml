@@ -4,3 +4,11 @@ Etcd:
   Hosts:
   - 127.0.0.1:12379
   Key: user.rpc
+
+Mysql:
+  DataSource: root:liujun@tcp(127.0.0.1:3308)/csdn?charset=utf8mb4&parseTime=True&loc=Local
+
+Redis:
+  Host: "127.0.0.1:6380"
+  Password: "liujun"
+  DB: 0
