@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/svc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

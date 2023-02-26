@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/config"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/config"
 )
 
 type ServiceContext struct {

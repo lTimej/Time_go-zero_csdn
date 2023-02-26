@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/logic"
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/svc"
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/types"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/logic"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
 )
 
 func ApiHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

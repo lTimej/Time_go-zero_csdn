@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/config"
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/handler"
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/svc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/config"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/handler"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

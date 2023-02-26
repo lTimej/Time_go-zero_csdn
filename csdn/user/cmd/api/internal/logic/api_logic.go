@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/svc"
-	"liujun/Time_go-zero_csdn/csdn/user/api/internal/types"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

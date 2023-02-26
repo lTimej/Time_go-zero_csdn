@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"liujun/Time_go-zero_csdn/csdn/user/rpc/internal/config"
-	"liujun/Time_go-zero_csdn/csdn/user/rpc/internal/server"
-	"liujun/Time_go-zero_csdn/csdn/user/rpc/internal/svc"
-	"liujun/Time_go-zero_csdn/csdn/user/rpc/rpc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/config"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/server"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/rpc.yaml", "the config file")
+var configFile = flag.String("f", "etc/user.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		rpc.RegisterRpcServer(grpcServer, server.NewRpcServer(ctx))
+		user.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
