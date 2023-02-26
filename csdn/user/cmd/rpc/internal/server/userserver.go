@@ -22,7 +22,7 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) GetUser(ctx context.Context, in *user.IdRequest) (*user.UserResponse, error) {
-	l := logic.NewGetUserLogic(ctx, s.svcCtx)
-	return l.GetUser(in)
+func (s *UserServer) UserPasswordLogin(ctx context.Context, in *user.UserPasswordRequest) (*user.UserPasswordResponse, error) {
+	l := logic.NewUserPasswordLoginLogic(ctx, s.svcCtx)
+	return l.UserPasswordLogin(in)
 }

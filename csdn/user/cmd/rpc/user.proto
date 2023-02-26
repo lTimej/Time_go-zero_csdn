@@ -3,19 +3,16 @@ syntax = "proto3";
 package user;
 option go_package = "./user";
 
-message IdRequest {
-    string id = 1;
+message UserPasswordRequest {
+    string username = 1;
+    string password = 2;
 }
 
-message UserResponse {
-    // 用户id
-    string id = 1;
-    // 用户名称
-    string name = 2;
-    // 用户性别
-    string gender = 3;
+message UserPasswordResponse {
+    string token = 1;
+    string refresh_token = 2;
 }
 
 service User {
-    rpc getUser(IdRequest) returns(UserResponse);
+    rpc UserPasswordLogin(UserPasswordRequest) returns(UserPasswordResponse);
 }

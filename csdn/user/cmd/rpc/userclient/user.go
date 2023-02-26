@@ -13,11 +13,11 @@ import (
 )
 
 type (
-	IdRequest    = user.IdRequest
-	UserResponse = user.UserResponse
+	UserPasswordRequest  = user.UserPasswordRequest
+	UserPasswordResponse = user.UserPasswordResponse
 
 	User interface {
-		GetUser(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*UserResponse, error)
+		UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error)
 	}
 
 	defaultUser struct {
@@ -31,7 +31,7 @@ func NewUser(cli zrpc.Client) User {
 	}
 }
 
-func (m *defaultUser) GetUser(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+func (m *defaultUser) UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
-	return client.GetUser(ctx, in, opts...)
+	return client.UserPasswordLogin(ctx, in, opts...)
 }
