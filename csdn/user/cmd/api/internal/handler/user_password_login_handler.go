@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
+	"liujun/Time_go-zero_csdn/common/httpResp"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/logic"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func UserPasswordLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -22,11 +24,12 @@ func UserPasswordLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		fmt.Println("+++++++++++++++++++++++++++++++++++++++++")
 		l := logic.NewUserPasswordLoginLogic(r.Context(), svcCtx)
 		resp, err := l.UserPasswordLogin(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			fmt.Println("进来了。。。。。。。。。。。。。。")
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		httpResp.HttpResp(w, r, resp, err)
+		// if err != nil {
+		// 	httpx.ErrorCtx(r.Context(), w, err)
+		// } else {
+		// 	fmt.Println("进来了。。。。。。。。。。。。。。")
+		// 	httpx.OkJsonCtx(r.Context(), w, resp)
+		// }
 	}
 }
