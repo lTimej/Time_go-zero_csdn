@@ -15,4 +15,18 @@ message UserPasswordResponse {
 
 service User {
     rpc UserPasswordLogin(UserPasswordRequest) returns(UserPasswordResponse);
+    rpc UserCurrInfo(UserCurrInfoRequest) returns(UserCurrInfoResponse);
+}
+
+message UserCurrInfoRequest{}
+
+message UserCurrInfoResponse{
+    string user_name = 1;
+    string head_photo = 2;
+    string introduce = 3;
+    int32 code_year = 4;
+    string career = 5;
+    int32 focus = 6;
+    int32 fans = 7;
+    int32 visitor = 8;
 }

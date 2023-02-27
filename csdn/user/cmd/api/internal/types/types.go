@@ -2,11 +2,25 @@
 package types
 
 type UserPasswordLoginRequest struct {
-	UserName string `json:"username"`
+	UserName string `json:"user_name"`
 	Password string `json:"password"`
 }
 
 type UserPasswordLoginResponse struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
+}
+
+type UserCurrInfoRequest struct {
+}
+
+type UserCurrInfoResponse struct {
+	UserName  string `json:"user_name"`
+	HeadPhoto string `json:"head_photo"`
+	Introduce string `json:"introduce"`
+	CodeYear  int32  `json:"code_year"`
+	Career    string `json:"career"`
+	Focus     int32  `json:"focus"`
+	Fans      int32  `json:"fans"`
+	Visitor   int32  `json:"visitor"`
 }

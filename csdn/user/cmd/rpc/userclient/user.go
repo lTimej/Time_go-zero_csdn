@@ -13,11 +13,14 @@ import (
 )
 
 type (
+	UserCurrInfoRequest  = user.UserCurrInfoRequest
+	UserCurrInfoResponse = user.UserCurrInfoResponse
 	UserPasswordRequest  = user.UserPasswordRequest
 	UserPasswordResponse = user.UserPasswordResponse
 
 	User interface {
 		UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error)
+		UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
 	}
 
 	defaultUser struct {
@@ -34,4 +37,9 @@ func NewUser(cli zrpc.Client) User {
 func (m *defaultUser) UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserPasswordLogin(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserCurrInfo(ctx, in, opts...)
 }

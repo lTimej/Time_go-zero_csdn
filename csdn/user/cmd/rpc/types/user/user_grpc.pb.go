@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
 	UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error)
+	UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
 }
 
 type userClient struct {
@@ -42,11 +43,21 @@ func (c *userClient) UserPasswordLogin(ctx context.Context, in *UserPasswordRequ
 	return out, nil
 }
 
+func (c *userClient) UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error) {
+	out := new(UserCurrInfoResponse)
+	err := c.cc.Invoke(ctx, "/user.User/UserCurrInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	UserPasswordLogin(context.Context, *UserPasswordRequest) (*UserPasswordResponse, error)
+	UserCurrInfo(context.Context, *UserCurrInfoRequest) (*UserCurrInfoResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedUserServer struct {
 
 func (UnimplementedUserServer) UserPasswordLogin(context.Context, *UserPasswordRequest) (*UserPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserPasswordLogin not implemented")
+}
+func (UnimplementedUserServer) UserCurrInfo(context.Context, *UserCurrInfoRequest) (*UserCurrInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCurrInfo not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -88,6 +102,24 @@ func _User_UserPasswordLogin_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserCurrInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCurrInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserCurrInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/UserCurrInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserCurrInfo(ctx, req.(*UserCurrInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserPasswordLogin",
 			Handler:    _User_UserPasswordLogin_Handler,
+		},
+		{
+			MethodName: "UserCurrInfo",
+			Handler:    _User_UserCurrInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

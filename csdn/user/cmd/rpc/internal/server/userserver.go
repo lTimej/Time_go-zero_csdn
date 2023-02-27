@@ -26,3 +26,8 @@ func (s *UserServer) UserPasswordLogin(ctx context.Context, in *user.UserPasswor
 	l := logic.NewUserPasswordLoginLogic(ctx, s.svcCtx)
 	return l.UserPasswordLogin(in)
 }
+
+func (s *UserServer) UserCurrInfo(ctx context.Context, in *user.UserCurrInfoRequest) (*user.UserCurrInfoResponse, error) {
+	l := logic.NewUserCurrInfoLogic(ctx, s.svcCtx)
+	return l.UserCurrInfo(in)
+}
