@@ -250,8 +250,6 @@ CREATE TABLE `news_collection`
     UNIQUE KEY `user_article` (`user_id`, `article_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收藏表';
 
-#
-已废弃
 CREATE TABLE `news_read`
 (
     `read_id`     bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
@@ -316,8 +314,6 @@ CREATE TABLE `news_comment_liking`
     UNIQUE KEY `user_comment` (`user_id`, `comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论点赞';
 
-#
-Mis系统
 CREATE TABLE `mis_administrator`
 (
     `administrator_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员ID',
@@ -381,10 +377,6 @@ CREATE TABLE `mis_operation_log`
     `create_time`      datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`operation_log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营日志';
-
-###
-数据统计
-
 CREATE TABLE `statistics_basic`
 (
     `id`        bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -442,9 +434,6 @@ CREATE TABLE `statistics_read_source_total`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='阅读来源统计-总数';
 
-
-###
-推荐系统
 
 CREATE TABLE `recommend_sensitive_word`
 (
