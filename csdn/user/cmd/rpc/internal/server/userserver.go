@@ -22,12 +22,12 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
-func (s *UserServer) UserPasswordLogin(ctx context.Context, in *user.UserPasswordRequest) (*user.UserPasswordResponse, error) {
-	l := logic.NewUserPasswordLoginLogic(ctx, s.svcCtx)
-	return l.UserPasswordLogin(in)
+func (s *UserServer) UserLogin(ctx context.Context, in *user.LoginRequest) (*user.LoginResponse, error) {
+	l := logic.NewUserLoginLogic(ctx, s.svcCtx)
+	return l.UserLogin(in)
 }
 
-func (s *UserServer) UserCurrInfo(ctx context.Context, in *user.UserCurrInfoRequest) (*user.UserCurrInfoResponse, error) {
-	l := logic.NewUserCurrInfoLogic(ctx, s.svcCtx)
-	return l.UserCurrInfo(in)
+func (s *UserServer) GenerateToken(ctx context.Context, in *user.GenerateTokenRequest) (*user.GenerateTokenResponse, error) {
+	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
+	return l.GenerateToken(in)
 }

@@ -13,14 +13,16 @@ import (
 )
 
 type (
-	UserCurrInfoRequest  = user.UserCurrInfoRequest
-	UserCurrInfoResponse = user.UserCurrInfoResponse
-	UserPasswordRequest  = user.UserPasswordRequest
-	UserPasswordResponse = user.UserPasswordResponse
+	GenerateTokenRequest  = user.GenerateTokenRequest
+	GenerateTokenResponse = user.GenerateTokenResponse
+	LoginRequest          = user.LoginRequest
+	LoginResponse         = user.LoginResponse
+	UserCurrInfoRequest   = user.UserCurrInfoRequest
+	UserCurrInfoResponse  = user.UserCurrInfoResponse
 
 	User interface {
-		UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error)
-		UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
+		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+		GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error)
 	}
 
 	defaultUser struct {
@@ -34,12 +36,12 @@ func NewUser(cli zrpc.Client) User {
 	}
 }
 
-func (m *defaultUser) UserPasswordLogin(ctx context.Context, in *UserPasswordRequest, opts ...grpc.CallOption) (*UserPasswordResponse, error) {
+func (m *defaultUser) UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
-	return client.UserPasswordLogin(ctx, in, opts...)
+	return client.UserLogin(ctx, in, opts...)
 }
 
-func (m *defaultUser) UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error) {
+func (m *defaultUser) GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
-	return client.UserCurrInfo(ctx, in, opts...)
+	return client.GenerateToken(ctx, in, opts...)
 }

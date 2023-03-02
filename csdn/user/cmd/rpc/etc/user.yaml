@@ -4,11 +4,22 @@ Etcd:
   Hosts:
   - 127.0.0.1:12379
   Key: user.rpc
-
-Mysql:
-  DataSource: root:liujun@tcp(127.0.0.1:3308)/csdn?charset=utf8mb4&parseTime=True&loc=Local
+DB:
+  DataSource: root:liujun@tcp(127.0.0.1:13306)/csdn?charset=utf8mb4&parseTime=True&loc=Local
 
 Redis:
-  Host: "127.0.0.1:6380"
-  Password: "liujun"
-  DB: 0
+  Host: 127.0.0.1:16379
+  Pass: liujun
+  Type: node
+
+Cache:
+  - Host: 127.0.0.1:16379
+    Pass: liujun
+
+JwtAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 31536000
+
+Log:
+  ServiceName: usercenter-rpc
+  Level: error

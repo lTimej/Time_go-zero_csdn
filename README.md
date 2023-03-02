@@ -10,6 +10,9 @@ goctl api go -api user.api -dir . -style go_zero
 ## 通过proto生成go文件
 goctl rpc protoc user.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
 
+# 通过ddl生成model
+goctl model mysql ddl -src="./sql/user.sql" -dir="./csdn/user/model" -c
+
 ### user.proto
 syntax = "proto3";
 

@@ -1,22 +1,29 @@
 package svc
 
 import (
-	"github.com/go-redis/redis/v8"
-	"gorm.io/gorm"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/config"
 	"liujun/Time_go-zero_csdn/csdn/user/model"
+
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	UserMysql *gorm.DB
-	UserRedis *redis.Client
+	Config      config.Config
+	RedisClient *redis.Redis
+	UserModel   model.UserBasicModel
+	// UserAuthModel model.UserAuthModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	sqlConn := sqlx.NewMysql(c.DB.DataSource)
 	return &ServiceContext{
-		Config:    c,
-		UserMysql: model.InitMysql(c.Mysql.DataSource),
-		UserRedis: model.InitRedis(c.Redis.Host, c.Redis.Password, c.Redis.DB),
+		Config: c,
+		RedisClient: redis.New(c.Redis.Host, func(r *redis.Redis) {
+			r.Type = c.Redis.Type
+			r.Pass = c.Redis.Pass
+		}),
+		// UserAuthModel: model.NewUserAuthModel(sqlConn, c.Cache),
+		UserModel: model.NewUserBasicModel(sqlConn, c.Cache),
 	}
 }

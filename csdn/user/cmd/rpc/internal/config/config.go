@@ -1,15 +1,18 @@
 package config
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/zrpc"
+)
 
 type Config struct {
 	zrpc.RpcServerConf
-	Mysql struct {
+	DB struct {
 		DataSource string
 	}
-	Redis struct {
-		Host     string
-		Password string
-		DB       int
+	JwtAuth struct {
+		AccessSecret string
+		AccessExpire int64
 	}
+	Cache cache.CacheConf
 }
