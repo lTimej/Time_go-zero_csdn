@@ -57,6 +57,7 @@ func (l *UserLoginLogic) UserLogin(in *user.LoginRequest) (*user.LoginResponse, 
 func (l *UserLoginLogic) UserNameLogin(username, password string) (int64, error) {
 	user_basic, err := l.svcCtx.UserModel.FindOneByUserName(l.ctx, username)
 	if err != nil && err != model.ErrNotFound {
+		//code = Unknown desc = 根据用户名查询用户信息失败，user_name:19971251761,err:sql: Scan error on column index 8, name \"last_login\": unsupported Scan, storing driver.Value type \u003cnil\u003e into type *time.Time: ErrCode:403，ErrMsg:数据库错误"
 		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "根据用户名查询用户信息失败，user_name:%s,err:%v", username, err)
 	}
 	if user_basic == nil {

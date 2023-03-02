@@ -23,6 +23,7 @@ type (
 	User interface {
 		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 		GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error)
+		UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
 	}
 
 	defaultUser struct {
@@ -44,4 +45,9 @@ func (m *defaultUser) UserLogin(ctx context.Context, in *LoginRequest, opts ...g
 func (m *defaultUser) GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GenerateToken(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserCurrInfo(ctx, in, opts...)
 }

@@ -26,9 +26,12 @@ message GenerateTokenResponse {
 service User {
     rpc UserLogin(LoginRequest) returns(LoginResponse);
     rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
+    rpc UserCurrInfo(UserCurrInfoRequest) returns(UserCurrInfoResponse);
 }
 
-message UserCurrInfoRequest{}
+message UserCurrInfoRequest{
+  int64 userId = 1;
+}
 
 message UserCurrInfoResponse{
     string user_name = 1;

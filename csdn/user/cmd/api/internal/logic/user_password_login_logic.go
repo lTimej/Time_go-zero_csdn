@@ -35,6 +35,7 @@ func (l *UserPasswordLoginLogic) UserPasswordLogin(req *types.UserPasswordLoginR
 	if err != nil {
 		return nil, err
 	}
+
 	resp = new(types.UserPasswordLoginResponse)
 	resp.Token = res.Token
 	resp.RefreshToken = res.RefreshToken

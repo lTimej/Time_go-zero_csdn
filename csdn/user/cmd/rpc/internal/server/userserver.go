@@ -31,3 +31,8 @@ func (s *UserServer) GenerateToken(ctx context.Context, in *user.GenerateTokenRe
 	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
 	return l.GenerateToken(in)
 }
+
+func (s *UserServer) UserCurrInfo(ctx context.Context, in *user.UserCurrInfoRequest) (*user.UserCurrInfoResponse, error) {
+	l := logic.NewUserCurrInfoLogic(ctx, s.svcCtx)
+	return l.UserCurrInfo(in)
+}

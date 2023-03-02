@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"liujun/Time_go-zero_csdn/common/httpResp"
@@ -16,7 +15,6 @@ func UserPasswordLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UserPasswordLoginRequest
 		if err := httpx.Parse(r, &req); err != nil {
-			fmt.Println(err, 222222)
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}

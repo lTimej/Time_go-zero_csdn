@@ -4,10 +4,11 @@ import (
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/logic"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func UserCurrInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

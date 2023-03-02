@@ -1,7 +1,6 @@
 package httpResp
 
 import (
-	"fmt"
 	"liujun/Time_go-zero_csdn/common/xerr"
 	"net/http"
 
@@ -12,10 +11,9 @@ import (
 
 func HttpResp(w http.ResponseWriter, r *http.Request, resp interface{}, err error) {
 	if err == nil {
-		r := Success(resp)
+		r := LoginSuccess(resp)
 		httpx.WriteJson(w, http.StatusCreated, r)
 	} else {
-		fmt.Println(1111)
 		//错误返回
 		errcode := xerr.OTHER_ERROR
 		errmsg := "服务器开小差啦，稍后再来试一试"

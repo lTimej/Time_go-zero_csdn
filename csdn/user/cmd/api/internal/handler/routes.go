@@ -14,14 +14,38 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/v1/login",
+				Path:    "/login",
 				Handler: UserPasswordLoginHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/v1/curr/user",
-				Handler: UserCurrInfoHandler(serverCtx),
-			},
 		},
+		rest.WithPrefix("/v1"),
+	)
+	// server.AddRoutes(
+	// 	// []rest.Middleware{serverCtx.SetUidToCtxMiddleware},
+
+	// 	[]rest.Route{
+	// 		{
+	// 			Method:  http.MethodGet,
+	// 			Path:    "/curr/user",
+	// 			Handler: UserCurrInfoHandler(serverCtx),
+	// 		},
+	// 	},
+	// 	rest.WithPrefix("/v1"),
+	// 	rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
+	// )
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetUidToCtxMiddleware},
+			// rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/curr/user",
+					Handler: UserCurrInfoHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/v1"),
+		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 	)
 }

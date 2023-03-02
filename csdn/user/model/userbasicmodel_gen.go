@@ -22,9 +22,10 @@ var (
 	userBasicRowsExpectAutoSet   = strings.Join(stringx.Remove(userBasicFieldNames, "`user_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	userBasicRowsWithPlaceHolder = strings.Join(stringx.Remove(userBasicFieldNames, "`user_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
-	cacheUserBasicUserIdPrefix   = "cache:userBasic:userId:"
-	cacheUserBasicMobilePrefix   = "cache:userBasic:mobile:"
-	cacheUserBasicUserNamePrefix = "cache:userBasic:userName:"
+	cacheUserBasicUserIdPrefix    = "cache:userBasic:userId:"
+	cacheCurrUserInfoUserIdPrefix = "cache:curruserInfo:userId:"
+	cacheUserBasicMobilePrefix    = "cache:userBasic:mobile:"
+	cacheUserBasicUserNamePrefix  = "cache:userBasic:userName:"
 )
 
 type (
@@ -33,6 +34,7 @@ type (
 		FindOne(ctx context.Context, userId int64) (*UserBasic, error)
 		FindOneByMobile(ctx context.Context, mobile string) (*UserBasic, error)
 		FindOneByUserName(ctx context.Context, userName string) (*UserBasic, error)
+		FindOneJoinUserProfileByUserId(ctx context.Context, userId int64) (*CurrUserInfo, error)
 		Update(ctx context.Context, data *UserBasic) error
 		Delete(ctx context.Context, userId int64) error
 	}
@@ -62,6 +64,17 @@ type (
 		LikeCount      int64     `db:"like_count"`      // 累计点赞人数
 		ReadCount      int64     `db:"read_count"`      // 累计阅读人数
 		CodeYear       int64     `db:"code_year"`       // 码龄
+	}
+	CurrUserInfo struct {
+		UserId    int64  `db:"user_id"`
+		UserName  string `db:"user_name"`
+		HeadPhoto string `db:"profile_photo"`
+		Introduce string `db:"introduction"`
+		CodeYear  int32  `db:"code_year"`
+		Career    string `db:"career"`
+		// Focus     int32  `db:"focus"`
+		// Fans      int32  `db:"fans"`
+		// Visitor   int32  `db:"visitor"`
 	}
 )
 
@@ -135,6 +148,26 @@ func (m *defaultUserBasicModel) FindOneByUserName(ctx context.Context, userName 
 		}
 		return resp.UserId, nil
 	}, m.queryPrimary)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultUserBasicModel) FindOneJoinUserProfileByUserId(ctx context.Context, userId int64) (*CurrUserInfo, error) {
+	currUserInfoUserIdKey := fmt.Sprintf("%s%v", cacheCurrUserInfoUserIdPrefix, userId)
+	var resp CurrUserInfo
+	fmt.Println(userId, "===============")
+	curUserInfoRows := "ub.user_id,ub.user_name,ub.profile_photo,ub.introduction,ub.code_year,up.career"
+	err := m.QueryRowCtx(ctx, &resp, currUserInfoUserIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s as ub,%s as up where ub.user_id=up.user_id having ub.user_id = ? limit 1", curUserInfoRows, m.table, "user_profile")
+		fmt.Println(query, "****************")
+		return conn.QueryRowCtx(ctx, v, query, userId)
+	})
 	switch err {
 	case nil:
 		return &resp, nil
