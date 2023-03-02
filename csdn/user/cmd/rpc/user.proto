@@ -27,6 +27,7 @@ service User {
     rpc UserLogin(LoginRequest) returns(LoginResponse);
     rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
     rpc UserCurrInfo(UserCurrInfoRequest) returns(UserCurrInfoResponse);
+    rpc SendSmsCode(SmsRequest) returns(SmsResponse);
 }
 
 message UserCurrInfoRequest{
@@ -43,3 +44,7 @@ message UserCurrInfoResponse{
     int32 fans = 7;
     int32 visitor = 8;
 }
+
+message SmsRequest{}
+
+message SmsResponse{}

@@ -3,8 +3,8 @@ module liujun/Time_go-zero_csdn
 go 1.19
 
 require (
+	github.com/cloopen/go-sms-sdk v0.0.0-20200702015230-7c5619f80c9e
 	github.com/golang-jwt/jwt/v4 v4.4.3
-	github.com/jinzhu/copier v0.3.5
 	github.com/pkg/errors v0.9.1
 	github.com/zeromicro/go-zero v1.4.4
 	google.golang.org/grpc v1.52.0

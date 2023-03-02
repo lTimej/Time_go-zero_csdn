@@ -17,6 +17,8 @@ type (
 	GenerateTokenResponse = user.GenerateTokenResponse
 	LoginRequest          = user.LoginRequest
 	LoginResponse         = user.LoginResponse
+	SmsRequest            = user.SmsRequest
+	SmsResponse           = user.SmsResponse
 	UserCurrInfoRequest   = user.UserCurrInfoRequest
 	UserCurrInfoResponse  = user.UserCurrInfoResponse
 
@@ -24,6 +26,7 @@ type (
 		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 		GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error)
 		UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
+		SendSmsCode(ctx context.Context, in *SmsRequest, opts ...grpc.CallOption) (*SmsResponse, error)
 	}
 
 	defaultUser struct {
@@ -50,4 +53,9 @@ func (m *defaultUser) GenerateToken(ctx context.Context, in *GenerateTokenReques
 func (m *defaultUser) UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserCurrInfo(ctx, in, opts...)
+}
+
+func (m *defaultUser) SendSmsCode(ctx context.Context, in *SmsRequest, opts ...grpc.CallOption) (*SmsResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.SendSmsCode(ctx, in, opts...)
 }

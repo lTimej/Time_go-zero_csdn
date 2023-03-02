@@ -6,7 +6,14 @@ type UserPasswordLoginResponse {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
 }
-
+type PhoneLoginRequest {
+	Phone string `json:"phone"`
+	code string `json:"code"`
+}
+type PhoneLoginResponse {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+}
 type UserCurrInfoRequest{}
 
 type UserCurrInfoResponse {
@@ -23,6 +30,8 @@ type UserCurrInfoResponse {
 service api-api {
 	@handler UserPasswordLogin
 	post /v1/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
+	@handler PhoneLogin
+    post /v1/login/auth(PhoneLoginRequest) returns (PhoneLoginResponse)
 	@handler UserCurrInfo
 	get /v1/curr/user(UserCurrInfoRequest) returns(UserCurrInfoResponse)
 }

@@ -36,3 +36,8 @@ func (s *UserServer) UserCurrInfo(ctx context.Context, in *user.UserCurrInfoRequ
 	l := logic.NewUserCurrInfoLogic(ctx, s.svcCtx)
 	return l.UserCurrInfo(in)
 }
+
+func (s *UserServer) SendSmsCode(ctx context.Context, in *user.SmsRequest) (*user.SmsResponse, error) {
+	l := logic.NewSendSmsCodeLogic(ctx, s.svcCtx)
+	return l.SendSmsCode(in)
+}
