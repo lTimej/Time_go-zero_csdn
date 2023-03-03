@@ -12,7 +12,6 @@ type ServiceContext struct {
 	Config      config.Config
 	RedisClient *redis.Redis
 	UserModel   model.UserBasicModel
-	// UserAuthModel model.UserAuthModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -23,7 +22,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			r.Type = c.Redis.Type
 			r.Pass = c.Redis.Pass
 		}),
-		// UserAuthModel: model.NewUserAuthModel(sqlConn, c.Cache),
 		UserModel: model.NewUserBasicModel(sqlConn, c.Cache),
 	}
 }

@@ -11,7 +11,7 @@ import (
 
 func HttpResp(w http.ResponseWriter, r *http.Request, resp interface{}, err error) {
 	if err == nil {
-		r := LoginSuccess(resp)
+		r := Success(resp)
 		httpx.WriteJson(w, http.StatusCreated, r)
 	} else {
 		//错误返回

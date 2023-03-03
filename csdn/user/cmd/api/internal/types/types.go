@@ -11,6 +11,22 @@ type UserPasswordLoginResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+type PhoneLoginRequest struct {
+	Phone string `json:"mobile"`
+	Code  string `json:"sms_code"`
+}
+
+type PhoneLoginResponse struct {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type SendSmsCodeRequest struct {
+}
+
+type SendSmsCodeReponse struct {
+}
+
 type UserCurrInfoRequest struct {
 }
 

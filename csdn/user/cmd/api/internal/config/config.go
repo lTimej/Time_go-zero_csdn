@@ -11,4 +11,9 @@ type Config struct {
 	JwtAuth struct {
 		AccessSecret string
 	}
+	Redis struct {
+		Host string
+		Pass string
+		Type string
+	}
 }

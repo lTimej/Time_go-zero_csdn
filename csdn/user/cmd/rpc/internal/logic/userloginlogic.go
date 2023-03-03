@@ -38,7 +38,7 @@ func (l *UserLoginLogic) UserLogin(in *user.LoginRequest) (*user.LoginResponse, 
 	case model.UserAuthTypeUsername:
 		user_id, err = l.UserNameLogin(in.Account, in.Password)
 	default:
-		l.PhoneLogin(in.Account, in.Password)
+		user_id, err = l.PhoneLogin(in.Account, in.Password)
 	}
 	if err != nil {
 		return nil, err
@@ -68,6 +68,27 @@ func (l *UserLoginLogic) UserNameLogin(username, password string) (int64, error)
 	}
 	return user_basic.UserId, nil
 }
-func (l *UserLoginLogic) PhoneLogin(phone, password string) {
+func (l *UserLoginLogic) PhoneLogin(phone, code string) (int64, error) {
+	key := "sms:code:" + phone
+	user_basic, err := l.svcCtx.UserModel.FindOneByMobile(l.ctx, phone)
+	if err != nil && err != model.ErrNotFound {
+		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "根据手机号查询用户信息失败，phone:%s,err:%v", phone, err)
+	}
+	//手机号不存在则注册
+	// if user_basic == nil{
+	// 	user_basic =
+	// 	l.svcCtx.UserModel.Insert(l.ctx,)
+	// }
 
+	if ok, _ := l.svcCtx.RedisClient.Exists(key); !ok {
+		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码已过期")
+	}
+	val, err := l.svcCtx.RedisClient.Get(key)
+	if err != nil {
+		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码获取失败")
+	}
+	if val != code {
+		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码输入错误")
+	}
+	return user_basic.UserId, nil
 }

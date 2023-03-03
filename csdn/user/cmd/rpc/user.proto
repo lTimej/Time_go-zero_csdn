@@ -45,6 +45,8 @@ message UserCurrInfoResponse{
     int32 visitor = 8;
 }
 
-message SmsRequest{}
+message SmsRequest{
+  string phone = 1;
+}
 
 message SmsResponse{}

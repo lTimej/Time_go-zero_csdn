@@ -1,5 +1,5 @@
 type UserPasswordLoginRequest {
-	UserName string `json:"user_name"`
+	UserName string `json:"username"`
 	Password string `json:"password"`
 }
 type UserPasswordLoginResponse {
@@ -7,13 +7,18 @@ type UserPasswordLoginResponse {
 	RefreshToken string `json:"refresh_token"`
 }
 type PhoneLoginRequest {
-	Phone string `json:"phone"`
-	code string `json:"code"`
+	Phone string `json:"mobile"`
+	Code  string `json:"sms_code"`
 }
 type PhoneLoginResponse {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
 }
+
+type SendSmsCodeRequest{}
+
+type SendSmsCodeReponse{}
+
 type UserCurrInfoRequest{}
 
 type UserCurrInfoResponse {
@@ -31,7 +36,17 @@ service api-api {
 	@handler UserPasswordLogin
 	post /v1/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
 	@handler PhoneLogin
-    post /v1/login/auth(PhoneLoginRequest) returns (PhoneLoginResponse)
+	post /v1/login/auth(PhoneLoginRequest) returns (PhoneLoginResponse)
+	@handler SendSmsCode
+	get /v1/login/smscode/:phone(SendSmsCodeRequest) returns(SendSmsCodeReponse)
+}
+
+@server (
+	jwt: JwtAuth
+	middleware: SetUidToCtxMiddleware
+)
+
+service api-api {
 	@handler UserCurrInfo
 	get /v1/curr/user(UserCurrInfoRequest) returns(UserCurrInfoResponse)
 }
