@@ -2,11 +2,10 @@ package logic
 
 import (
 	"context"
-
+	"github.com/zeromicro/go-zero/core/logx"
+	"liujun/Time_go-zero_csdn/common/minIO"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type UserCurrInfoLogic struct {
@@ -29,9 +28,15 @@ func (l *UserCurrInfoLogic) UserCurrInfo(in *user.UserCurrInfoRequest) (*user.Us
 	if err != nil {
 		return nil, err
 	}
+	var head_photo string
+	if user_info.HeadPhoto == "" {
+		head_photo = minIO.DefaultHeadPhoto
+	} else {
+		head_photo = user_info.HeadPhoto
+	}
 	return &user.UserCurrInfoResponse{
 		UserName:  user_info.UserName,
-		HeadPhoto: user_info.HeadPhoto,
+		HeadPhoto: head_photo,
 		Introduce: user_info.Introduce,
 		CodeYear:  user_info.CodeYear,
 		Career:    user_info.Career,

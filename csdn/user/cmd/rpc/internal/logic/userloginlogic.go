@@ -2,6 +2,9 @@ package logic
 
 import (
 	"context"
+	"fmt"
+	"liujun/Time_go-zero_csdn/common/minIO"
+	"liujun/Time_go-zero_csdn/common/snowflak"
 	"liujun/Time_go-zero_csdn/common/xerr"
 	"liujun/Time_go-zero_csdn/csdn/user/model"
 
@@ -63,6 +66,7 @@ func (l *UserLoginLogic) UserNameLogin(username, password string) (int64, error)
 	if user_basic == nil {
 		return 0, errors.Wrapf(ErrUserNoExistsError, "user_name：%s", username)
 	}
+	fmt.Println(utils.Md5ByString(password), "=======================", user_basic.Password)
 	if utils.Md5ByString(password) != user_basic.Password {
 		return 0, errors.Wrapf(ErrUsernamePwdError, "密码匹配出错")
 	}
@@ -75,11 +79,17 @@ func (l *UserLoginLogic) PhoneLogin(phone, code string) (int64, error) {
 		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "根据手机号查询用户信息失败，phone:%s,err:%v", phone, err)
 	}
 	//手机号不存在则注册
-	// if user_basic == nil{
-	// 	user_basic =
-	// 	l.svcCtx.UserModel.Insert(l.ctx,)
-	// }
-
+	if user_basic == nil {
+		WI, _ := snowflak.NewSnowFlak(1, 2, 0, -1)
+		user_id := WI.GetId()
+		user_basic := model.UserBasic{
+			UserId:       user_id,
+			Mobile:       phone,
+			Password:     utils.Md5ByString("12345678"),
+			ProfilePhoto: minIO.DefaultHeadPhoto,
+		}
+		l.svcCtx.UserModel.Insert(l.ctx, &user_basic)
+	}
 	if ok, _ := l.svcCtx.RedisClient.Exists(key); !ok {
 		return 0, errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码已过期")
 	}
