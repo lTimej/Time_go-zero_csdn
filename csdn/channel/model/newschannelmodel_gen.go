@@ -20,6 +20,7 @@ import (
 var (
 	newsChannelFieldNames          = builder.RawFieldNames(&NewsChannel{})
 	newsChannelRows                = strings.Join(newsChannelFieldNames, ",")
+	newsAllChannelRows = "news_channel.channel_id,news_channel.channel_name,news_channel.sequence"
 	newsChannelRowsExpectAutoSet   = strings.Join(stringx.Remove(newsChannelFieldNames, "`channel_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	newsChannelRowsWithPlaceHolder = strings.Join(stringx.Remove(newsChannelFieldNames, "`channel_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
@@ -32,7 +33,7 @@ type (
 		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsChannel) (sql.Result, error)
 		FindOne(ctx context.Context, channelId int64) (*NewsChannel, error)
-		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsChannel, error)
+		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsAllChannel, error)
 		FindOneByChannelName(ctx context.Context, channelName string) (*NewsChannel, error)
 		Update(ctx context.Context, data *NewsChannel) error
 		Delete(ctx context.Context, channelId int64) error
@@ -51,6 +52,11 @@ type (
 		Sequence    int64     `db:"sequence"`     // 序号
 		IsVisible   int64     `db:"is_visible"`   // 是否可见
 		IsDefault   int64     `db:"is_default"`   // 是否默认
+	}
+	NewsAllChannel struct {
+		ChannelId   int64     `db:"channel_id"`   // 频道ID
+		ChannelName string    `db:"channel_name"` // 频道名称
+		Sequence    int64     `db:"sequence"`     // 序号
 	}
 )
 
@@ -92,20 +98,21 @@ func (m *defaultNewsChannelModel) FindOne(ctx context.Context, channelId int64) 
 		return nil, err
 	}
 }
-func (m *defaultNewsChannelModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsChannel, error) {
+func (m *defaultNewsChannelModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsAllChannel, error) {
 	if orderBy == "" {
-		rowBuilder = rowBuilder.OrderBy("channel_id DESC")
+		rowBuilder = rowBuilder.OrderBy("news_channel.channel_id DESC")
 	} else {
-		rowBuilder = rowBuilder.OrderBy(orderBy)
+		rowBuilder = rowBuilder.OrderBy("news_channel." + orderBy)
 	}
-	query,values,err := rowBuilder.ToSql()
+	query,values,err := rowBuilder.RightJoin("news_user_channel on news_channel.channel_id = news_user_channel.channel_id").ToSql()
+	q := fmt.Sprintf("select %s from %s where channel_id not in (%s) and is_default = 0",newsAllChannelRows,m.table,query)
 	//query, values, err := rowBuilder.Where("del_state = ?", globalkey.DelStateNo).ToSql()
 	if err != nil {
 		return nil, err
 	}
 
-	var resp []*NewsChannel
-	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	var resp []*NewsAllChannel
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, q, values...)
 	switch err {
 	case nil:
 		return resp, nil
@@ -173,5 +180,5 @@ func (m *defaultNewsChannelModel) tableName() string {
 }
 // export logic
 func (m *defaultNewsChannelModel) RowBuilder() squirrel.SelectBuilder {
-	return squirrel.Select(newsChannelRows).From(m.table)
+	return squirrel.Select("news_channel.channel_id").From(m.table)
 }
