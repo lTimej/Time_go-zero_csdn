@@ -1,0 +1,21 @@
+type AllChannelRequest{}
+
+type ChannelList {
+	Id          int64  `json:"id"`
+	ChannelName string `json:"channel_name"`
+}
+
+type AllChannelResponse {
+	Channels []ChannelList `json:"channels"`
+}
+
+service api-api {
+	@handler AllChannel
+	get /v1/channel/user/channel(AllChannelRequest) returns (AllChannelResponse)
+	
+}
+
+//@server (
+//	jwt: JwtAuth
+//	middleware: SetUidToCtxMiddleware
+//)

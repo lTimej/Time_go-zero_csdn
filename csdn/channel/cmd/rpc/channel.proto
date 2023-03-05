@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package channel;
+
+option go_package = "./channel";
+
+message ChannelListRequest {}
+
+message ChannelList{
+    int64 id = 1;
+    string channel_name = 2;
+}
+
+message ChannelListResponse {
+    repeated ChannelList channels = 1;
+}
+
+service Channel {
+    rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
+}
