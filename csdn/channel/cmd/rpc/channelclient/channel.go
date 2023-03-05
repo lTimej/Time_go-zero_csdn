@@ -13,21 +13,24 @@ import (
 )
 
 type (
-	ChannelList            = channel.ChannelList
-	ChannelListRequest     = channel.ChannelListRequest
-	ChannelListResponse    = channel.ChannelListResponse
-	DefaultChannelRequest  = channel.DefaultChannelRequest
-	DefaultChannelResponse = channel.DefaultChannelResponse
-	UserAddChannelRequest  = channel.UserAddChannelRequest
-	UserAddChannelResponse = channel.UserAddChannelResponse
-	UserChannelRequest     = channel.UserChannelRequest
-	UserChannelResponse    = channel.UserChannelResponse
+	ChannelList              = channel.ChannelList
+	ChannelListRequest       = channel.ChannelListRequest
+	ChannelListResponse      = channel.ChannelListResponse
+	DefaultChannelRequest    = channel.DefaultChannelRequest
+	DefaultChannelResponse   = channel.DefaultChannelResponse
+	UserAddChannelRequest    = channel.UserAddChannelRequest
+	UserAddChannelResponse   = channel.UserAddChannelResponse
+	UserChannelRequest       = channel.UserChannelRequest
+	UserChannelResponse      = channel.UserChannelResponse
+	UserPatchChannelRequest  = channel.UserPatchChannelRequest
+	UserPatchChannelResponse = channel.UserPatchChannelResponse
 
 	Channel interface {
 		AllChannel(ctx context.Context, in *ChannelListRequest, opts ...grpc.CallOption) (*ChannelListResponse, error)
 		DefaultChannel(ctx context.Context, in *DefaultChannelRequest, opts ...grpc.CallOption) (*DefaultChannelResponse, error)
 		UserChannel(ctx context.Context, in *UserChannelRequest, opts ...grpc.CallOption) (*UserChannelResponse, error)
 		UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error)
+		UserPatchChannel(ctx context.Context, in *UserPatchChannelRequest, opts ...grpc.CallOption) (*UserPatchChannelResponse, error)
 	}
 
 	defaultChannel struct {
@@ -59,4 +62,9 @@ func (m *defaultChannel) UserChannel(ctx context.Context, in *UserChannelRequest
 func (m *defaultChannel) UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.UserAddChannel(ctx, in, opts...)
+}
+
+func (m *defaultChannel) UserPatchChannel(ctx context.Context, in *UserPatchChannelRequest, opts ...grpc.CallOption) (*UserPatchChannelResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.UserPatchChannel(ctx, in, opts...)
 }

@@ -35,3 +35,11 @@ type UserAddChannelRequest struct {
 type UserAddChannelResponse struct {
 	Channels []ChannelList `json:"channels"`
 }
+
+type UserPatchChannelRequest struct {
+	ChannelId int64 `json:"channel_id"`
+}
+
+type UserPatchChannelResponse struct {
+	Channels []ChannelList `json:"channels"`
+}

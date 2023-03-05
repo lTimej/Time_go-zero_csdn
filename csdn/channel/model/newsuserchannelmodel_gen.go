@@ -82,12 +82,12 @@ func (m *defaultNewsUserChannelModel) Delete(ctx context.Context, userChannelId 
 	return err
 }
 
-func (m *defaultNewsUserChannelModel) FindOne(ctx context.Context, userChannelId int64) (*NewsUserChannel, error) {
-	newsUserChannelUserChannelIdKey := fmt.Sprintf("%s%v", cacheNewsUserChannelUserChannelIdPrefix, userChannelId)
+func (m *defaultNewsUserChannelModel) FindOne(ctx context.Context, ChannelId int64) (*NewsUserChannel, error) {
+	newsUserChannelUserChannelIdKey := fmt.Sprintf("%s%v", cacheNewsUserChannelUserChannelIdPrefix, ChannelId)
 	var resp NewsUserChannel
 	err := m.QueryRowCtx(ctx, &resp, newsUserChannelUserChannelIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `user_channel_id` = ? limit 1", newsUserChannelRows, m.table)
-		return conn.QueryRowCtx(ctx, v, query, userChannelId)
+		query := fmt.Sprintf("select %s from %s where `channel_id` = ? limit 1", newsUserChannelRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, ChannelId)
 	})
 	switch err {
 	case nil:
@@ -149,7 +149,8 @@ func (m *defaultNewsUserChannelModel) Insert(ctx context.Context, data *NewsUser
 }
 
 func (m *defaultNewsUserChannelModel) Update(ctx context.Context, newData *NewsUserChannel) error {
-	data, err := m.FindOne(ctx, newData.UserChannelId)
+	data, err := m.FindOne(ctx, newData.ChannelId)
+	fmt.Println(data,"嘻嘻嘻嘻嘻嘻嘻嘻")
 	if err != nil {
 		return err
 	}
@@ -157,8 +158,8 @@ func (m *defaultNewsUserChannelModel) Update(ctx context.Context, newData *NewsU
 	newsUserChannelUserChannelIdKey := fmt.Sprintf("%s%v", cacheNewsUserChannelUserChannelIdPrefix, data.UserChannelId)
 	newsUserChannelUserIdChannelIdKey := fmt.Sprintf("%s%v:%v", cacheNewsUserChannelUserIdChannelIdPrefix, data.UserId, data.ChannelId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `user_channel_id` = ?", m.table, newsUserChannelRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.UserId, newData.ChannelId, newData.IsDeleted, newData.Sequence, newData.UserChannelId)
+		query := fmt.Sprintf("update %s set is_deleted = ? where `user_channel_id` = ?", m.table)
+		return conn.ExecCtx(ctx, query, newData.IsDeleted,data.UserChannelId)
 	}, newsUserChannelUserChannelIdKey, newsUserChannelUserIdChannelIdKey)
 	return err
 }

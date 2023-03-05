@@ -39,9 +39,19 @@ message UserAddChannelResponse{
     repeated ChannelList channels = 1;
 }
 
+message UserPatchChannelRequest{
+    int64 ChannelId = 1;
+    int64 userId = 2;
+}
+
+message UserPatchChannelResponse{
+    repeated ChannelList channels = 1;
+}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
     rpc UserChannel(UserChannelRequest) returns(UserChannelResponse);
     rpc UserAddChannel(UserAddChannelRequest) returns(UserAddChannelResponse);
+    rpc UserPatchChannel(UserPatchChannelRequest) returns(UserPatchChannelResponse);
 }

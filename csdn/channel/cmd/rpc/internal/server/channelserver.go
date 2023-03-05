@@ -41,3 +41,8 @@ func (s *ChannelServer) UserAddChannel(ctx context.Context, in *channel.UserAddC
 	l := logic.NewUserAddChannelLogic(ctx, s.svcCtx)
 	return l.UserAddChannel(in)
 }
+
+func (s *ChannelServer) UserPatchChannel(ctx context.Context, in *channel.UserPatchChannelRequest) (*channel.UserPatchChannelResponse, error) {
+	l := logic.NewUserPatchChannelLogic(ctx, s.svcCtx)
+	return l.UserPatchChannel(in)
+}

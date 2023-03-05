@@ -28,6 +28,13 @@ type UserAddChannelRequest {
 type UserAddChannelResponse {
 	Channels []ChannelList `json:"channels"`
 }
+type UserPatchChannelRequest {
+	ChannelId int64 `json:"channel_id"`
+}
+
+type UserPatchChannelResponse {
+	Channels []ChannelList `json:"channels"`
+}
 
 service api-api {
 	@handler AllChannel
@@ -46,4 +53,6 @@ service api-api {
 	get /v1/channel/user/channel(UserChannelRequest) returns (UserChannelResponse)
 	@handler UserAddChannel
 	post /v1/channel/user/channel(UserAddChannelRequest) returns (UserAddChannelResponse)
+	@handler UserPatchChannel
+	patch /v1/channel/user/channel(UserPatchChannelRequest) returns (UserPatchChannelResponse)
 }
