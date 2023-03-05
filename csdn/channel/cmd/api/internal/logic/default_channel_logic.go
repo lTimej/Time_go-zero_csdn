@@ -10,23 +10,23 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AllChannelLogic struct {
+type DefaultChannelLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAllChannelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AllChannelLogic {
-	return &AllChannelLogic{
+func NewDefaultChannelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DefaultChannelLogic {
+	return &DefaultChannelLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *AllChannelLogic) AllChannel(req *types.AllChannelRequest) (resp *types.AllChannelResponse, err error) {
+func (l *DefaultChannelLogic) DefaultChannel(req *types.DefaultChannelRequest) (resp *types.DefaultChannelResponse, err error) {
 	// todo: add your logic here and delete this line
-	ret, err := l.svcCtx.ChannelRpc.AllChannel(l.ctx, &channelclient.ChannelListRequest{})
+	ret, err := l.svcCtx.ChannelRpc.DefaultChannel(l.ctx, &channelclient.DefaultChannelRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (l *AllChannelLogic) AllChannel(req *types.AllChannelRequest) (resp *types.
 		}
 		data = append(data, d)
 	}
-	return &types.AllChannelResponse{
+	return &types.DefaultChannelResponse{
 		Channels: data,
 	}, nil
 }

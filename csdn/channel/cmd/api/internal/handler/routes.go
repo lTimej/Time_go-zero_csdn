@@ -14,9 +14,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/v1/channel/user/channel",
+				Path:    "/v1/channel/articles/channel",
 				Handler: AllChannelHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/v1/channel/default/channel",
+				Handler: DefaultChannelHandler(serverCtx),
+			},
 		},
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetUidToCtxMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/channel/user/channel",
+					Handler: UserChannelHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 	)
 }

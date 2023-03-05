@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/Masterminds/squirrel"
 	"strings"
 	"time"
 
@@ -28,8 +29,10 @@ var (
 
 type (
 	newsUserChannelModel interface {
+		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsUserChannel) (sql.Result, error)
 		FindOne(ctx context.Context, userChannelId int64) (*NewsUserChannel, error)
+		FindAllByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder, user_id int64,orderBy string) ([]*UserChannel, error)
 		FindOneByUserIdChannelId(ctx context.Context, userId int64, channelId int64) (*NewsUserChannel, error)
 		Update(ctx context.Context, data *NewsUserChannel) error
 		Delete(ctx context.Context, userChannelId int64) error
@@ -48,6 +51,11 @@ type (
 		IsDeleted     int64     `db:"is_deleted"`      // 是否删除, 0-未删除, 1-已删除
 		UpdateTime    time.Time `db:"update_time"`     // 更新时间
 		Sequence      int64     `db:"sequence"`        // 序号
+	}
+	UserChannel struct {
+		ChannelName string    `db:"channel_name"` // 频道名称
+		UserId        int64     `db:"user_id"`         // 用户ID
+		ChannelId     int64     `db:"channel_id"`      // 频道ID
 	}
 )
 
@@ -89,7 +97,26 @@ func (m *defaultNewsUserChannelModel) FindOne(ctx context.Context, userChannelId
 		return nil, err
 	}
 }
+func (m *defaultNewsUserChannelModel) FindAllByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder, user_id int64,orderBy string) ([]*UserChannel, error){
+	if orderBy == "" {
+		rowBuilder = rowBuilder.OrderBy("sequence")
+	} else {
+		rowBuilder = rowBuilder.OrderBy("news_user_channel." + orderBy)
+	}
+	query,values,err := rowBuilder.Join("news_channel on news_user_channel.channel_id=news_channel.channel_id").Where("news_user_channel.user_id = ?",user_id).ToSql()
+	if err != nil {
+		return nil, err
+	}
 
+	var resp []*UserChannel
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
 func (m *defaultNewsUserChannelModel) FindOneByUserIdChannelId(ctx context.Context, userId int64, channelId int64) (*NewsUserChannel, error) {
 	newsUserChannelUserIdChannelIdKey := fmt.Sprintf("%s%v:%v", cacheNewsUserChannelUserIdChannelIdPrefix, userId, channelId)
 	var resp NewsUserChannel
@@ -146,4 +173,8 @@ func (m *defaultNewsUserChannelModel) queryPrimary(ctx context.Context, conn sql
 
 func (m *defaultNewsUserChannelModel) tableName() string {
 	return m.table
+}
+// export logic
+func (m *defaultNewsUserChannelModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select("news_user_channel.user_id,news_user_channel.channel_id,news_channel.channel_name").From(m.table)
 }

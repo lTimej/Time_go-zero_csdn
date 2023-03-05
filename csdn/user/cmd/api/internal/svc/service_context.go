@@ -21,7 +21,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:                c,
 		UserRpc:               userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
-		SetUidToCtxMiddleware: middleware.NewAuthMiddleWare(c).Handle,
+		SetUidToCtxMiddleware: middleware.NewAuthMiddleWare().Handle,
 		RedisClient: redis.New(c.Redis.Host, func(r *redis.Redis) {
 			r.Type = c.Redis.Type
 			r.Pass = c.Redis.Pass

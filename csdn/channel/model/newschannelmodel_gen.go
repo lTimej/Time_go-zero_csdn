@@ -113,6 +113,7 @@ func (m *defaultNewsChannelModel) FindAll(ctx context.Context, rowBuilder squirr
 		return nil, err
 	}
 }
+
 func (m *defaultNewsChannelModel) FindOneByChannelName(ctx context.Context, channelName string) (*NewsChannel, error) {
 	newsChannelChannelNameKey := fmt.Sprintf("%s%v", cacheNewsChannelChannelNamePrefix, channelName)
 	var resp NewsChannel

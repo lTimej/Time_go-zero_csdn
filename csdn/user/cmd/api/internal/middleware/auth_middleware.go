@@ -12,10 +12,8 @@ type AuthMiddleWare struct {
 	config config.Config
 }
 
-func NewAuthMiddleWare(c config.Config) *AuthMiddleWare {
-	return &AuthMiddleWare{
-		config: c,
-	}
+func NewAuthMiddleWare() *AuthMiddleWare {
+	return &AuthMiddleWare{}
 }
 
 func (am *AuthMiddleWare) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -31,12 +29,6 @@ func (am *AuthMiddleWare) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		r.Header.Set("Authorization", token)
-		// user_id, err := utils.VerifyToken(token, am.config.JwtAuth.AccessSecret)
-		// if err != nil {
-		// 	httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "非法token"))
-		// 	return
-		// }
-		// _ = context.WithValue(r.Context(), ctxdata.CtxKeyJwtUserId, user_id)
 		next(w, r)
 	}
 }

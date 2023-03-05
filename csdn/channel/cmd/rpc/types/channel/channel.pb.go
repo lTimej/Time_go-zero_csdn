@@ -20,44 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ChannelListRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *ChannelListRequest) Reset() {
-	*x = ChannelListRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_channel_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ChannelListRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChannelListRequest) ProtoMessage() {}
-
-func (x *ChannelListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChannelListRequest.ProtoReflect.Descriptor instead.
-func (*ChannelListRequest) Descriptor() ([]byte, []int) {
-	return file_channel_proto_rawDescGZIP(), []int{0}
-}
-
 type ChannelList struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -70,7 +32,7 @@ type ChannelList struct {
 func (x *ChannelList) Reset() {
 	*x = ChannelList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_channel_proto_msgTypes[1]
+		mi := &file_channel_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -83,7 +45,7 @@ func (x *ChannelList) String() string {
 func (*ChannelList) ProtoMessage() {}
 
 func (x *ChannelList) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_proto_msgTypes[1]
+	mi := &file_channel_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -96,7 +58,7 @@ func (x *ChannelList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChannelList.ProtoReflect.Descriptor instead.
 func (*ChannelList) Descriptor() ([]byte, []int) {
-	return file_channel_proto_rawDescGZIP(), []int{1}
+	return file_channel_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ChannelList) GetId() int64 {
@@ -111,6 +73,44 @@ func (x *ChannelList) GetChannelName() string {
 		return x.ChannelName
 	}
 	return ""
+}
+
+type ChannelListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ChannelListRequest) Reset() {
+	*x = ChannelListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_channel_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ChannelListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChannelListRequest) ProtoMessage() {}
+
+func (x *ChannelListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChannelListRequest.ProtoReflect.Descriptor instead.
+func (*ChannelListRequest) Descriptor() ([]byte, []int) {
+	return file_channel_proto_rawDescGZIP(), []int{1}
 }
 
 type ChannelListResponse struct {
@@ -160,28 +160,230 @@ func (x *ChannelListResponse) GetChannels() []*ChannelList {
 	return nil
 }
 
+type DefaultChannelRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DefaultChannelRequest) Reset() {
+	*x = DefaultChannelRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_channel_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DefaultChannelRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DefaultChannelRequest) ProtoMessage() {}
+
+func (x *DefaultChannelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DefaultChannelRequest.ProtoReflect.Descriptor instead.
+func (*DefaultChannelRequest) Descriptor() ([]byte, []int) {
+	return file_channel_proto_rawDescGZIP(), []int{3}
+}
+
+type DefaultChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Channels []*ChannelList `protobuf:"bytes,1,rep,name=channels,proto3" json:"channels,omitempty"`
+}
+
+func (x *DefaultChannelResponse) Reset() {
+	*x = DefaultChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_channel_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DefaultChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DefaultChannelResponse) ProtoMessage() {}
+
+func (x *DefaultChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DefaultChannelResponse.ProtoReflect.Descriptor instead.
+func (*DefaultChannelResponse) Descriptor() ([]byte, []int) {
+	return file_channel_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DefaultChannelResponse) GetChannels() []*ChannelList {
+	if x != nil {
+		return x.Channels
+	}
+	return nil
+}
+
+type UserChannelRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64 `protobuf:"varint,1,opt,name=userId,proto3" json:"userId,omitempty"`
+}
+
+func (x *UserChannelRequest) Reset() {
+	*x = UserChannelRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_channel_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserChannelRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserChannelRequest) ProtoMessage() {}
+
+func (x *UserChannelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserChannelRequest.ProtoReflect.Descriptor instead.
+func (*UserChannelRequest) Descriptor() ([]byte, []int) {
+	return file_channel_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *UserChannelRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+type UserChannelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Channels []*ChannelList `protobuf:"bytes,1,rep,name=channels,proto3" json:"channels,omitempty"`
+}
+
+func (x *UserChannelResponse) Reset() {
+	*x = UserChannelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_channel_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserChannelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserChannelResponse) ProtoMessage() {}
+
+func (x *UserChannelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserChannelResponse.ProtoReflect.Descriptor instead.
+func (*UserChannelResponse) Descriptor() ([]byte, []int) {
+	return file_channel_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *UserChannelResponse) GetChannels() []*ChannelList {
+	if x != nil {
+		return x.Channels
+	}
+	return nil
+}
+
 var File_channel_proto protoreflect.FileDescriptor
 
 var file_channel_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x07, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x22, 0x14, 0x0a, 0x12, 0x43, 0x68, 0x61, 0x6e,
-	0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x40,
-	0x0a, 0x0b, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a,
-	0x0c, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4e, 0x61, 0x6d, 0x65,
+	0x07, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x22, 0x40, 0x0a, 0x0b, 0x43, 0x68, 0x61, 0x6e,
+	0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x63, 0x68, 0x61, 0x6e, 0x6e,
+	0x65, 0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63,
+	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x14, 0x0a, 0x12, 0x43, 0x68,
+	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x22, 0x47, 0x0a, 0x13, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x30, 0x0a, 0x08, 0x63, 0x68, 0x61, 0x6e, 0x6e,
 	0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x68, 0x61, 0x6e,
 	0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52,
-	0x08, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x73, 0x32, 0x52, 0x0a, 0x07, 0x43, 0x68, 0x61,
-	0x6e, 0x6e, 0x65, 0x6c, 0x12, 0x47, 0x0a, 0x0a, 0x41, 0x6c, 0x6c, 0x43, 0x68, 0x61, 0x6e, 0x6e,
-	0x65, 0x6c, 0x12, 0x1b, 0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61,
-	0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x1c, 0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65,
-	0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0b, 0x5a,
-	0x09, 0x2e, 0x2f, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x08, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x73, 0x22, 0x17, 0x0a, 0x15, 0x44, 0x65, 0x66,
+	0x61, 0x75, 0x6c, 0x74, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x22, 0x4a, 0x0a, 0x16, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x68, 0x61,
+	0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x30, 0x0a, 0x08,
+	0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14,
+	0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x08, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x73, 0x22, 0x2c,
+	0x0a, 0x12, 0x55, 0x73, 0x65, 0x72, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x47, 0x0a, 0x13,
+	0x55, 0x73, 0x65, 0x72, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x30, 0x0a, 0x08, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e,
+	0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x08, 0x63, 0x68, 0x61,
+	0x6e, 0x6e, 0x65, 0x6c, 0x73, 0x32, 0xef, 0x01, 0x0a, 0x07, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65,
+	0x6c, 0x12, 0x47, 0x0a, 0x0a, 0x41, 0x6c, 0x6c, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x12,
+	0x1b, 0x2e, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65,
+	0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x63,
+	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x4c, 0x69,
+	0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x51, 0x0a, 0x0e, 0x44, 0x65,
+	0x66, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x12, 0x1e, 0x2e, 0x63,
+	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x68,
+	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x63,
+	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x68,
+	0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x48, 0x0a,
+	0x0b, 0x55, 0x73, 0x65, 0x72, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x12, 0x1b, 0x2e, 0x63,
+	0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x68, 0x61, 0x6e, 0x6e,
+	0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x63, 0x68, 0x61, 0x6e,
+	0x6e, 0x65, 0x6c, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x63, 0x68, 0x61,
+	0x6e, 0x6e, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -196,21 +398,31 @@ func file_channel_proto_rawDescGZIP() []byte {
 	return file_channel_proto_rawDescData
 }
 
-var file_channel_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_channel_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_channel_proto_goTypes = []interface{}{
-	(*ChannelListRequest)(nil),  // 0: channel.ChannelListRequest
-	(*ChannelList)(nil),         // 1: channel.ChannelList
-	(*ChannelListResponse)(nil), // 2: channel.ChannelListResponse
+	(*ChannelList)(nil),            // 0: channel.ChannelList
+	(*ChannelListRequest)(nil),     // 1: channel.ChannelListRequest
+	(*ChannelListResponse)(nil),    // 2: channel.ChannelListResponse
+	(*DefaultChannelRequest)(nil),  // 3: channel.DefaultChannelRequest
+	(*DefaultChannelResponse)(nil), // 4: channel.DefaultChannelResponse
+	(*UserChannelRequest)(nil),     // 5: channel.UserChannelRequest
+	(*UserChannelResponse)(nil),    // 6: channel.UserChannelResponse
 }
 var file_channel_proto_depIdxs = []int32{
-	1, // 0: channel.ChannelListResponse.channels:type_name -> channel.ChannelList
-	0, // 1: channel.Channel.AllChannel:input_type -> channel.ChannelListRequest
-	2, // 2: channel.Channel.AllChannel:output_type -> channel.ChannelListResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 0: channel.ChannelListResponse.channels:type_name -> channel.ChannelList
+	0, // 1: channel.DefaultChannelResponse.channels:type_name -> channel.ChannelList
+	0, // 2: channel.UserChannelResponse.channels:type_name -> channel.ChannelList
+	1, // 3: channel.Channel.AllChannel:input_type -> channel.ChannelListRequest
+	3, // 4: channel.Channel.DefaultChannel:input_type -> channel.DefaultChannelRequest
+	5, // 5: channel.Channel.UserChannel:input_type -> channel.UserChannelRequest
+	2, // 6: channel.Channel.AllChannel:output_type -> channel.ChannelListResponse
+	4, // 7: channel.Channel.DefaultChannel:output_type -> channel.DefaultChannelResponse
+	6, // 8: channel.Channel.UserChannel:output_type -> channel.UserChannelResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_channel_proto_init() }
@@ -220,7 +432,7 @@ func file_channel_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_channel_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ChannelListRequest); i {
+			switch v := v.(*ChannelList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -232,7 +444,7 @@ func file_channel_proto_init() {
 			}
 		}
 		file_channel_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ChannelList); i {
+			switch v := v.(*ChannelListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -255,6 +467,54 @@ func file_channel_proto_init() {
 				return nil
 			}
 		}
+		file_channel_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DefaultChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_channel_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DefaultChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_channel_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserChannelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_channel_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserChannelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -262,7 +522,7 @@ func file_channel_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_channel_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

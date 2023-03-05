@@ -1,21 +1,38 @@
-type AllChannelRequest{}
-
 type ChannelList {
 	Id          int64  `json:"id"`
 	ChannelName string `json:"channel_name"`
 }
 
+type AllChannelRequest{}
+
 type AllChannelResponse {
+	Channels []ChannelList `json:"channels"`
+}
+type DefaultChannelRequest{}
+
+type DefaultChannelResponse {
+	Channels []ChannelList `json:"default_channel"`
+}
+
+type UserChannelRequest{}
+
+type UserChannelResponse {
 	Channels []ChannelList `json:"channels"`
 }
 
 service api-api {
 	@handler AllChannel
-	get /v1/channel/user/channel(AllChannelRequest) returns (AllChannelResponse)
-	
+	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
+	@handler DefaultChannel
+	get /v1/channel/default/channel(DefaultChannelRequest) returns (DefaultChannelResponse)
 }
 
-//@server (
-//	jwt: JwtAuth
-//	middleware: SetUidToCtxMiddleware
-//)
+@server (
+	jwt: JwtAuth
+	middleware: SetUidToCtxMiddleware
+)
+
+service api-api {
+	@handler UserChannel
+	get /v1/channel/user/channel(UserChannelRequest) returns (UserChannelResponse)
+}

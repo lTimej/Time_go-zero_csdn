@@ -2,35 +2,37 @@ package logic
 
 import (
 	"context"
-	"github.com/zeromicro/go-zero/core/logx"
+
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/types/channel"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AllChannelLogic struct {
+type UserChannelLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAllChannelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AllChannelLogic {
-	return &AllChannelLogic{
+func NewUserChannelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserChannelLogic {
+	return &UserChannelLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *AllChannelLogic) AllChannel(in *channel.ChannelListRequest) (*channel.ChannelListResponse, error) {
+func (l *UserChannelLogic) UserChannel(in *channel.UserChannelRequest) (*channel.UserChannelResponse, error) {
 	// todo: add your logic here and delete this line
-	Builder := l.svcCtx.ChannelModel.RowBuilder().Where("is_default = ?", 0)
-	cs, err := l.svcCtx.ChannelModel.FindAll(l.ctx, Builder, "")
+	build := l.svcCtx.UserChannelModel.RowBuilder()
+	res, err := l.svcCtx.UserChannelModel.FindAllByUserId(l.ctx, build, in.UserId, "sequence")
 	if err != nil {
 		return nil, err
 	}
-	resp := new(channel.ChannelListResponse)
+	resp := new(channel.UserChannelResponse)
 	ccs := []*channel.ChannelList{}
-	for _, c := range cs {
+	for _, c := range res {
 		ccs = append(ccs, &channel.ChannelList{
 			Id:          c.ChannelId,
 			ChannelName: c.ChannelName,

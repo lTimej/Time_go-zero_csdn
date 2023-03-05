@@ -26,3 +26,13 @@ func (s *ChannelServer) AllChannel(ctx context.Context, in *channel.ChannelListR
 	l := logic.NewAllChannelLogic(ctx, s.svcCtx)
 	return l.AllChannel(in)
 }
+
+func (s *ChannelServer) DefaultChannel(ctx context.Context, in *channel.DefaultChannelRequest) (*channel.DefaultChannelResponse, error) {
+	l := logic.NewDefaultChannelLogic(ctx, s.svcCtx)
+	return l.DefaultChannel(in)
+}
+
+func (s *ChannelServer) UserChannel(ctx context.Context, in *channel.UserChannelRequest) (*channel.UserChannelResponse, error) {
+	l := logic.NewUserChannelLogic(ctx, s.svcCtx)
+	return l.UserChannel(in)
+}

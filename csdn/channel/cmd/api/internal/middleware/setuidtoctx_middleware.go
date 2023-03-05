@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"liujun/Time_go-zero_csdn/common/xerr"
 	"net/http"
@@ -28,6 +29,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		}
 		r.Header.Set("Authorization", token)
 		// Passthrough to next handler if need
+		fmt.Println(token, "+++++++++token+++++++++++")
 		next(w, r)
 	}
 }

@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChannelClient interface {
 	AllChannel(ctx context.Context, in *ChannelListRequest, opts ...grpc.CallOption) (*ChannelListResponse, error)
+	DefaultChannel(ctx context.Context, in *DefaultChannelRequest, opts ...grpc.CallOption) (*DefaultChannelResponse, error)
+	UserChannel(ctx context.Context, in *UserChannelRequest, opts ...grpc.CallOption) (*UserChannelResponse, error)
 }
 
 type channelClient struct {
@@ -42,11 +44,31 @@ func (c *channelClient) AllChannel(ctx context.Context, in *ChannelListRequest, 
 	return out, nil
 }
 
+func (c *channelClient) DefaultChannel(ctx context.Context, in *DefaultChannelRequest, opts ...grpc.CallOption) (*DefaultChannelResponse, error) {
+	out := new(DefaultChannelResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/DefaultChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *channelClient) UserChannel(ctx context.Context, in *UserChannelRequest, opts ...grpc.CallOption) (*UserChannelResponse, error) {
+	out := new(UserChannelResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/UserChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
 type ChannelServer interface {
 	AllChannel(context.Context, *ChannelListRequest) (*ChannelListResponse, error)
+	DefaultChannel(context.Context, *DefaultChannelRequest) (*DefaultChannelResponse, error)
+	UserChannel(context.Context, *UserChannelRequest) (*UserChannelResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -56,6 +78,12 @@ type UnimplementedChannelServer struct {
 
 func (UnimplementedChannelServer) AllChannel(context.Context, *ChannelListRequest) (*ChannelListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllChannel not implemented")
+}
+func (UnimplementedChannelServer) DefaultChannel(context.Context, *DefaultChannelRequest) (*DefaultChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DefaultChannel not implemented")
+}
+func (UnimplementedChannelServer) UserChannel(context.Context, *UserChannelRequest) (*UserChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserChannel not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -88,6 +116,42 @@ func _Channel_AllChannel_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_DefaultChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DefaultChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).DefaultChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/DefaultChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).DefaultChannel(ctx, req.(*DefaultChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Channel_UserChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).UserChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/UserChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).UserChannel(ctx, req.(*UserChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +162,14 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AllChannel",
 			Handler:    _Channel_AllChannel_Handler,
+		},
+		{
+			MethodName: "DefaultChannel",
+			Handler:    _Channel_DefaultChannel_Handler,
+		},
+		{
+			MethodName: "UserChannel",
+			Handler:    _Channel_UserChannel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
