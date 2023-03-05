@@ -18,6 +18,8 @@ type (
 	ChannelListResponse    = channel.ChannelListResponse
 	DefaultChannelRequest  = channel.DefaultChannelRequest
 	DefaultChannelResponse = channel.DefaultChannelResponse
+	UserAddChannelRequest  = channel.UserAddChannelRequest
+	UserAddChannelResponse = channel.UserAddChannelResponse
 	UserChannelRequest     = channel.UserChannelRequest
 	UserChannelResponse    = channel.UserChannelResponse
 
@@ -25,6 +27,7 @@ type (
 		AllChannel(ctx context.Context, in *ChannelListRequest, opts ...grpc.CallOption) (*ChannelListResponse, error)
 		DefaultChannel(ctx context.Context, in *DefaultChannelRequest, opts ...grpc.CallOption) (*DefaultChannelResponse, error)
 		UserChannel(ctx context.Context, in *UserChannelRequest, opts ...grpc.CallOption) (*UserChannelResponse, error)
+		UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error)
 	}
 
 	defaultChannel struct {
@@ -51,4 +54,9 @@ func (m *defaultChannel) DefaultChannel(ctx context.Context, in *DefaultChannelR
 func (m *defaultChannel) UserChannel(ctx context.Context, in *UserChannelRequest, opts ...grpc.CallOption) (*UserChannelResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.UserChannel(ctx, in, opts...)
+}
+
+func (m *defaultChannel) UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.UserAddChannel(ctx, in, opts...)
 }

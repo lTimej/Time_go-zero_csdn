@@ -20,6 +20,7 @@ import (
 var (
 	newsUserChannelFieldNames          = builder.RawFieldNames(&NewsUserChannel{})
 	newsUserChannelRows                = strings.Join(newsUserChannelFieldNames, ",")
+	UserChannelRowsExpectAutoSet = strings.Join(stringx.Remove(newsUserChannelFieldNames,  "`is_deleted`", "`sequence`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	newsUserChannelRowsExpectAutoSet   = strings.Join(stringx.Remove(newsUserChannelFieldNames, "`user_channel_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	newsUserChannelRowsWithPlaceHolder = strings.Join(stringx.Remove(newsUserChannelFieldNames, "`user_channel_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
@@ -99,7 +100,7 @@ func (m *defaultNewsUserChannelModel) FindOne(ctx context.Context, userChannelId
 }
 func (m *defaultNewsUserChannelModel) FindAllByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder, user_id int64,orderBy string) ([]*UserChannel, error){
 	if orderBy == "" {
-		rowBuilder = rowBuilder.OrderBy("sequence")
+		rowBuilder = rowBuilder.OrderBy("news_user_channel." + "sequence")
 	} else {
 		rowBuilder = rowBuilder.OrderBy("news_user_channel." + orderBy)
 	}
@@ -141,8 +142,8 @@ func (m *defaultNewsUserChannelModel) Insert(ctx context.Context, data *NewsUser
 	newsUserChannelUserChannelIdKey := fmt.Sprintf("%s%v", cacheNewsUserChannelUserChannelIdPrefix, data.UserChannelId)
 	newsUserChannelUserIdChannelIdKey := fmt.Sprintf("%s%v:%v", cacheNewsUserChannelUserIdChannelIdPrefix, data.UserId, data.ChannelId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, newsUserChannelRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.ChannelId, data.IsDeleted, data.Sequence)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, UserChannelRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query,data.UserChannelId, data.UserId, data.ChannelId)
 	}, newsUserChannelUserChannelIdKey, newsUserChannelUserIdChannelIdKey)
 	return ret, err
 }

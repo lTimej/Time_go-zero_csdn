@@ -20,6 +20,15 @@ type UserChannelResponse {
 	Channels []ChannelList `json:"channels"`
 }
 
+type UserAddChannelRequest {
+	ChannelId   int64  `json:"channel_id"`
+	ChannelName string `json:"channel_name"`
+}
+
+type UserAddChannelResponse {
+	Channels []ChannelList `json:"channels"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -35,4 +44,6 @@ service api-api {
 service api-api {
 	@handler UserChannel
 	get /v1/channel/user/channel(UserChannelRequest) returns (UserChannelResponse)
+	@handler UserAddChannel
+	post /v1/channel/user/channel(UserAddChannelRequest) returns (UserAddChannelResponse)
 }

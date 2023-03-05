@@ -25,6 +25,7 @@ type ChannelClient interface {
 	AllChannel(ctx context.Context, in *ChannelListRequest, opts ...grpc.CallOption) (*ChannelListResponse, error)
 	DefaultChannel(ctx context.Context, in *DefaultChannelRequest, opts ...grpc.CallOption) (*DefaultChannelResponse, error)
 	UserChannel(ctx context.Context, in *UserChannelRequest, opts ...grpc.CallOption) (*UserChannelResponse, error)
+	UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error)
 }
 
 type channelClient struct {
@@ -62,6 +63,15 @@ func (c *channelClient) UserChannel(ctx context.Context, in *UserChannelRequest,
 	return out, nil
 }
 
+func (c *channelClient) UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error) {
+	out := new(UserAddChannelResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/UserAddChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type ChannelServer interface {
 	AllChannel(context.Context, *ChannelListRequest) (*ChannelListResponse, error)
 	DefaultChannel(context.Context, *DefaultChannelRequest) (*DefaultChannelResponse, error)
 	UserChannel(context.Context, *UserChannelRequest) (*UserChannelResponse, error)
+	UserAddChannel(context.Context, *UserAddChannelRequest) (*UserAddChannelResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedChannelServer) DefaultChannel(context.Context, *DefaultChanne
 }
 func (UnimplementedChannelServer) UserChannel(context.Context, *UserChannelRequest) (*UserChannelResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserChannel not implemented")
+}
+func (UnimplementedChannelServer) UserAddChannel(context.Context, *UserAddChannelRequest) (*UserAddChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAddChannel not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -152,6 +166,24 @@ func _Channel_UserChannel_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_UserAddChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAddChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).UserAddChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/UserAddChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).UserAddChannel(ctx, req.(*UserAddChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserChannel",
 			Handler:    _Channel_UserChannel_Handler,
+		},
+		{
+			MethodName: "UserAddChannel",
+			Handler:    _Channel_UserAddChannel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -26,3 +26,12 @@ type UserChannelRequest struct {
 type UserChannelResponse struct {
 	Channels []ChannelList `json:"channels"`
 }
+
+type UserAddChannelRequest struct {
+	ChannelId   int64  `json:"channel_id"`
+	ChannelName string `json:"channel_name"`
+}
+
+type UserAddChannelResponse struct {
+	Channels []ChannelList `json:"channels"`
+}
