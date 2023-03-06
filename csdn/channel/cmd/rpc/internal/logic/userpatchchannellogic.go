@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"liujun/Time_go-zero_csdn/csdn/channel/model"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
@@ -33,7 +32,6 @@ func (l *UserPatchChannelLogic) UserPatchChannel(in *channel.UserPatchChannelReq
 		IsDeleted: 1,
 	}
 	err := l.svcCtx.UserChannelModel.Update(l.ctx, &user_channel)
-	fmt.Println("和混合双打罚款罚款和", err)
 	if err != nil {
 		return nil, err
 	}
