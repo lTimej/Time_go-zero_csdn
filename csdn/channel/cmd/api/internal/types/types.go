@@ -6,6 +6,24 @@ type ChannelList struct {
 	ChannelName string `json:"channel_name"`
 }
 
+type ArticleList struct {
+	Title         string `json:"title"`
+	UserId        int64  `json:"user_id"`
+	CreateTime    string `json:"create_time"`
+	ArtId         int64  `json:"art_id"`
+	ChannelId     int64  `json:"channel_id"`
+	Content       string `json:"content"`
+	AllowComment  int32  `json:"allow_comment"`
+	UserName      string `json:"user_name"`
+	HeadPhoto     string `json:"head_photo"`
+	Career        string `json:"career"`
+	CodeYear      int32  `json:"code_year"`
+	ReadNum       int32  `json:"read_Num"`
+	CommentNum    int32  `json:"comment_num"`
+	LikeNum       int32  `json:"like_num"`
+	CollectionNum int32  `json:"collection_num"`
+}
+
 type AllChannelRequest struct {
 }
 
@@ -42,4 +60,13 @@ type UserPatchChannelRequest struct {
 
 type UserPatchChannelResponse struct {
 	Channels []ChannelList `json:"channels"`
+}
+
+type AllArticleRequest struct {
+	Page    int32 `json:"page,optional"`
+	PageNum int32 `json:"page_num,optional"`
+}
+
+type AllArticleResponse struct {
+	Articles []ArticleList `json:"articles"`
 }

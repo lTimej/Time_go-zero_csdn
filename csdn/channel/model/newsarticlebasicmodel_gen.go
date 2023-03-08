@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/Masterminds/squirrel"
 	"strings"
 	"time"
 
@@ -17,6 +18,7 @@ import (
 )
 
 var (
+	newsArticleAllInfo = "news_article_basic.article_id as article_id,news_article_basic.user_id as user_id,channel_id,title,news_article_basic.create_time as create_time,allow_comment,content,user_name,profile_photo,career,code_year"
 	newsArticleBasicFieldNames          = builder.RawFieldNames(&NewsArticleBasic{})
 	newsArticleBasicRows                = strings.Join(newsArticleBasicFieldNames, ",")
 	newsArticleBasicRowsExpectAutoSet   = strings.Join(stringx.Remove(newsArticleBasicFieldNames, "`article_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
@@ -27,8 +29,10 @@ var (
 
 type (
 	newsArticleBasicModel interface {
+		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsArticleBasic) (sql.Result, error)
 		FindOne(ctx context.Context, articleId int64) (*NewsArticleBasic, error)
+		FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error)
 		Update(ctx context.Context, data *NewsArticleBasic) error
 		Delete(ctx context.Context, articleId int64) error
 	}
@@ -39,20 +43,37 @@ type (
 	}
 
 	NewsArticleBasic struct {
-		ArticleId     int64          `db:"article_id"`     // 文章ID
-		UserId        int64          `db:"user_id"`        // 用户ID
-		ChannelId     int64          `db:"channel_id"`     // 频道ID
-		Title         string         `db:"title"`          // 标题
-		IsAdvertising int64          `db:"is_advertising"` // 是否投放广告，0-不投放，1-投放
-		CreateTime    time.Time      `db:"create_time"`    // 创建时间
-		UpdateTime    time.Time      `db:"update_time"`    // 更新时间
-		Status        int64          `db:"status"`         // 贴文状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除
-		ReviewerId    sql.NullInt64  `db:"reviewer_id"`    // 审核人员ID
-		ReviewTime    sql.NullTime   `db:"review_time"`    // 审核时间
-		DeleteTime    sql.NullTime   `db:"delete_time"`    // 删除时间
-		RejectReason  sql.NullString `db:"reject_reason"`  // 驳回原因
-		CommentCount  int64          `db:"comment_count"`  // 累计评论数
-		AllowComment  int64          `db:"allow_comment"`  // 是否允许评论，0-不允许，1-允许
+		ArticleId     int64     `db:"article_id"`     // 文章ID
+		UserId        int64     `db:"user_id"`        // 用户ID
+		ChannelId     int64     `db:"channel_id"`     // 频道ID
+		Title         string    `db:"title"`          // 标题
+		IsAdvertising int64     `db:"is_advertising"` // 是否投放广告，0-不投放，1-投放
+		CreateTime    time.Time `db:"create_time"`    // 创建时间
+		UpdateTime    time.Time `db:"update_time"`    // 更新时间
+		Status        int64     `db:"status"`         // 贴文状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除
+		ReviewerId    int64     `db:"reviewer_id"`    // 审核人员ID
+		ReviewTime    time.Time `db:"review_time"`    // 审核时间
+		DeleteTime    time.Time `db:"delete_time"`    // 删除时间
+		RejectReason  string    `db:"reject_reason"`  // 驳回原因
+		CommentCount  int64     `db:"comment_count"`  // 累计评论数
+		AllowComment  int64     `db:"allow_comment"`  // 是否允许评论，0-不允许，1-允许
+	}
+	AllArticleInfo struct {
+		ArtId     int64     `db:"article_id"`     // 文章ID
+		UserId        int64     `db:"user_id"`        // 用户ID
+		ChannelId     int64     `db:"channel_id"`     // 频道ID
+		Title         string    `db:"title"`          // 标题
+		CreateTime    string `db:"create_time"`    // 创建时间
+		AllowComment  int32    `db:"allow_comment"`  // 是否允许评论，0-不允许，1-允许
+		Content string `db:"content"`
+		UserName string `db:"user_name"`
+		HeadPhoto string `db:"profile_photo"`
+		Career string `db:"career"`
+		CodeYear int32 `db:"code_year"`
+		//ReadNum int32 `db:"read_num"`
+		//CommentNum int32 `db:"comment_num"`
+		//LikeNum int32 `db:"like_num"`
+		//CollectionNum int32 `db:"collection_num"`
 	}
 )
 
@@ -88,7 +109,27 @@ func (m *defaultNewsArticleBasicModel) FindOne(ctx context.Context, articleId in
 		return nil, err
 	}
 }
+func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error){
+	if page <= 0{
+		page = 1
+	}
+	offset := (page - 1) * page_num
+	q,values,err := rowBuilder.Join("news_article_content,user_basic,user_profile where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_article_basic.channel_id = %d limit %d,%d").ToSql()
+	query := fmt.Sprintf(q,channel_id,offset,page_num)
+	fmt.Println(query,"===============")
+	if err != nil {
+		return nil, err
+	}
 
+	var resp []*AllArticleInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
 func (m *defaultNewsArticleBasicModel) Insert(ctx context.Context, data *NewsArticleBasic) (sql.Result, error) {
 	newsArticleBasicArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleBasicArticleIdPrefix, data.ArticleId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -118,4 +159,7 @@ func (m *defaultNewsArticleBasicModel) queryPrimary(ctx context.Context, conn sq
 
 func (m *defaultNewsArticleBasicModel) tableName() string {
 	return m.table
+}
+func (m *defaultNewsArticleBasicModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select(newsArticleAllInfo).From(m.table)
 }

@@ -2,7 +2,23 @@ type ChannelList {
 	Id          int64  `json:"id"`
 	ChannelName string `json:"channel_name"`
 }
-
+type ArticleList {
+	Title         string `json:"title"`
+	UserId        int64  `json:"user_id"`
+	CreateTime    string `json:"create_time"`
+	ArtId         int64  `json:"art_id"`
+	ChannelId     int64  `json:"channel_id"`
+	Content       string `json:"content"`
+	AllowComment  int32  `json:"allow_comment"`
+	UserName      string `json:"user_name"`
+	HeadPhoto     string `json:"head_photo"`
+	Career        string `json:"career"`
+	CodeYear      int32  `json:"code_year"`
+	ReadNum       int32  `json:"read_Num"`
+	CommentNum    int32  `json:"comment_num"`
+	LikeNum       int32  `json:"like_num"`
+	CollectionNum int32  `json:"collection_num"`
+}
 type AllChannelRequest{}
 
 type AllChannelResponse {
@@ -35,12 +51,21 @@ type UserPatchChannelRequest {
 type UserPatchChannelResponse {
 	Channels []ChannelList `json:"channels"`
 }
+type AllArticleRequest {
+	Page    int32 `json:"page,optional"`
+	PageNum int32 `json:"page_num,optional"`
+}
 
+type AllArticleResponse {
+	Articles []ArticleList `json:"articles"`
+}
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
 	@handler DefaultChannel
 	get /v1/channel/default/channel(DefaultChannelRequest) returns (DefaultChannelResponse)
+	@handler AllArticle
+	get /v1/article/articles/:channel_id(AllArticleRequest) returns (AllArticleResponse)
 }
 
 @server (

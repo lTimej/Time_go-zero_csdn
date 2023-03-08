@@ -22,6 +22,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/v1/channel/default/channel",
 				Handler: DefaultChannelHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/v1/article/articles/:channel_id",
+				Handler: AllArticleHandler(serverCtx),
+			},
 		},
 	)
 

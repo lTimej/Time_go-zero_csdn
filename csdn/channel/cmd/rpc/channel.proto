@@ -49,11 +49,12 @@ message UserPatchChannelResponse{
 }
 
 message ArticleChannelRequest{
-    int64 Page = 1;
-    int64 PageNum = 2;
+    int64 ChannelId = 1;
+    int32 Page = 2;
+    int32 PageNum = 3;
 }
 
-message ArticleChannelResponse{
+message ArticleList{
     string Title = 1;
     int64 UserId = 2;
     string CreateTime = 3;
@@ -71,10 +72,15 @@ message ArticleChannelResponse{
     int32 CollectionNum = 15;
 }
 
+message ArticleChannelResponse{
+    repeated ArticleList articles = 1;
+}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
     rpc UserChannel(UserChannelRequest) returns(UserChannelResponse);
     rpc UserAddChannel(UserAddChannelRequest) returns(UserAddChannelResponse);
     rpc UserPatchChannel(UserPatchChannelRequest) returns(UserPatchChannelResponse);
+    rpc ArticleChannel(ArticleChannelRequest) returns(ArticleChannelResponse);
 }
