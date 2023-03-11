@@ -21,6 +21,14 @@ type SendSmsCodeReponse{}
 
 type UserCurrInfoRequest{}
 
+type IsFocusUserRequest {
+	TargetUserId int64 `json:"target_user_id,optional"`
+}
+
+type IsFocusUserResponse {
+	IsFocusUser bool `json:"isFocusUser"`
+}
+
 type UserCurrInfoResponse {
 	UserName  string `json:"user_name"`
 	HeadPhoto string `json:"head_photo"`
@@ -34,11 +42,11 @@ type UserCurrInfoResponse {
 
 service api-api {
 	@handler UserPasswordLogin
-	post /v1/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
+	post /v1/user/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
 	@handler PhoneLogin
-	post /v1/login/auth(PhoneLoginRequest) returns (PhoneLoginResponse)
+	post /v1/user/login/auth(PhoneLoginRequest) returns (PhoneLoginResponse)
 	@handler SendSmsCode
-	get /v1/login/smscode/:phone(SendSmsCodeRequest) returns(SendSmsCodeReponse)
+	get /v1/user/login/smscode/:phone(SendSmsCodeRequest) returns(SendSmsCodeReponse)
 }
 
 @server (
@@ -48,5 +56,7 @@ service api-api {
 
 service api-api {
 	@handler UserCurrInfo
-	get /v1/curr/user(UserCurrInfoRequest) returns(UserCurrInfoResponse)
+	get /v1/user/curr/user(UserCurrInfoRequest) returns(UserCurrInfoResponse)
+	@handler IsFocusUser
+	get /v1/user/isfocus(IsFocusUserRequest) returns(IsFocusUserResponse)
 }

@@ -24,8 +24,8 @@ func NewDefaultChannelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 
 func (l *DefaultChannelLogic) DefaultChannel(in *channel.DefaultChannelRequest) (*channel.DefaultChannelResponse, error) {
 	// todo: add your logic here and delete this line
-	build := l.svcCtx.ChannelModel.RowBuilder().Where("is_default = ?", 1)
-	cs, err := l.svcCtx.ChannelModel.FindAll(l.ctx, build, "sequence")
+	build := l.svcCtx.ChannelModel.RowDefaultBuilder().Where("is_default = ?", 1)
+	cs, err := l.svcCtx.ChannelModel.FindAllDefaultChannel(l.ctx, build, "sequence")
 	if err != nil {
 		return nil, err
 	}

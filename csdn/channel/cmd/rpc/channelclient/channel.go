@@ -16,6 +16,8 @@ type (
 	ArticleChannelRequest    = channel.ArticleChannelRequest
 	ArticleChannelResponse   = channel.ArticleChannelResponse
 	ArticleList              = channel.ArticleList
+	ArticlestatusRequest     = channel.ArticlestatusRequest
+	ArticlestatusResponse    = channel.ArticlestatusResponse
 	ChannelList              = channel.ChannelList
 	ChannelListRequest       = channel.ChannelListRequest
 	ChannelListResponse      = channel.ChannelListResponse
@@ -35,6 +37,7 @@ type (
 		UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error)
 		UserPatchChannel(ctx context.Context, in *UserPatchChannelRequest, opts ...grpc.CallOption) (*UserPatchChannelResponse, error)
 		ArticleChannel(ctx context.Context, in *ArticleChannelRequest, opts ...grpc.CallOption) (*ArticleChannelResponse, error)
+		ArticleStatus(ctx context.Context, in *ArticlestatusRequest, opts ...grpc.CallOption) (*ArticlestatusResponse, error)
 	}
 
 	defaultChannel struct {
@@ -76,4 +79,9 @@ func (m *defaultChannel) UserPatchChannel(ctx context.Context, in *UserPatchChan
 func (m *defaultChannel) ArticleChannel(ctx context.Context, in *ArticleChannelRequest, opts ...grpc.CallOption) (*ArticleChannelResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleChannel(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleStatus(ctx context.Context, in *ArticlestatusRequest, opts ...grpc.CallOption) (*ArticlestatusResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleStatus(ctx, in, opts...)
 }

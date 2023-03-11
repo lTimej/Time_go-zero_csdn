@@ -30,6 +30,14 @@ type SendSmsCodeReponse struct {
 type UserCurrInfoRequest struct {
 }
 
+type IsFocusUserRequest struct {
+	TargetUserId int64 `json:"target_user_id,optional"`
+}
+
+type IsFocusUserResponse struct {
+	IsFocusUser bool `json:"isFocusUser"`
+}
+
 type UserCurrInfoResponse struct {
 	UserName  string `json:"user_name"`
 	HeadPhoto string `json:"head_photo"`

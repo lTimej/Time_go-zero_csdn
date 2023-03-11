@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/config"
-	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/handler"
-	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/svc"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/config"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/handler"
+	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -20,7 +20,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf, rest.WithCors("http://172.20.16.20:8080", "http://localhost:8080/"))
+	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)

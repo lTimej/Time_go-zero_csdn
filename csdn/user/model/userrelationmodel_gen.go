@@ -30,7 +30,7 @@ type (
 	userRelationModel interface {
 		Insert(ctx context.Context, data *UserRelation) (sql.Result, error)
 		FindOne(ctx context.Context, relationId int64) (*UserRelation, error)
-		FindOneByUserIdTargetUserId(ctx context.Context, userId int64, targetUserId int64) (*UserRelation, error)
+		FindByUserIdTargetUserId(ctx context.Context, userId int64, targetUserId int64) (bool, error)
 		Update(ctx context.Context, data *UserRelation) error
 		Delete(ctx context.Context, relationId int64) error
 	}
@@ -39,7 +39,9 @@ type (
 		sqlc.CachedConn
 		table string
 	}
-
+	FocusList struct{
+		TargetUserId int64     `db:"target_user_id"` // 目标用户ID
+	}
 	UserRelation struct {
 		RelationId   int64     `db:"relation_id"`    // 主键id
 		UserId       int64     `db:"user_id"`        // 用户ID
@@ -89,7 +91,7 @@ func (m *defaultUserRelationModel) FindOne(ctx context.Context, relationId int64
 	}
 }
 
-func (m *defaultUserRelationModel) FindOneByUserIdTargetUserId(ctx context.Context, userId int64, targetUserId int64) (*UserRelation, error) {
+func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context, userId int64, targetUserId int64) (bool, error) {
 	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, userId, targetUserId)
 	var resp UserRelation
 	err := m.QueryRowIndexCtx(ctx, &resp, userRelationUserIdTargetUserIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
@@ -99,13 +101,18 @@ func (m *defaultUserRelationModel) FindOneByUserIdTargetUserId(ctx context.Conte
 		}
 		return resp.RelationId, nil
 	}, m.queryPrimary)
+	var res bool
+	if resp.RelationId != 0{
+		res = true
+	}
+	fmt.Println(err,"%%%%%%%%%%err%%%%%%%%%%%")
 	switch err {
 	case nil:
-		return &resp, nil
+		return res, nil
 	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+		return false, nil
 	default:
-		return nil, err
+		return false, err
 	}
 }
 

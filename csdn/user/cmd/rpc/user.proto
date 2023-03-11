@@ -28,6 +28,7 @@ service User {
     rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
     rpc UserCurrInfo(UserCurrInfoRequest) returns(UserCurrInfoResponse);
     rpc SendSmsCode(SmsRequest) returns(SmsResponse);
+    rpc IsFocueUser(IsFocusUserRequest) returns(IsFocusUserResponse);
 }
 
 message UserCurrInfoRequest{
@@ -50,3 +51,12 @@ message SmsRequest{
 }
 
 message SmsResponse{}
+
+message IsFocusUserRequest{
+  int64 TargetId = 1;
+  int64 UserId = 2;
+}
+
+message IsFocusUserResponse{
+  bool IsFocusUser = 1;
+}

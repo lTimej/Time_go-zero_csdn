@@ -28,6 +28,7 @@ type ChannelClient interface {
 	UserAddChannel(ctx context.Context, in *UserAddChannelRequest, opts ...grpc.CallOption) (*UserAddChannelResponse, error)
 	UserPatchChannel(ctx context.Context, in *UserPatchChannelRequest, opts ...grpc.CallOption) (*UserPatchChannelResponse, error)
 	ArticleChannel(ctx context.Context, in *ArticleChannelRequest, opts ...grpc.CallOption) (*ArticleChannelResponse, error)
+	ArticleStatus(ctx context.Context, in *ArticlestatusRequest, opts ...grpc.CallOption) (*ArticlestatusResponse, error)
 }
 
 type channelClient struct {
@@ -92,6 +93,15 @@ func (c *channelClient) ArticleChannel(ctx context.Context, in *ArticleChannelRe
 	return out, nil
 }
 
+func (c *channelClient) ArticleStatus(ctx context.Context, in *ArticlestatusRequest, opts ...grpc.CallOption) (*ArticlestatusResponse, error) {
+	out := new(ArticlestatusResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type ChannelServer interface {
 	UserAddChannel(context.Context, *UserAddChannelRequest) (*UserAddChannelResponse, error)
 	UserPatchChannel(context.Context, *UserPatchChannelRequest) (*UserPatchChannelResponse, error)
 	ArticleChannel(context.Context, *ArticleChannelRequest) (*ArticleChannelResponse, error)
+	ArticleStatus(context.Context, *ArticlestatusRequest) (*ArticlestatusResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedChannelServer) UserPatchChannel(context.Context, *UserPatchCh
 }
 func (UnimplementedChannelServer) ArticleChannel(context.Context, *ArticleChannelRequest) (*ArticleChannelResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArticleChannel not implemented")
+}
+func (UnimplementedChannelServer) ArticleStatus(context.Context, *ArticlestatusRequest) (*ArticlestatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleStatus not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -248,6 +262,24 @@ func _Channel_ArticleChannel_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_ArticleStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticlestatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleStatus(ctx, req.(*ArticlestatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArticleChannel",
 			Handler:    _Channel_ArticleChannel_Handler,
+		},
+		{
+			MethodName: "ArticleStatus",
+			Handler:    _Channel_ArticleStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

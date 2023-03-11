@@ -51,3 +51,8 @@ func (s *ChannelServer) ArticleChannel(ctx context.Context, in *channel.ArticleC
 	l := logic.NewArticleChannelLogic(ctx, s.svcCtx)
 	return l.ArticleChannel(in)
 }
+
+func (s *ChannelServer) ArticleStatus(ctx context.Context, in *channel.ArticlestatusRequest) (*channel.ArticlestatusResponse, error) {
+	l := logic.NewArticleStatusLogic(ctx, s.svcCtx)
+	return l.ArticleStatus(in)
+}

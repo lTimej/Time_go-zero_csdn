@@ -30,9 +30,11 @@ var (
 
 type (
 	newsChannelModel interface {
+		RowDefaultBuilder()squirrel.SelectBuilder
 		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsChannel) (sql.Result, error)
 		FindOne(ctx context.Context, channelId int64) (*NewsChannel, error)
+		FindAllDefaultChannel(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string)([]*NewsAllChannel, error)
 		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsAllChannel, error)
 		FindOneByChannelName(ctx context.Context, channelName string) (*NewsChannel, error)
 		Update(ctx context.Context, data *NewsChannel) error
@@ -94,6 +96,25 @@ func (m *defaultNewsChannelModel) FindOne(ctx context.Context, channelId int64) 
 		return &resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+func (m *defaultNewsChannelModel) FindAllDefaultChannel(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsAllChannel, error) {
+	if orderBy == "" {
+		rowBuilder = rowBuilder.OrderBy("news_channel.channel_id DESC")
+	} else {
+		rowBuilder = rowBuilder.OrderBy("news_channel." + orderBy)
+	}
+	query,values,err := rowBuilder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	var resp []*NewsAllChannel
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
 	default:
 		return nil, err
 	}
@@ -181,4 +202,7 @@ func (m *defaultNewsChannelModel) tableName() string {
 // export logic
 func (m *defaultNewsChannelModel) RowBuilder() squirrel.SelectBuilder {
 	return squirrel.Select("news_channel.channel_id").From(m.table)
+}
+func (m *defaultNewsChannelModel) RowDefaultBuilder() squirrel.SelectBuilder {
+	return squirrel.Select(newsAllChannelRows).From(m.table)
 }

@@ -76,6 +76,21 @@ message ArticleChannelResponse{
     repeated ArticleList articles = 1;
 }
 
+message ArticlestatusRequest{
+    string ArticleId = 1;
+    string UserId = 2;
+}
+
+message ArticlestatusResponse{
+    bool Isfocus = 1;
+    bool Iscollection = 2;
+    bool Islike = 3;
+    int64 CollectionNum = 4;
+    int64 LikeNum = 5;
+    int64 ReadNum = 6;
+    string Aid = 7;
+}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
@@ -83,4 +98,5 @@ service Channel {
     rpc UserAddChannel(UserAddChannelRequest) returns(UserAddChannelResponse);
     rpc UserPatchChannel(UserPatchChannelRequest) returns(UserPatchChannelResponse);
     rpc ArticleChannel(ArticleChannelRequest) returns(ArticleChannelResponse);
+    rpc ArticleStatus(ArticlestatusRequest) returns(ArticlestatusResponse);
 }
