@@ -70,3 +70,18 @@ type AllArticleRequest struct {
 type AllArticleResponse struct {
 	Articles []ArticleList `json:"articles"`
 }
+
+type ArticleStatusRequest struct {
+	UserId    string `json:"usid,optional"`
+	ArticleId string `json:"aid,optional"`
+}
+
+type ArticleStatusResponse struct {
+	Isfocus       bool   `json:"isfocus"`
+	Iscollection  bool   `json:"iscollection"`
+	Islike        bool   `json:"islike"`
+	CollectionNum int64  `json:"collection_num"`
+	LikeNum       int64  `json:"like_num"`
+	ReadNum       int64  `json:"read_num"`
+	Aid           string `json:"aid"`
+}

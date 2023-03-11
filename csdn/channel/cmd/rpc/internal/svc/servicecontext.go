@@ -8,11 +8,13 @@ import (
 )
 
 type ServiceContext struct {
-	Config           config.Config
-	RedisClient      *redis.Redis
-	ArticleModel     model.NewsArticleBasicModel
-	ChannelModel     model.NewsChannelModel
-	UserChannelModel model.NewsUserChannelModel
+	Config                 config.Config
+	RedisClient            *redis.Redis
+	ArticleModel           model.NewsArticleBasicModel
+	ChannelModel           model.NewsChannelModel
+	UserChannelModel       model.NewsUserChannelModel
+	ArticleCollectionModel model.NewsCollectionModel
+	ArticleStaticModel     model.NewsArticleStatisticModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -23,8 +25,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			r.Type = c.Redis.Type
 			r.Pass = c.Redis.Pass
 		}),
-		ArticleModel:     model.NewNewsArticleBasicModel(sqlConn, c.Cache),
-		ChannelModel:     model.NewNewsChannelModel(sqlConn, c.Cache),
-		UserChannelModel: model.NewNewsUserChannelModel(sqlConn, c.Cache),
+		ArticleModel:           model.NewNewsArticleBasicModel(sqlConn, c.Cache),
+		ChannelModel:           model.NewNewsChannelModel(sqlConn, c.Cache),
+		UserChannelModel:       model.NewNewsUserChannelModel(sqlConn, c.Cache),
+		ArticleCollectionModel: model.NewNewsCollectionModel(sqlConn, c.Cache),
+		ArticleStaticModel:     model.NewNewsArticleStatisticModel(sqlConn, c.Cache),
 	}
 }

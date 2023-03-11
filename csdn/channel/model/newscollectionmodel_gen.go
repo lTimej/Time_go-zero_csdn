@@ -19,9 +19,10 @@ import (
 var (
 	newsCollectionFieldNames          = builder.RawFieldNames(&NewsCollection{})
 	newsCollectionRows                = strings.Join(newsCollectionFieldNames, ",")
+	newsCollectionNum = "count(*) as c"
 	newsCollectionRowsExpectAutoSet   = strings.Join(stringx.Remove(newsCollectionFieldNames, "`collection_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	newsCollectionRowsWithPlaceHolder = strings.Join(stringx.Remove(newsCollectionFieldNames, "`collection_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
-
+	cacheNewsArticleCollectionNumPrefix = "cache:newsCollection:collectionNum:"
 	cacheNewsCollectionCollectionIdPrefix    = "cache:newsCollection:collectionId:"
 	cacheNewsCollectionUserIdArticleIdPrefix = "cache:newsCollection:userId:articleId:"
 )
@@ -30,6 +31,7 @@ type (
 	newsCollectionModel interface {
 		Insert(ctx context.Context, data *NewsCollection) (sql.Result, error)
 		FindOne(ctx context.Context, collectionId int64) (*NewsCollection, error)
+		FindArticleCollectionNum(ctx context.Context, ArticleId string)(int64,error)
 		FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsCollection, error)
 		Update(ctx context.Context, data *NewsCollection) error
 		Delete(ctx context.Context, collectionId int64) error
@@ -47,6 +49,9 @@ type (
 		CreateTime   time.Time `db:"create_time"`   // 创建时间
 		IsDeleted    int64     `db:"is_deleted"`    // 是否取消收藏, 0-未取消, 1-已取消
 		UpdateTime   time.Time `db:"update_time"`   // 更新时间
+	}
+	NewsCollectionNum struct{
+		Count int64 `db:"c"`
 	}
 )
 
@@ -88,7 +93,22 @@ func (m *defaultNewsCollectionModel) FindOne(ctx context.Context, collectionId i
 		return nil, err
 	}
 }
-
+func (m *defaultNewsCollectionModel)FindArticleCollectionNum(ctx context.Context, ArticleId string)(int64,error){
+	newsArticleCollectionNumKey := fmt.Sprintf("%s%v", cacheNewsArticleCollectionNumPrefix, ArticleId)
+	var resp NewsCollectionNum
+	err := m.QueryRowCtx(ctx, &resp, newsArticleCollectionNumKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsCollectionNum, m.table)
+		return conn.QueryRowCtx(ctx, v, query, ArticleId)
+	})
+	switch err {
+	case nil:
+		return resp.Count, nil
+	case sqlc.ErrNotFound:
+		return 0, nil
+	default:
+		return 0, err
+	}
+}
 func (m *defaultNewsCollectionModel) FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsCollection, error) {
 	newsCollectionUserIdArticleIdKey := fmt.Sprintf("%s%v:%v", cacheNewsCollectionUserIdArticleIdPrefix, userId, articleId)
 	var resp NewsCollection

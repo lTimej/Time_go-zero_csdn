@@ -59,6 +59,22 @@ type AllArticleRequest {
 type AllArticleResponse {
 	Articles []ArticleList `json:"articles"`
 }
+
+type ArticleStatusRequest {
+	UserId    string `json:"usid,optional"`
+	ArticleId string `json:"aid,optional"`
+}
+
+type ArticleStatusResponse {
+	Isfocus       bool   `json:"isfocus"`
+	Iscollection  bool   `json:"iscollection"`
+	Islike        bool   `json:"islike"`
+	CollectionNum int64  `json:"collection_num"`
+	LikeNum       int64  `json:"like_num"`
+	ReadNum       int64  `json:"read_num"`
+	Aid           string `json:"aid"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -66,6 +82,8 @@ service api-api {
 	get /v1/channel/default/channel(DefaultChannelRequest) returns (DefaultChannelResponse)
 	@handler AllArticle
 	get /v1/article/articles/:channel_id(AllArticleRequest) returns (AllArticleResponse)
+	@handler ArticleStatus
+	get /v1/article/status(ArticleStatusRequest) returns (ArticleStatusResponse)
 }
 
 @server (

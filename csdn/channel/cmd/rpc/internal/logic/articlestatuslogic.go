@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/types/channel"
 
@@ -25,6 +24,17 @@ func NewArticleStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Art
 
 func (l *ArticleStatusLogic) ArticleStatus(in *channel.ArticlestatusRequest) (*channel.ArticlestatusResponse, error) {
 	// todo: add your logic here and delete this line
-	
-	return &channel.ArticlestatusResponse{}, nil
+	article_static, err := l.svcCtx.ArticleStaticModel.FindOne(l.ctx, in.ArticleId)
+	if err != nil {
+		return nil, err
+	}
+	return &channel.ArticlestatusResponse{
+		CollectionNum: article_static.CollectCount,
+		LikeNum:       article_static.LikeCount,
+		ReadNum:       article_static.ReadCount,
+		Aid:           in.ArticleId,
+		Isfocus:       false,
+		Iscollection:  false,
+		Islike:        false,
+	}, nil
 }
