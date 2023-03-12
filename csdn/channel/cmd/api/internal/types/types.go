@@ -85,3 +85,13 @@ type ArticleStatusResponse struct {
 	ReadNum       int64  `json:"read_num"`
 	Aid           string `json:"aid"`
 }
+
+type ArticleReadRequest struct {
+	UserId    string `json:"uid,optional"`
+	ArticleId int64  `json:"aid,optional"`
+}
+
+type ArticleReadResponse struct {
+	Message string `json:"message"`
+	Aid     int64  `json:"aid"`
+}

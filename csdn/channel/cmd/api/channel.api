@@ -75,6 +75,16 @@ type ArticleStatusResponse {
 	Aid           string `json:"aid"`
 }
 
+type ArticleReadRequest {
+	UserId    string `json:"uid,optional"`
+	ArticleId int64  `json:"aid,optional"`
+}
+
+type ArticleReadResponse {
+	Message string `json:"message"`
+	Aid     int64  `json:"aid"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -98,4 +108,6 @@ service api-api {
 	post /v1/channel/user/channel(UserAddChannelRequest) returns (UserAddChannelResponse)
 	@handler UserPatchChannel
 	patch /v1/channel/user/channel(UserPatchChannelRequest) returns (UserPatchChannelResponse)
+	@handler ArticleRead
+	post /v1/article/reads(ArticleReadRequest) returns (ArticleReadResponse)
 }

@@ -54,6 +54,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/channel/user/channel",
 					Handler: UserPatchChannelHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/v1/article/reads",
+					Handler: ArticleReadHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
