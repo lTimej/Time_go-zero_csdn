@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"liujun/Time_go-zero_csdn/csdn/user/model"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
@@ -25,6 +26,25 @@ func NewFocueUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FocueUs
 
 func (l *FocueUserLogic) FocueUser(in *user.FocusUserRequest) (*user.FocusUserResponse, error) {
 	// todo: add your logic here and delete this line
-
-	return &user.FocusUserResponse{}, nil
+	user_relation := model.UserRelation{
+		UserId:       in.UserId,
+		TargetUserId: in.TargetId,
+		Relation:     model.RELATION().FOLLOW,
+	}
+	ur, err := l.svcCtx.UserRelationModel.FindByUserIdTargetUserId(l.ctx, in.UserId, in.TargetId)
+	if err != nil {
+		return nil, err
+	}
+	if ur.RelationId == 0 {
+		_, err = l.svcCtx.UserRelationModel.Insert(l.ctx, &user_relation)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		user_relation.RelationId = ur.RelationId
+		err = l.svcCtx.UserRelationModel.Update(l.ctx, &user_relation)
+	}
+	return &user.FocusUserResponse{
+		TargetId: in.TargetId,
+	}, nil
 }

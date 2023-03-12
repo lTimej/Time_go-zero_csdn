@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/Masterminds/squirrel"
 	"strings"
 	"time"
 
@@ -28,9 +29,11 @@ var (
 
 type (
 	newsAttitudeModel interface {
+		AllArticleAttitudeBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsAttitude) (sql.Result, error)
 		FindOne(ctx context.Context, attitudeId int64) (*NewsAttitude, error)
-		FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsAttitude, error)
+		FindAllByArticleId(ctx context.Context,rowBuilder squirrel.SelectBuilder) ([]*NewsAttitudeInfo, error)
+		FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsAttitude, error)
 		Update(ctx context.Context, data *NewsAttitude) error
 		Delete(ctx context.Context, attitudeId int64) error
 	}
@@ -39,12 +42,15 @@ type (
 		sqlc.CachedConn
 		table string
 	}
-
+	NewsAttitudeInfo struct{
+		HeadPhoto string `db:"head_photo"`
+		Aid int64 `db:"aid"`
+	}
 	NewsAttitude struct {
 		AttitudeId int64         `db:"attitude_id"` // 主键id
-		UserId     int64         `db:"user_id"`     // 用户ID
+		UserId     string         `db:"user_id"`     // 用户ID
 		ArticleId  int64         `db:"article_id"`  // 文章ID
-		Attitude   sql.NullInt64 `db:"attitude"`    // 态度，0-不喜欢，1-喜欢
+		Attitude   int64 `db:"attitude"`    // 态度，0-不喜欢，1-喜欢
 		CreateTime time.Time     `db:"create_time"` // 创建时间
 		UpdateTime time.Time     `db:"update_time"` // 更新时间
 	}
@@ -89,7 +95,22 @@ func (m *defaultNewsAttitudeModel) FindOne(ctx context.Context, attitudeId int64
 	}
 }
 
-func (m *defaultNewsAttitudeModel) FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsAttitude, error) {
+func (m *defaultNewsAttitudeModel)FindAllByArticleId(ctx context.Context,rowBuilder squirrel.SelectBuilder) ([]*NewsAttitudeInfo, error){
+	query,values,err := rowBuilder.Join("user_basic on user_basic.user_id = news_attitude.user_id").ToSql()
+	if err != nil {
+		return nil, err
+	}
+	var resp []*NewsAttitudeInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultNewsAttitudeModel) FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsAttitude, error) {
 	newsAttitudeUserIdArticleIdKey := fmt.Sprintf("%s%v:%v", cacheNewsAttitudeUserIdArticleIdPrefix, userId, articleId)
 	var resp NewsAttitude
 	err := m.QueryRowIndexCtx(ctx, &resp, newsAttitudeUserIdArticleIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
@@ -103,7 +124,7 @@ func (m *defaultNewsAttitudeModel) FindOneByUserIdArticleId(ctx context.Context,
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+		return nil, nil
 	default:
 		return nil, err
 	}
@@ -145,4 +166,7 @@ func (m *defaultNewsAttitudeModel) queryPrimary(ctx context.Context, conn sqlx.S
 
 func (m *defaultNewsAttitudeModel) tableName() string {
 	return m.table
+}
+func (m *defaultNewsAttitudeModel) AllArticleAttitudeBuilder() squirrel.SelectBuilder{
+	return squirrel.Select("news_attitude.article_id,user_basic.profile_photo").From(m.table)
 }

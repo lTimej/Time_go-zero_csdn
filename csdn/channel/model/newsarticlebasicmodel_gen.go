@@ -60,7 +60,7 @@ type (
 	}
 	AllArticleInfo struct {
 		ArtId     int64     `db:"article_id"`     // 文章ID
-		UserId        int64     `db:"user_id"`        // 用户ID
+		UserId        string     `db:"user_id"`        // 用户ID
 		ChannelId     int64     `db:"channel_id"`     // 频道ID
 		Title         string    `db:"title"`          // 标题
 		CreateTime    string `db:"create_time"`    // 创建时间

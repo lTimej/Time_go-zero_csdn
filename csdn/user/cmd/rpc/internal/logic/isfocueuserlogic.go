@@ -31,7 +31,11 @@ func (l *IsFocueUserLogic) IsFocueUser(in *user.IsFocusUserRequest) (*user.IsFoc
 	if err != nil {
 		return nil, err
 	}
+	var is_focus_user bool
+	if res != nil && res.Relation != 0 {
+		is_focus_user = true
+	}
 	return &user.IsFocusUserResponse{
-		IsFocusUser: res,
+		IsFocusUser: is_focus_user,
 	}, nil
 }

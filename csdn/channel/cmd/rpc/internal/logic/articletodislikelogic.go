@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"liujun/Time_go-zero_csdn/csdn/channel/model"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/types/channel"
@@ -25,6 +26,20 @@ func NewArticleToDisLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *ArticleToDisLikeLogic) ArticleToDisLike(in *channel.ArticleToDisLikeRequest) (*channel.ArticleToDisLikeResponse, error) {
 	// todo: add your logic here and delete this line
-
-	return &channel.ArticleToDisLikeResponse{}, nil
+	na, err := l.svcCtx.ArticleAttitudeModel.FindOneByUserIdArticleId(l.ctx, in.UserId, in.ArticleId)
+	if err != nil {
+		return nil, err
+	}
+	news_attitude := model.NewsAttitude{
+		UserId:    in.UserId,
+		ArticleId: in.ArticleId,
+		Attitude:  0,
+	}
+	if na != nil {
+		news_attitude.AttitudeId = na.AttitudeId
+		l.svcCtx.ArticleAttitudeModel.Update(l.ctx, &news_attitude)
+	}
+	return &channel.ArticleToDisLikeResponse{
+		Aid: in.ArticleId,
+	}, nil
 }

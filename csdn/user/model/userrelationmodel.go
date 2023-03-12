@@ -17,6 +17,11 @@ type (
 	customUserRelationModel struct {
 		*defaultUserRelationModel
 	}
+	Relation struct {
+		DELETE    int64
+		FOLLOW    int64
+		BLACKLIST int64
+	}
 )
 
 // NewUserRelationModel returns a model for the database table.

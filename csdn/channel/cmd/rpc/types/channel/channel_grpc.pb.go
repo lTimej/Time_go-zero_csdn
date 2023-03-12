@@ -29,6 +29,10 @@ type ChannelClient interface {
 	UserPatchChannel(ctx context.Context, in *UserPatchChannelRequest, opts ...grpc.CallOption) (*UserPatchChannelResponse, error)
 	ArticleChannel(ctx context.Context, in *ArticleChannelRequest, opts ...grpc.CallOption) (*ArticleChannelResponse, error)
 	ArticleStatus(ctx context.Context, in *ArticlestatusRequest, opts ...grpc.CallOption) (*ArticlestatusResponse, error)
+	ArticleRead(ctx context.Context, in *ArticleReadRequest, opts ...grpc.CallOption) (*ArticleReadResponse, error)
+	ArticleLike(ctx context.Context, in *ArticleLikeRequest, opts ...grpc.CallOption) (*ArticleLikeResponse, error)
+	ArticleToLike(ctx context.Context, in *ArticleToLikeRequest, opts ...grpc.CallOption) (*ArticleToLikeResponse, error)
+	ArticleToDisLike(ctx context.Context, in *ArticleToDisLikeRequest, opts ...grpc.CallOption) (*ArticleToDisLikeResponse, error)
 }
 
 type channelClient struct {
@@ -102,6 +106,42 @@ func (c *channelClient) ArticleStatus(ctx context.Context, in *ArticlestatusRequ
 	return out, nil
 }
 
+func (c *channelClient) ArticleRead(ctx context.Context, in *ArticleReadRequest, opts ...grpc.CallOption) (*ArticleReadResponse, error) {
+	out := new(ArticleReadResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleRead", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *channelClient) ArticleLike(ctx context.Context, in *ArticleLikeRequest, opts ...grpc.CallOption) (*ArticleLikeResponse, error) {
+	out := new(ArticleLikeResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleLike", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *channelClient) ArticleToLike(ctx context.Context, in *ArticleToLikeRequest, opts ...grpc.CallOption) (*ArticleToLikeResponse, error) {
+	out := new(ArticleToLikeResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleToLike", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *channelClient) ArticleToDisLike(ctx context.Context, in *ArticleToDisLikeRequest, opts ...grpc.CallOption) (*ArticleToDisLikeResponse, error) {
+	out := new(ArticleToDisLikeResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleToDisLike", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
@@ -113,6 +153,10 @@ type ChannelServer interface {
 	UserPatchChannel(context.Context, *UserPatchChannelRequest) (*UserPatchChannelResponse, error)
 	ArticleChannel(context.Context, *ArticleChannelRequest) (*ArticleChannelResponse, error)
 	ArticleStatus(context.Context, *ArticlestatusRequest) (*ArticlestatusResponse, error)
+	ArticleRead(context.Context, *ArticleReadRequest) (*ArticleReadResponse, error)
+	ArticleLike(context.Context, *ArticleLikeRequest) (*ArticleLikeResponse, error)
+	ArticleToLike(context.Context, *ArticleToLikeRequest) (*ArticleToLikeResponse, error)
+	ArticleToDisLike(context.Context, *ArticleToDisLikeRequest) (*ArticleToDisLikeResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -140,6 +184,18 @@ func (UnimplementedChannelServer) ArticleChannel(context.Context, *ArticleChanne
 }
 func (UnimplementedChannelServer) ArticleStatus(context.Context, *ArticlestatusRequest) (*ArticlestatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArticleStatus not implemented")
+}
+func (UnimplementedChannelServer) ArticleRead(context.Context, *ArticleReadRequest) (*ArticleReadResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleRead not implemented")
+}
+func (UnimplementedChannelServer) ArticleLike(context.Context, *ArticleLikeRequest) (*ArticleLikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleLike not implemented")
+}
+func (UnimplementedChannelServer) ArticleToLike(context.Context, *ArticleToLikeRequest) (*ArticleToLikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleToLike not implemented")
+}
+func (UnimplementedChannelServer) ArticleToDisLike(context.Context, *ArticleToDisLikeRequest) (*ArticleToDisLikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleToDisLike not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -280,6 +336,78 @@ func _Channel_ArticleStatus_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_ArticleRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleReadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleRead(ctx, req.(*ArticleReadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Channel_ArticleLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleLike",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleLike(ctx, req.(*ArticleLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Channel_ArticleToLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleToLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleToLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleToLike",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleToLike(ctx, req.(*ArticleToLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Channel_ArticleToDisLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleToDisLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleToDisLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleToDisLike",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleToDisLike(ctx, req.(*ArticleToDisLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +442,22 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArticleStatus",
 			Handler:    _Channel_ArticleStatus_Handler,
+		},
+		{
+			MethodName: "ArticleRead",
+			Handler:    _Channel_ArticleRead_Handler,
+		},
+		{
+			MethodName: "ArticleLike",
+			Handler:    _Channel_ArticleLike_Handler,
+		},
+		{
+			MethodName: "ArticleToLike",
+			Handler:    _Channel_ArticleToLike_Handler,
+		},
+		{
+			MethodName: "ArticleToDisLike",
+			Handler:    _Channel_ArticleToDisLike_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

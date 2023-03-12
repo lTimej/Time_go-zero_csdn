@@ -27,6 +27,8 @@ type UserClient interface {
 	UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
 	SendSmsCode(ctx context.Context, in *SmsRequest, opts ...grpc.CallOption) (*SmsResponse, error)
 	IsFocueUser(ctx context.Context, in *IsFocusUserRequest, opts ...grpc.CallOption) (*IsFocusUserResponse, error)
+	FocueUser(ctx context.Context, in *FocusUserRequest, opts ...grpc.CallOption) (*FocusUserResponse, error)
+	CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error)
 }
 
 type userClient struct {
@@ -82,6 +84,24 @@ func (c *userClient) IsFocueUser(ctx context.Context, in *IsFocusUserRequest, op
 	return out, nil
 }
 
+func (c *userClient) FocueUser(ctx context.Context, in *FocusUserRequest, opts ...grpc.CallOption) (*FocusUserResponse, error) {
+	out := new(FocusUserResponse)
+	err := c.cc.Invoke(ctx, "/user.User/FocueUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error) {
+	out := new(CancelFocusUserResponse)
+	err := c.cc.Invoke(ctx, "/user.User/CancelFocueUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -91,6 +111,8 @@ type UserServer interface {
 	UserCurrInfo(context.Context, *UserCurrInfoRequest) (*UserCurrInfoResponse, error)
 	SendSmsCode(context.Context, *SmsRequest) (*SmsResponse, error)
 	IsFocueUser(context.Context, *IsFocusUserRequest) (*IsFocusUserResponse, error)
+	FocueUser(context.Context, *FocusUserRequest) (*FocusUserResponse, error)
+	CancelFocueUser(context.Context, *CancelFocusUserRequest) (*CancelFocusUserResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -112,6 +134,12 @@ func (UnimplementedUserServer) SendSmsCode(context.Context, *SmsRequest) (*SmsRe
 }
 func (UnimplementedUserServer) IsFocueUser(context.Context, *IsFocusUserRequest) (*IsFocusUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsFocueUser not implemented")
+}
+func (UnimplementedUserServer) FocueUser(context.Context, *FocusUserRequest) (*FocusUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FocueUser not implemented")
+}
+func (UnimplementedUserServer) CancelFocueUser(context.Context, *CancelFocusUserRequest) (*CancelFocusUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelFocueUser not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -216,6 +244,42 @@ func _User_IsFocueUser_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_FocueUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FocusUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).FocueUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/FocueUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).FocueUser(ctx, req.(*FocusUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_CancelFocueUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelFocusUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).CancelFocueUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/CancelFocueUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).CancelFocueUser(ctx, req.(*CancelFocusUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +306,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsFocueUser",
 			Handler:    _User_IsFocueUser_Handler,
+		},
+		{
+			MethodName: "FocueUser",
+			Handler:    _User_FocueUser_Handler,
+		},
+		{
+			MethodName: "CancelFocueUser",
+			Handler:    _User_CancelFocueUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -30,7 +30,7 @@ type (
 	userRelationModel interface {
 		Insert(ctx context.Context, data *UserRelation) (sql.Result, error)
 		FindOne(ctx context.Context, relationId int64) (*UserRelation, error)
-		FindByUserIdTargetUserId(ctx context.Context, userId int64, targetUserId int64) (bool, error)
+		FindByUserIdTargetUserId(ctx context.Context, userId string, targetUserId string) (*UserRelation, error)
 		Update(ctx context.Context, data *UserRelation) error
 		Delete(ctx context.Context, relationId int64) error
 	}
@@ -44,13 +44,22 @@ type (
 	}
 	UserRelation struct {
 		RelationId   int64     `db:"relation_id"`    // 主键id
-		UserId       int64     `db:"user_id"`        // 用户ID
-		TargetUserId int64     `db:"target_user_id"` // 目标用户ID
+		UserId       string     `db:"user_id"`        // 用户ID
+		TargetUserId string     `db:"target_user_id"` // 目标用户ID
 		Relation     int64     `db:"relation"`       // 关系，0-取消，1-关注，2-拉黑
 		CreateTime   time.Time `db:"create_time"`    // 创建时间
 		UpdateTime   time.Time `db:"update_time"`    // 更新时间
 	}
+
 )
+
+func RELATION()Relation{
+	return Relation{
+		DELETE:0,
+		FOLLOW:1,
+		BLACKLIST: 2,
+	}
+}
 
 func newUserRelationModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserRelationModel {
 	return &defaultUserRelationModel{
@@ -91,7 +100,7 @@ func (m *defaultUserRelationModel) FindOne(ctx context.Context, relationId int64
 	}
 }
 
-func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context, userId int64, targetUserId int64) (bool, error) {
+func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context, userId string, targetUserId string) (*UserRelation, error) {
 	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, userId, targetUserId)
 	var resp UserRelation
 	err := m.QueryRowIndexCtx(ctx, &resp, userRelationUserIdTargetUserIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
@@ -101,18 +110,18 @@ func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context,
 		}
 		return resp.RelationId, nil
 	}, m.queryPrimary)
-	var res bool
-	if resp.RelationId != 0{
-		res = true
-	}
+	//var res int64
+	//if resp.RelationId != 0{
+	//	res = resp.RelationId
+	//}
 	fmt.Println(err,"%%%%%%%%%%err%%%%%%%%%%%")
 	switch err {
 	case nil:
-		return res, nil
+		return &resp, nil
 	case sqlc.ErrNotFound:
-		return false, nil
+		return nil, nil
 	default:
-		return false, err
+		return nil, err
 	}
 }
 
@@ -123,21 +132,20 @@ func (m *defaultUserRelationModel) Insert(ctx context.Context, data *UserRelatio
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, userRelationRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.UserId, data.TargetUserId, data.Relation)
 	}, userRelationRelationIdKey, userRelationUserIdTargetUserIdKey)
+	fmt.Println(err,"2222222222222222222222222222")
 	return ret, err
 }
 
 func (m *defaultUserRelationModel) Update(ctx context.Context, newData *UserRelation) error {
-	data, err := m.FindOne(ctx, newData.RelationId)
-	if err != nil {
-		return err
-	}
-
-	userRelationRelationIdKey := fmt.Sprintf("%s%v", cacheUserRelationRelationIdPrefix, data.RelationId)
-	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, data.UserId, data.TargetUserId)
-	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `relation_id` = ?", m.table, userRelationRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.UserId, newData.TargetUserId, newData.Relation, newData.RelationId)
+	userRelationRelationIdKey := fmt.Sprintf("%s%v", cacheUserRelationRelationIdPrefix, newData.RelationId)
+	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, newData.UserId, newData.TargetUserId)
+	fmt.Println("55555555%%%%%%%%5555555555",newData.RelationId,newData.Relation)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set relation = ? where `relation_id` = ?", m.table)
+		fmt.Println(query,"###################")
+		return conn.ExecCtx(ctx, query, newData.Relation, newData.RelationId)
 	}, userRelationRelationIdKey, userRelationUserIdTargetUserIdKey)
+	fmt.Println(err,"%%%%%%%%%55555%%%%%%%%%")
 	return err
 }
 

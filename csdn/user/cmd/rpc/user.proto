@@ -23,14 +23,6 @@ message GenerateTokenResponse {
   int64  refreshAfter = 3;
 }
 
-service User {
-    rpc UserLogin(LoginRequest) returns(LoginResponse);
-    rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
-    rpc UserCurrInfo(UserCurrInfoRequest) returns(UserCurrInfoResponse);
-    rpc SendSmsCode(SmsRequest) returns(SmsResponse);
-    rpc IsFocueUser(IsFocusUserRequest) returns(IsFocusUserResponse);
-}
-
 message UserCurrInfoRequest{
   int64 userId = 1;
 }
@@ -53,10 +45,37 @@ message SmsRequest{
 message SmsResponse{}
 
 message IsFocusUserRequest{
-  int64 TargetId = 1;
-  int64 UserId = 2;
+  string TargetId = 1;
+  string UserId = 2;
 }
 
 message IsFocusUserResponse{
   bool IsFocusUser = 1;
+}
+
+message FocusUserRequest{
+  string TargetId = 1;
+  string UserId = 2;
+}
+
+message FocusUserResponse{
+  string TargetId = 1;
+}
+
+message CancelFocusUserRequest{
+  string TargetId = 1;
+  string UserId = 2;
+}
+
+message CancelFocusUserResponse{
+}
+
+service User {
+  rpc UserLogin(LoginRequest) returns(LoginResponse);
+  rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
+  rpc UserCurrInfo(UserCurrInfoRequest) returns(UserCurrInfoResponse);
+  rpc SendSmsCode(SmsRequest) returns(SmsResponse);
+  rpc IsFocueUser(IsFocusUserRequest) returns(IsFocusUserResponse);
+  rpc FocueUser(FocusUserRequest) returns(FocusUserResponse);
+  rpc CancelFocueUser(CancelFocusUserRequest) returns(CancelFocusUserResponse);
 }

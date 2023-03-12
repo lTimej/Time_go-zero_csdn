@@ -25,6 +25,19 @@ func NewArticleLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Artic
 
 func (l *ArticleLikeLogic) ArticleLike(in *channel.ArticleLikeRequest) (*channel.ArticleLikeResponse, error) {
 	// todo: add your logic here and delete this line
-
-	return &channel.ArticleLikeResponse{}, nil
+	builder := l.svcCtx.ArticleAttitudeModel.AllArticleAttitudeBuilder().Where("article_id = ?", in.ArticleId)
+	nas, err := l.svcCtx.ArticleAttitudeModel.FindAllByArticleId(l.ctx, builder)
+	if err != nil {
+		return nil, err
+	}
+	data := []*channel.ArticleLikeResponse_UserInfo{}
+	for _, na := range nas {
+		data = append(data, &channel.ArticleLikeResponse_UserInfo{
+			HeadPhoto: na.HeadPhoto,
+			Aid:       na.Aid,
+		})
+	}
+	return &channel.ArticleLikeResponse{
+		UsersInfo: data,
+	}, nil
 }

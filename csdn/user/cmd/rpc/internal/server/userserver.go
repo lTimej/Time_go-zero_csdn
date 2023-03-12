@@ -46,3 +46,13 @@ func (s *UserServer) IsFocueUser(ctx context.Context, in *user.IsFocusUserReques
 	l := logic.NewIsFocueUserLogic(ctx, s.svcCtx)
 	return l.IsFocueUser(in)
 }
+
+func (s *UserServer) FocueUser(ctx context.Context, in *user.FocusUserRequest) (*user.FocusUserResponse, error) {
+	l := logic.NewFocueUserLogic(ctx, s.svcCtx)
+	return l.FocueUser(in)
+}
+
+func (s *UserServer) CancelFocueUser(ctx context.Context, in *user.CancelFocusUserRequest) (*user.CancelFocusUserResponse, error) {
+	l := logic.NewCancelFocueUserLogic(ctx, s.svcCtx)
+	return l.CancelFocueUser(in)
+}

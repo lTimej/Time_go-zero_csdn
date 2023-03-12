@@ -26,12 +26,12 @@ func NewCancelFocueUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *C
 
 func (l *CancelFocueUserLogic) CancelFocueUser(in *user.CancelFocusUserRequest) (*user.CancelFocusUserResponse, error) {
 	// todo: add your logic here and delete this line
-	relation_id, err := l.svcCtx.UserRelationModel.FindByUserIdTargetUserId(l.ctx, in.UserId, in.TargetId)
+	relation, err := l.svcCtx.UserRelationModel.FindByUserIdTargetUserId(l.ctx, in.UserId, in.TargetId)
 	if err != nil {
 		return nil, err
 	}
 	user_relation := model.UserRelation{
-		RelationId:   relation_id,
+		RelationId:   relation.RelationId,
 		UserId:       in.UserId,
 		TargetUserId: in.TargetId,
 		Relation:     model.RELATION().DELETE,

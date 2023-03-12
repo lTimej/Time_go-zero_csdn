@@ -29,10 +29,10 @@ var (
 type (
 	newsReadModel interface {
 		Insert(ctx context.Context, data *NewsRead) (sql.Result, error)
-		FindOne(ctx context.Context, readId int64) (*NewsRead, error)
-		FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsRead, error)
+		FindOne(ctx context.Context, readId string) (*NewsRead, error)
+		FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsRead, error)
 		Update(ctx context.Context, data *NewsRead) error
-		Delete(ctx context.Context, readId int64) error
+		Delete(ctx context.Context, readId string) error
 	}
 
 	defaultNewsReadModel struct {
@@ -41,8 +41,8 @@ type (
 	}
 
 	NewsRead struct {
-		ReadId     int64     `db:"read_id"`     // 主键id
-		UserId     int64     `db:"user_id"`     // 用户ID
+		ReadId     string     `db:"read_id"`     // 主键id
+		UserId     string     `db:"user_id"`     // 用户ID
 		ArticleId  int64     `db:"article_id"`  // 文章ID
 		CreateTime time.Time `db:"create_time"` // 创建时间
 		UpdateTime time.Time `db:"update_time"` // 更新时间
@@ -56,7 +56,7 @@ func newNewsReadModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultNewsReadMode
 	}
 }
 
-func (m *defaultNewsReadModel) Delete(ctx context.Context, readId int64) error {
+func (m *defaultNewsReadModel) Delete(ctx context.Context, readId string) error {
 	data, err := m.FindOne(ctx, readId)
 	if err != nil {
 		return err
@@ -71,7 +71,7 @@ func (m *defaultNewsReadModel) Delete(ctx context.Context, readId int64) error {
 	return err
 }
 
-func (m *defaultNewsReadModel) FindOne(ctx context.Context, readId int64) (*NewsRead, error) {
+func (m *defaultNewsReadModel) FindOne(ctx context.Context, readId string) (*NewsRead, error) {
 	newsReadReadIdKey := fmt.Sprintf("%s%v", cacheNewsReadReadIdPrefix, readId)
 	var resp NewsRead
 	err := m.QueryRowCtx(ctx, &resp, newsReadReadIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
@@ -88,7 +88,7 @@ func (m *defaultNewsReadModel) FindOne(ctx context.Context, readId int64) (*News
 	}
 }
 
-func (m *defaultNewsReadModel) FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsRead, error) {
+func (m *defaultNewsReadModel) FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsRead, error) {
 	newsReadUserIdArticleIdKey := fmt.Sprintf("%s%v:%v", cacheNewsReadUserIdArticleIdPrefix, userId, articleId)
 	var resp NewsRead
 	err := m.QueryRowIndexCtx(ctx, &resp, newsReadUserIdArticleIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {

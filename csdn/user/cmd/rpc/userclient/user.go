@@ -13,16 +13,20 @@ import (
 )
 
 type (
-	GenerateTokenRequest  = user.GenerateTokenRequest
-	GenerateTokenResponse = user.GenerateTokenResponse
-	IsFocusUserRequest    = user.IsFocusUserRequest
-	IsFocusUserResponse   = user.IsFocusUserResponse
-	LoginRequest          = user.LoginRequest
-	LoginResponse         = user.LoginResponse
-	SmsRequest            = user.SmsRequest
-	SmsResponse           = user.SmsResponse
-	UserCurrInfoRequest   = user.UserCurrInfoRequest
-	UserCurrInfoResponse  = user.UserCurrInfoResponse
+	CancelFocusUserRequest  = user.CancelFocusUserRequest
+	CancelFocusUserResponse = user.CancelFocusUserResponse
+	FocusUserRequest        = user.FocusUserRequest
+	FocusUserResponse       = user.FocusUserResponse
+	GenerateTokenRequest    = user.GenerateTokenRequest
+	GenerateTokenResponse   = user.GenerateTokenResponse
+	IsFocusUserRequest      = user.IsFocusUserRequest
+	IsFocusUserResponse     = user.IsFocusUserResponse
+	LoginRequest            = user.LoginRequest
+	LoginResponse           = user.LoginResponse
+	SmsRequest              = user.SmsRequest
+	SmsResponse             = user.SmsResponse
+	UserCurrInfoRequest     = user.UserCurrInfoRequest
+	UserCurrInfoResponse    = user.UserCurrInfoResponse
 
 	User interface {
 		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
@@ -30,6 +34,8 @@ type (
 		UserCurrInfo(ctx context.Context, in *UserCurrInfoRequest, opts ...grpc.CallOption) (*UserCurrInfoResponse, error)
 		SendSmsCode(ctx context.Context, in *SmsRequest, opts ...grpc.CallOption) (*SmsResponse, error)
 		IsFocueUser(ctx context.Context, in *IsFocusUserRequest, opts ...grpc.CallOption) (*IsFocusUserResponse, error)
+		FocueUser(ctx context.Context, in *FocusUserRequest, opts ...grpc.CallOption) (*FocusUserResponse, error)
+		CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error)
 	}
 
 	defaultUser struct {
@@ -66,4 +72,14 @@ func (m *defaultUser) SendSmsCode(ctx context.Context, in *SmsRequest, opts ...g
 func (m *defaultUser) IsFocueUser(ctx context.Context, in *IsFocusUserRequest, opts ...grpc.CallOption) (*IsFocusUserResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.IsFocueUser(ctx, in, opts...)
+}
+
+func (m *defaultUser) FocueUser(ctx context.Context, in *FocusUserRequest, opts ...grpc.CallOption) (*FocusUserResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.FocueUser(ctx, in, opts...)
+}
+
+func (m *defaultUser) CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.CancelFocueUser(ctx, in, opts...)
 }

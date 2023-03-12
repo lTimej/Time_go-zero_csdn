@@ -56,3 +56,23 @@ func (s *ChannelServer) ArticleStatus(ctx context.Context, in *channel.Articlest
 	l := logic.NewArticleStatusLogic(ctx, s.svcCtx)
 	return l.ArticleStatus(in)
 }
+
+func (s *ChannelServer) ArticleRead(ctx context.Context, in *channel.ArticleReadRequest) (*channel.ArticleReadResponse, error) {
+	l := logic.NewArticleReadLogic(ctx, s.svcCtx)
+	return l.ArticleRead(in)
+}
+
+func (s *ChannelServer) ArticleLike(ctx context.Context, in *channel.ArticleLikeRequest) (*channel.ArticleLikeResponse, error) {
+	l := logic.NewArticleLikeLogic(ctx, s.svcCtx)
+	return l.ArticleLike(in)
+}
+
+func (s *ChannelServer) ArticleToLike(ctx context.Context, in *channel.ArticleToLikeRequest) (*channel.ArticleToLikeResponse, error) {
+	l := logic.NewArticleToLikeLogic(ctx, s.svcCtx)
+	return l.ArticleToLike(in)
+}
+
+func (s *ChannelServer) ArticleToDisLike(ctx context.Context, in *channel.ArticleToDisLikeRequest) (*channel.ArticleToDisLikeResponse, error) {
+	l := logic.NewArticleToDisLikeLogic(ctx, s.svcCtx)
+	return l.ArticleToDisLike(in)
+}
