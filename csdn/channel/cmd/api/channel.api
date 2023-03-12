@@ -4,7 +4,7 @@ type ChannelList {
 }
 type ArticleList {
 	Title         string `json:"title"`
-	UserId        int64  `json:"user_id"`
+	UserId        string `json:"user_id"`
 	CreateTime    string `json:"create_time"`
 	ArtId         int64  `json:"art_id"`
 	ChannelId     int64  `json:"channel_id"`
@@ -85,6 +85,32 @@ type ArticleReadResponse {
 	Aid     int64  `json:"aid"`
 }
 
+type ArticleLikeRequest {
+	ArticleId int64 `json:"aid,optional"`
+}
+
+type ArticleLikeList {
+	HeadPhoto string `json:"head_photo"`
+	Aid       int64  `json:"aid"`
+}
+type ArticleLikeResponse {
+	UsersInfo []ArticleLikeList `json:"users_info"`
+}
+
+type ArticleToLikeRequest {
+	ArticleId string `json:"aid"`
+}
+type ArticleToLikeResponse {
+	ArticleId int64 `json:"aid"`
+}
+
+type ArticleToDisLikeRequest {
+	ArticleId string `json:"aid"`
+}
+type ArticleToDisLikeResponse {
+	Message string `json:"message"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -94,6 +120,8 @@ service api-api {
 	get /v1/article/articles/:channel_id(AllArticleRequest) returns (AllArticleResponse)
 	@handler ArticleStatus
 	get /v1/article/status(ArticleStatusRequest) returns (ArticleStatusResponse)
+	@handler ArticleLike
+	get /v1/article/likes(ArticleLikeRequest) returns (ArticleLikeResponse)
 }
 
 @server (
@@ -110,4 +138,8 @@ service api-api {
 	patch /v1/channel/user/channel(UserPatchChannelRequest) returns (UserPatchChannelResponse)
 	@handler ArticleRead
 	post /v1/article/reads(ArticleReadRequest) returns (ArticleReadResponse)
+	@handler ArticleToLike
+	post /v1/article/likes(ArticleToLikeRequest) returns (ArticleToLikeResponse)
+	@handler ArticleToDisLike
+	delete /v1/article/likes(ArticleToDisLikeRequest) returns (ArticleToDisLikeResponse)
 }

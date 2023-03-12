@@ -8,7 +8,7 @@ type ChannelList struct {
 
 type ArticleList struct {
 	Title         string `json:"title"`
-	UserId        int64  `json:"user_id"`
+	UserId        string `json:"user_id"`
 	CreateTime    string `json:"create_time"`
 	ArtId         int64  `json:"art_id"`
 	ChannelId     int64  `json:"channel_id"`
@@ -94,4 +94,33 @@ type ArticleReadRequest struct {
 type ArticleReadResponse struct {
 	Message string `json:"message"`
 	Aid     int64  `json:"aid"`
+}
+
+type ArticleLikeRequest struct {
+	ArticleId int64 `json:"aid,optional"`
+}
+
+type ArticleLikeList struct {
+	HeadPhoto string `json:"head_photo"`
+	Aid       int64  `json:"aid"`
+}
+
+type ArticleLikeResponse struct {
+	UsersInfo []ArticleLikeList `json:"users_info"`
+}
+
+type ArticleToLikeRequest struct {
+	ArticleId string `json:"aid"`
+}
+
+type ArticleToLikeResponse struct {
+	ArticleId int64 `json:"aid"`
+}
+
+type ArticleToDisLikeRequest struct {
+	ArticleId string `json:"aid"`
+}
+
+type ArticleToDisLikeResponse struct {
+	Message string `json:"message"`
 }

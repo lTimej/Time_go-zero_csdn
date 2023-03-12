@@ -32,6 +32,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/v1/article/status",
 				Handler: ArticleStatusHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/v1/article/likes",
+				Handler: ArticleLikeHandler(serverCtx),
+			},
 		},
 	)
 
@@ -58,6 +63,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/v1/article/reads",
 					Handler: ArticleReadHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/v1/article/likes",
+					Handler: ArticleToLikeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/v1/article/likes",
+					Handler: ArticleToDisLikeHandler(serverCtx),
 				},
 			}...,
 		),
