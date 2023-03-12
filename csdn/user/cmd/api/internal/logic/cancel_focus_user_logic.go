@@ -12,26 +12,26 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type IsFocusUserLogic struct {
+type CancelFocusUserLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewIsFocusUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsFocusUserLogic {
-	return &IsFocusUserLogic{
+func NewCancelFocusUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CancelFocusUserLogic {
+	return &CancelFocusUserLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *IsFocusUserLogic) IsFocusUser(req *types.IsFocusUserRequest) (resp *types.IsFocusUserResponse, err error) {
+func (l *CancelFocusUserLogic) CancelFocusUser(req *types.CancelFocusUserRequest) (resp *types.CancelFocusUserResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
-	res, err := l.svcCtx.UserRpc.IsFocueUser(l.ctx, &userclient.IsFocusUserRequest{UserId: user_id, TargetId: req.TargetUserId})
+	_, err = l.svcCtx.UserRpc.CancelFocueUser(l.ctx, &userclient.CancelFocusUserRequest{UserId: user_id, TargetId: req.TargetUserId})
 	if err != nil {
 		return nil, err
 	}
-	return &types.IsFocusUserResponse{IsFocusUser: res.IsFocusUser}, nil
+	return &types.CancelFocusUserResponse{Message: "ok"}, nil
 }

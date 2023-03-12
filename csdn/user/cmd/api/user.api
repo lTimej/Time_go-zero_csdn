@@ -21,14 +21,6 @@ type SendSmsCodeReponse{}
 
 type UserCurrInfoRequest{}
 
-type IsFocusUserRequest {
-	TargetUserId int64 `json:"target_user_id,optional"`
-}
-
-type IsFocusUserResponse {
-	IsFocusUser bool `json:"isFocusUser"`
-}
-
 type UserCurrInfoResponse {
 	UserName  string `json:"user_name"`
 	HeadPhoto string `json:"head_photo"`
@@ -38,6 +30,30 @@ type UserCurrInfoResponse {
 	Focus     int32  `json:"focus"`
 	Fans      int32  `json:"fans"`
 	Visitor   int32  `json:"visitor"`
+}
+
+type IsFocusUserRequest {
+	TargetUserId string `json:"target_user_id,optional"`
+}
+
+type IsFocusUserResponse {
+	IsFocusUser bool `json:"isFocusUser"`
+}
+
+type FocusUserRequest {
+	TargetUserId string `json:"target"`
+}
+
+type FocusUserResponse {
+	TargetUserId string `json:"target_id,optional"`
+}
+
+type CancelFocusUserRequest {
+	TargetUserId string `json:"target"`
+}
+
+type CancelFocusUserResponse {
+	Message string `json:"message"`
 }
 
 service api-api {
@@ -59,4 +75,8 @@ service api-api {
 	get /v1/user/curr/user(UserCurrInfoRequest) returns(UserCurrInfoResponse)
 	@handler IsFocusUser
 	get /v1/user/isfocus(IsFocusUserRequest) returns(IsFocusUserResponse)
+	@handler FocusUser
+	post /v1/user/focus(FocusUserRequest) returns(FocusUserResponse)
+	@handler CancelFocusUser
+	delete /v1/user/focus(CancelFocusUserRequest) returns(CancelFocusUserResponse)
 }

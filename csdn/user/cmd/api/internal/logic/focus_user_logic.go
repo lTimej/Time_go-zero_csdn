@@ -12,26 +12,28 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type IsFocusUserLogic struct {
+type FocusUserLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewIsFocusUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsFocusUserLogic {
-	return &IsFocusUserLogic{
+func NewFocusUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FocusUserLogic {
+	return &FocusUserLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *IsFocusUserLogic) IsFocusUser(req *types.IsFocusUserRequest) (resp *types.IsFocusUserResponse, err error) {
+func (l *FocusUserLogic) FocusUser(req *types.FocusUserRequest) (resp *types.FocusUserResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
-	res, err := l.svcCtx.UserRpc.IsFocueUser(l.ctx, &userclient.IsFocusUserRequest{UserId: user_id, TargetId: req.TargetUserId})
+	_, err = l.svcCtx.UserRpc.FocueUser(l.ctx, &userclient.FocusUserRequest{UserId: user_id, TargetId: req.TargetUserId})
 	if err != nil {
 		return nil, err
 	}
-	return &types.IsFocusUserResponse{IsFocusUser: res.IsFocusUser}, nil
+	return &types.FocusUserResponse{
+		TargetUserId: req.TargetUserId,
+	}, nil
 }

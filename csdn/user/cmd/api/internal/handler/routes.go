@@ -44,6 +44,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/user/isfocus",
 					Handler: IsFocusUserHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/v1/user/focus",
+					Handler: FocusUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/v1/user/focus",
+					Handler: CancelFocusUserHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

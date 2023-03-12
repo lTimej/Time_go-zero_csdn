@@ -30,14 +30,6 @@ type SendSmsCodeReponse struct {
 type UserCurrInfoRequest struct {
 }
 
-type IsFocusUserRequest struct {
-	TargetUserId int64 `json:"target_user_id,optional"`
-}
-
-type IsFocusUserResponse struct {
-	IsFocusUser bool `json:"isFocusUser"`
-}
-
 type UserCurrInfoResponse struct {
 	UserName  string `json:"user_name"`
 	HeadPhoto string `json:"head_photo"`
@@ -47,4 +39,28 @@ type UserCurrInfoResponse struct {
 	Focus     int32  `json:"focus"`
 	Fans      int32  `json:"fans"`
 	Visitor   int32  `json:"visitor"`
+}
+
+type IsFocusUserRequest struct {
+	TargetUserId string `json:"target_user_id,optional"`
+}
+
+type IsFocusUserResponse struct {
+	IsFocusUser bool `json:"isFocusUser"`
+}
+
+type FocusUserRequest struct {
+	TargetUserId string `json:"target"`
+}
+
+type FocusUserResponse struct {
+	TargetUserId string `json:"target_id,optional"`
+}
+
+type CancelFocusUserRequest struct {
+	TargetUserId string `json:"target"`
+}
+
+type CancelFocusUserResponse struct {
+	Message string `json:"message"`
 }
