@@ -79,6 +79,7 @@ message ArticleChannelResponse{
 message ArticlestatusRequest{
     string ArticleId = 1;
     string UserId = 2;
+    string TargetId = 3;
 }
 
 message ArticlestatusResponse{

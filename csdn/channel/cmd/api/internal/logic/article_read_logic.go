@@ -30,6 +30,7 @@ func NewArticleReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Artic
 func (l *ArticleReadLogic) ArticleRead(req *types.ArticleReadRequest) (resp *types.ArticleReadResponse, err error) {
 	// todo: add your logic here and delete this line
 	uid := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
+	fmt.Println(uid, "呵呵呵呵呵呵呵呵呵呵")
 	res, err := l.svcCtx.ChannelRpc.ArticleRead(l.ctx, &channelclient.ArticleReadRequest{ArticleId: req.ArticleId, UserId: uid})
 	if err != nil {
 		fmt.Println(err, "哈哈哈哈哈")
