@@ -35,7 +35,7 @@ func (l *FocueUserLogic) FocueUser(in *user.FocusUserRequest) (*user.FocusUserRe
 	if err != nil {
 		return nil, err
 	}
-	if ur.RelationId == 0 {
+	if ur == nil {
 		_, err = l.svcCtx.UserRelationModel.Insert(l.ctx, &user_relation)
 		if err != nil {
 			return nil, err
@@ -43,6 +43,9 @@ func (l *FocueUserLogic) FocueUser(in *user.FocusUserRequest) (*user.FocusUserRe
 	} else {
 		user_relation.RelationId = ur.RelationId
 		err = l.svcCtx.UserRelationModel.Update(l.ctx, &user_relation)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &user.FocusUserResponse{
 		TargetId: in.TargetId,

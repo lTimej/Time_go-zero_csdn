@@ -7,4 +7,4 @@ var MinIOEndpoint = "127.0.0.1:9000"
 var MinIOBucket = "csdn"
 
 // 默认头像路径
-var DefaultHeadPhoto = "http://127.0.0.1:9000/csdn/head-photo/tx.jpg"
+var DefaultHeadPhoto = "http://172.20.16.20:9000/csdn/head-photo/tx.jpg"
