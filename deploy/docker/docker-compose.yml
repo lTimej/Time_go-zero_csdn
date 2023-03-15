@@ -61,6 +61,7 @@ services:
     networks:
       - myetcd_single
     restart: always
+    
   etcdkeeper:
     image: deltaprojects/etcdkeeper
     container_name: etcdkeeper_single
@@ -68,6 +69,21 @@ services:
       - 8088:8080
     networks:
       - myetcd_single
+    restart: always
+  minio:
+    image: minio/minio:latest
+    container_name: myminio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin123
+    command: server --console-address ':9001' /data
+    volumes:
+      - ./data:/data
+      - ./config:/root/.minio/
+      - /etc/localtime:/etc/localtime
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     restart: always
 networks:
   myetcd_single:
