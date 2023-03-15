@@ -49,6 +49,7 @@ func (l *UserLoginLogic) UserLogin(in *user.LoginRequest) (*user.LoginResponse, 
 	generatoken := NewGenerateTokenLogic(l.ctx, l.svcCtx)
 	token_reps, err := generatoken.GenerateToken(&user.GenerateTokenRequest{UserId: user_id})
 	if err != nil {
+		fmt.Println(err, "^^^^^^^^^^^^^^^^^^^^")
 		return nil, errors.Wrapf(ErrGenerateTokenError, "GenerateToken userId : %d", user_id)
 	}
 	return &user.LoginResponse{
