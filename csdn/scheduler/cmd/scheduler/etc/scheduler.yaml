@@ -1,0 +1,8 @@
+Name: scheduler.rpc
+ListenOn: 0.0.0.0:8891
+
+Redis:
+  Host: 127.0.0.1:16379
+  Pass: liujun
+  Type: node
+
