@@ -73,17 +73,17 @@ type AllArticleResponse struct {
 
 type ArticleStatusRequest struct {
 	UserId    string `json:"usid,optional"`
-	ArticleId string `json:"aid,optional"`
+	ArticleId int64  `json:"aid,optional"`
 }
 
 type ArticleStatusResponse struct {
-	Isfocus       bool   `json:"isfocus"`
-	Iscollection  bool   `json:"iscollection"`
-	Islike        bool   `json:"islike"`
-	CollectionNum int64  `json:"collection_num"`
-	LikeNum       int64  `json:"like_num"`
-	ReadNum       int64  `json:"read_num"`
-	Aid           string `json:"aid"`
+	Isfocus       bool  `json:"isfocus"`
+	Iscollection  bool  `json:"iscollection"`
+	Islike        bool  `json:"islike"`
+	CollectionNum int64 `json:"collection_num"`
+	LikeNum       int64 `json:"like_num"`
+	ReadNum       int64 `json:"read_num"`
+	Aid           int64 `json:"aid"`
 }
 
 type ArticleReadRequest struct {
@@ -110,7 +110,7 @@ type ArticleLikeResponse struct {
 }
 
 type ArticleToLikeRequest struct {
-	ArticleId string `json:"aid"`
+	ArticleId int64 `json:"aid"`
 }
 
 type ArticleToLikeResponse struct {
@@ -118,7 +118,7 @@ type ArticleToLikeResponse struct {
 }
 
 type ArticleToDisLikeRequest struct {
-	ArticleId string `json:"aid"`
+	ArticleId int64 `json:"aid"`
 }
 
 type ArticleToDisLikeResponse struct {

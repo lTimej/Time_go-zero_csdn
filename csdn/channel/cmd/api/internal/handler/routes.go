@@ -29,11 +29,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/v1/article/status",
-				Handler: ArticleStatusHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodGet,
 				Path:    "/v1/article/likes",
 				Handler: ArticleLikeHandler(serverCtx),
 			},
@@ -74,8 +69,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/article/likes",
 					Handler: ArticleToDisLikeHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/article/status",
+					Handler: ArticleStatusHandler(serverCtx),
+				},
 			}...,
 		),
-		//rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
+		// rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 	)
 }

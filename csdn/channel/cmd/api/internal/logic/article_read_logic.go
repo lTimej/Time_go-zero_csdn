@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/channelclient"
-	"strconv"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/types"
@@ -29,7 +28,7 @@ func NewArticleReadLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Artic
 
 func (l *ArticleReadLogic) ArticleRead(req *types.ArticleReadRequest) (resp *types.ArticleReadResponse, err error) {
 	// todo: add your logic here and delete this line
-	uid := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
+	uid := ctxdata.GetUidFromCtx(l.ctx)
 	fmt.Println(uid, "呵呵呵呵呵呵呵呵呵呵")
 	res, err := l.svcCtx.ChannelRpc.ArticleRead(l.ctx, &channelclient.ArticleReadRequest{ArticleId: req.ArticleId, UserId: uid})
 	if err != nil {

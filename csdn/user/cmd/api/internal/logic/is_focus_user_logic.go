@@ -4,7 +4,6 @@ import (
 	"context"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/userclient"
-	"strconv"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
@@ -28,7 +27,7 @@ func NewIsFocusUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsFoc
 
 func (l *IsFocusUserLogic) IsFocusUser(req *types.IsFocusUserRequest) (resp *types.IsFocusUserResponse, err error) {
 	// todo: add your logic here and delete this line
-	user_id := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
+	user_id := ctxdata.GetUidFromCtx(l.ctx)
 	res, err := l.svcCtx.UserRpc.IsFocueUser(l.ctx, &userclient.IsFocusUserRequest{UserId: user_id, TargetId: req.TargetUserId})
 	if err != nil {
 		return nil, err

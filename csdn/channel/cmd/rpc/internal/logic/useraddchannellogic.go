@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"liujun/Time_go-zero_csdn/common/snowflak"
 	"liujun/Time_go-zero_csdn/csdn/channel/model"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
@@ -27,12 +26,9 @@ func NewUserAddChannelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Us
 
 func (l *UserAddChannelLogic) UserAddChannel(in *channel.UserAddChannelRequest) (*channel.UserAddChannelResponse, error) {
 	// todo: add your logic here and delete this line
-	workId, _ := snowflak.NewSnowFlak(1, 2, 0, -1)
-	user_channel_id := workId.GetId()
 	user_channel := model.NewsUserChannel{
-		UserChannelId: user_channel_id,
-		UserId:        in.UserId,
-		ChannelId:     in.ChannelId,
+		UserId:    in.UserId,
+		ChannelId: in.ChannelId,
 	}
 	_, err := l.svcCtx.UserChannelModel.Insert(l.ctx, &user_channel)
 	if err != nil {

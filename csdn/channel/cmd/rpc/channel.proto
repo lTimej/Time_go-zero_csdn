@@ -22,7 +22,7 @@ message DefaultChannelResponse{
 }
 
 message UserChannelRequest{
-    int64 userId = 1;
+    string userId = 1;
 }
 
 message UserChannelResponse{
@@ -32,7 +32,7 @@ message UserChannelResponse{
 message UserAddChannelRequest{
     int64 ChannelId = 1;
     string ChannelName = 2;
-    int64 userId = 3;
+    string userId = 3;
 }
 
 message UserAddChannelResponse{
@@ -41,7 +41,7 @@ message UserAddChannelResponse{
 
 message UserPatchChannelRequest{
     int64 ChannelId = 1;
-    int64 userId = 2;
+    string userId = 2;
 }
 
 message UserPatchChannelResponse{
@@ -77,7 +77,7 @@ message ArticleChannelResponse{
 }
 
 message ArticlestatusRequest{
-    string ArticleId = 1;
+    int64 ArticleId = 1;
     string UserId = 2;
     string TargetId = 3;
 }
@@ -89,7 +89,7 @@ message ArticlestatusResponse{
     int64 CollectionNum = 4;
     int64 LikeNum = 5;
     int64 ReadNum = 6;
-    string Aid = 7;
+    int64 Aid = 7;
 }
 
 message ArticleReadRequest{

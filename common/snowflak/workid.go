@@ -2,6 +2,7 @@ package snowflak
 
 import (
 	"errors"
+	"strconv"
 	"time"
 )
 
@@ -54,11 +55,11 @@ func (wi *WorkID) tilNextMillis(last_timestamp int64) int64 {
 	}
 	return timestamp
 }
-func (wi *WorkID) GetId() int64 {
+func (wi *WorkID) GetId() string {
 	timestamp := wi.getTimestamp()
 
 	if timestamp < wi.last_timestamp {
-		return 0
+		return ""
 	}
 	if timestamp == wi.last_timestamp {
 		wi.sequence = (wi.sequence + 1) & SEQUENCE_MASK
@@ -70,5 +71,5 @@ func (wi *WorkID) GetId() int64 {
 	}
 	wi.last_timestamp = timestamp
 	new_id := ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT) | (wi.datacenter_id << DATACENTER_ID_SHIFT) | (wi.worker_id << WOKER_ID_SHIFT) | wi.sequence
-	return new_id
+	return strconv.FormatInt(new_id, 10)
 }

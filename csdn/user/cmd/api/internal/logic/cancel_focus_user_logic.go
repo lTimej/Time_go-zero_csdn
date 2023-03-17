@@ -4,7 +4,6 @@ import (
 	"context"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/userclient"
-	"strconv"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
@@ -28,7 +27,7 @@ func NewCancelFocusUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *C
 
 func (l *CancelFocusUserLogic) CancelFocusUser(req *types.CancelFocusUserRequest) (resp *types.CancelFocusUserResponse, err error) {
 	// todo: add your logic here and delete this line
-	user_id := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
+	user_id := ctxdata.GetUidFromCtx(l.ctx)
 	_, err = l.svcCtx.UserRpc.CancelFocueUser(l.ctx, &userclient.CancelFocusUserRequest{UserId: user_id, TargetId: req.TargetUserId})
 	if err != nil {
 		return nil, err

@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/channelclient"
-	"strconv"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/types"
@@ -28,8 +28,10 @@ func NewArticleToDisLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *ArticleToDisLikeLogic) ArticleToDisLike(req *types.ArticleToDisLikeRequest) (resp *types.ArticleToDisLikeResponse, err error) {
 	// todo: add your logic here and delete this line
-	uid := strconv.FormatInt(ctxdata.GetUidFromCtx(l.ctx), 10)
-	aid, _ := strconv.ParseInt(req.ArticleId, 10, 64)
+
+	uid := ctxdata.GetUidFromCtx(l.ctx)
+	fmt.Println(uid, "!!!!!!!!!!!!!!!!!!!!uid!!!!!!!!!!!!!!")
+	aid := req.ArticleId
 	_, err = l.svcCtx.ChannelRpc.ArticleToDisLike(l.ctx, &channelclient.ArticleToDisLikeRequest{UserId: uid, ArticleId: aid})
 	if err != nil {
 		return nil, err

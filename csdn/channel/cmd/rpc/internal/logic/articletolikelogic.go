@@ -36,7 +36,10 @@ func (l *ArticleToLikeLogic) ArticleToLike(in *channel.ArticleToLikeRequest) (*c
 		Attitude:  1,
 	}
 	if na == nil && err == nil {
-		l.svcCtx.ArticleAttitudeModel.Insert(l.ctx, &news_attitude)
+		_, err := l.svcCtx.ArticleAttitudeModel.Insert(l.ctx, &news_attitude)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &channel.ArticleToLikeResponse{
 		Aid: in.ArticleId,

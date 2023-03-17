@@ -28,8 +28,6 @@ func NewUserCurrInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserCurrInfoLogic) UserCurrInfo(req *types.UserCurrInfoRequest) (resp *types.UserCurrInfoResponse, err error) {
 	// todo: add your logic here and delete this line
-	fmt.Println("======哈哈=====", l.ctx.Value(ctxdata.CtxKeyJwtUserId), "====和黑======")
-	fmt.Printf("%T\n", l.ctx.Value(ctxdata.CtxKeyJwtUserId))
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
 	fmt.Println(user_id, "二二二热呃呃呃呃呃呃呃")
 	res, err := l.svcCtx.UserRpc.UserCurrInfo(l.ctx, &userclient.UserCurrInfoRequest{UserId: user_id})
@@ -37,7 +35,6 @@ func (l *UserCurrInfoLogic) UserCurrInfo(req *types.UserCurrInfoRequest) (resp *
 		fmt.Println(err, "潍坊市看到房价是否考虑")
 		return nil, err
 	}
-	fmt.Println(res, "&&&&&&**********((((((((")
 	resp = new(types.UserCurrInfoResponse)
 	resp.UserName = res.UserName
 	resp.HeadPhoto = res.HeadPhoto

@@ -3,10 +3,11 @@ package ctxdata
 import (
 	"context"
 	"errors"
+
 	"fmt"
+
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/zeromicro/go-zero/core/logx"
-	"strconv"
+	// "github.com/zeromicro/go-zero/core/logx"
 )
 
 var CtxKeyJwtUserId = "jwtUserId"
@@ -16,13 +17,12 @@ type MyClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GetUidFromCtx(ctx context.Context) int64 {
-	user_id := ctx.Value(CtxKeyJwtUserId).(string)
-	uid, err := strconv.ParseInt(user_id, 10, 64)
-	if err != nil {
-		logx.WithContext(ctx).Errorf("GetUidFromCtx err : %+v", err)
+func GetUidFromCtx(ctx context.Context) (user_id string) {
+	if _, ok := ctx.Value(CtxKeyJwtUserId).(string); !ok {
+		fmt.Println("获取userid失败")
+		return ""
 	}
-	return uid
+	return ctx.Value(CtxKeyJwtUserId).(string)
 }
 
 //func GetUidFromCtx(ctx context.Context) int64 {
@@ -43,12 +43,10 @@ func ParseToken(tokenString string, secretKey string) (*MyClaims, error) {
 		return []byte(secretKey), nil
 	})
 	if err != nil {
-		fmt.Println(err, "虎虎虎虎虎虎")
 		return nil, err
 	}
 	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
 		return claims, nil
 	}
-	fmt.Println("喜喜喜喜喜喜")
 	return nil, errors.New("invalid token")
 }

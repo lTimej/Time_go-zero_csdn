@@ -6,7 +6,6 @@ import (
 	"liujun/Time_go-zero_csdn/common/xerr"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -37,7 +36,7 @@ func (l *GenerateTokenLogic) GenerateToken(in *user.GenerateTokenRequest) (*user
 	secret_key := l.svcCtx.Config.JwtAuth.AccessSecret
 	token, err := l.GetJwtToken(secret_key, expire, in.UserId)
 	if err != nil {
-		return nil, errors.Wrapf(ErrGenerateTokenError, "getJwtToken err userId:%d , err:%v", in.UserId, err)
+		return nil, errors.Wrapf(ErrGenerateTokenError, "getJwtToken err userId:%s , err:%v", in.UserId, err)
 	}
 
 	return &user.GenerateTokenResponse{
@@ -47,7 +46,7 @@ func (l *GenerateTokenLogic) GenerateToken(in *user.GenerateTokenRequest) (*user
 	}, nil
 }
 
-func (l *GenerateTokenLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (string, error) {
+func (l *GenerateTokenLogic) getJwtToken(secretKey string, iat, seconds, userId string) (string, error) {
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat
@@ -57,10 +56,9 @@ func (l *GenerateTokenLogic) getJwtToken(secretKey string, iat, seconds, userId 
 	return token.SignedString([]byte(secretKey))
 }
 
-func (l *GenerateTokenLogic) GetJwtToken(secretKey string, seconds, userId int64) (string, error) {
-	user_id := strconv.FormatInt(userId, 10)
+func (l *GenerateTokenLogic) GetJwtToken(secretKey string, seconds int64, userId string) (string, error) {
 	claims := ctxdata.MyClaims{
-		user_id,
+		userId,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(seconds) * time.Second)),
 			Issuer:    "my-project",

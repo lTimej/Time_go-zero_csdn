@@ -27,7 +27,7 @@ var (
 type (
 	newsArticleStatisticModel interface {
 		Insert(ctx context.Context, data *NewsArticleStatistic) (sql.Result, error)
-		FindOne(ctx context.Context, articleId string) (*NewsArticleStatistic, error)
+		FindOne(ctx context.Context, articleId int64) (*NewsArticleStatistic, error)
 		Update(ctx context.Context, data *NewsArticleStatistic) error
 		Delete(ctx context.Context, articleId int64) error
 	}
@@ -64,7 +64,7 @@ func (m *defaultNewsArticleStatisticModel) Delete(ctx context.Context, articleId
 	return err
 }
 
-func (m *defaultNewsArticleStatisticModel) FindOne(ctx context.Context, articleId string) (*NewsArticleStatistic, error) {
+func (m *defaultNewsArticleStatisticModel) FindOne(ctx context.Context, articleId int64) (*NewsArticleStatistic, error) {
 	newsArticleStatisticArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleStatisticArticleIdPrefix, articleId)
 	var resp NewsArticleStatistic
 	err := m.QueryRowCtx(ctx, &resp, newsArticleStatisticArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {

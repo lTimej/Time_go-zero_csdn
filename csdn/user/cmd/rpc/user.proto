@@ -15,7 +15,7 @@ message LoginResponse {
 }
 
 message GenerateTokenRequest {
-  int64 userId = 1;
+  string userId = 1;
 }
 message GenerateTokenResponse {
   string accessToken = 1;
@@ -24,7 +24,7 @@ message GenerateTokenResponse {
 }
 
 message UserCurrInfoRequest{
-  int64 userId = 1;
+  string userId = 1;
 }
 
 message UserCurrInfoResponse{

@@ -62,17 +62,17 @@ type AllArticleResponse {
 
 type ArticleStatusRequest {
 	UserId    string `json:"usid,optional"`
-	ArticleId string `json:"aid,optional"`
+	ArticleId int64  `json:"aid,optional"`
 }
 
 type ArticleStatusResponse {
-	Isfocus       bool   `json:"isfocus"`
-	Iscollection  bool   `json:"iscollection"`
-	Islike        bool   `json:"islike"`
-	CollectionNum int64  `json:"collection_num"`
-	LikeNum       int64  `json:"like_num"`
-	ReadNum       int64  `json:"read_num"`
-	Aid           string `json:"aid"`
+	Isfocus       bool  `json:"isfocus"`
+	Iscollection  bool  `json:"iscollection"`
+	Islike        bool  `json:"islike"`
+	CollectionNum int64 `json:"collection_num"`
+	LikeNum       int64 `json:"like_num"`
+	ReadNum       int64 `json:"read_num"`
+	Aid           int64 `json:"aid"`
 }
 
 type ArticleReadRequest {
@@ -98,14 +98,14 @@ type ArticleLikeResponse {
 }
 
 type ArticleToLikeRequest {
-	ArticleId string `json:"aid"`
+	ArticleId int64 `json:"aid"`
 }
 type ArticleToLikeResponse {
 	ArticleId int64 `json:"aid"`
 }
 
 type ArticleToDisLikeRequest {
-	ArticleId string `json:"aid"`
+	ArticleId int64 `json:"aid"`
 }
 type ArticleToDisLikeResponse {
 	Message string `json:"message"`
@@ -118,8 +118,6 @@ service api-api {
 	get /v1/channel/default/channel(DefaultChannelRequest) returns (DefaultChannelResponse)
 	@handler AllArticle
 	get /v1/article/articles/:channel_id(AllArticleRequest) returns (AllArticleResponse)
-	@handler ArticleStatus
-	get /v1/article/status(ArticleStatusRequest) returns (ArticleStatusResponse)
 	@handler ArticleLike
 	get /v1/article/likes(ArticleLikeRequest) returns (ArticleLikeResponse)
 }
@@ -142,4 +140,6 @@ service api-api {
 	post /v1/article/likes(ArticleToLikeRequest) returns (ArticleToLikeResponse)
 	@handler ArticleToDisLike
 	delete /v1/article/likes(ArticleToDisLikeRequest) returns (ArticleToDisLikeResponse)
+	@handler ArticleStatus
+	get /v1/article/status(ArticleStatusRequest) returns (ArticleStatusResponse)
 }

@@ -31,12 +31,12 @@ var (
 type (
 	userBasicModel interface {
 		Insert(ctx context.Context, data *UserBasic) (sql.Result, error)
-		FindOne(ctx context.Context, userId int64) (*UserBasic, error)
+		FindOne(ctx context.Context, userId string) (*UserBasic, error)
 		FindOneByMobile(ctx context.Context, mobile string) (*UserBasic, error)
 		FindOneByUserName(ctx context.Context, userName string) (*UserBasic, error)
-		FindOneJoinUserProfileByUserId(ctx context.Context, userId int64) (*CurrUserInfo, error)
+		FindOneJoinUserProfileByUserId(ctx context.Context, userId string) (*CurrUserInfo, error)
 		Update(ctx context.Context, data *UserBasic) error
-		Delete(ctx context.Context, userId int64) error
+		Delete(ctx context.Context, userId string) error
 	}
 
 	defaultUserBasicModel struct {
@@ -45,7 +45,7 @@ type (
 	}
 
 	UserBasic struct {
-		UserId         int64     `db:"user_id"`         // 用户ID
+		UserId         string    `db:"user_id"`         // 用户ID
 		Account        string    `db:"account"`         // 账号
 		Email          string    `db:"email"`           // 邮箱
 		Status         int64     `db:"status"`          // 状态，是否可用，0-不可用，1-可用
@@ -66,7 +66,7 @@ type (
 		CodeYear       int64     `db:"code_year"`       // 码龄
 	}
 	CurrUserInfo struct {
-		UserId    int64  `db:"user_id"`
+		UserId    string `db:"user_id"`
 		UserName  string `db:"user_name"`
 		HeadPhoto string `db:"profile_photo"`
 		Introduce string `db:"introduction"`
@@ -85,7 +85,7 @@ func newUserBasicModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultUserBasicMo
 	}
 }
 
-func (m *defaultUserBasicModel) Delete(ctx context.Context, userId int64) error {
+func (m *defaultUserBasicModel) Delete(ctx context.Context, userId string) error {
 	data, err := m.FindOne(ctx, userId)
 	if err != nil {
 		return err
@@ -101,7 +101,7 @@ func (m *defaultUserBasicModel) Delete(ctx context.Context, userId int64) error 
 	return err
 }
 
-func (m *defaultUserBasicModel) FindOne(ctx context.Context, userId int64) (*UserBasic, error) {
+func (m *defaultUserBasicModel) FindOne(ctx context.Context, userId string) (*UserBasic, error) {
 	userBasicUserIdKey := fmt.Sprintf("%s%v", cacheUserBasicUserIdPrefix, userId)
 	var resp UserBasic
 	err := m.QueryRowCtx(ctx, &resp, userBasicUserIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
@@ -158,7 +158,7 @@ func (m *defaultUserBasicModel) FindOneByUserName(ctx context.Context, userName 
 	}
 }
 
-func (m *defaultUserBasicModel) FindOneJoinUserProfileByUserId(ctx context.Context, userId int64) (*CurrUserInfo, error) {
+func (m *defaultUserBasicModel) FindOneJoinUserProfileByUserId(ctx context.Context, userId string) (*CurrUserInfo, error) {
 	currUserInfoUserIdKey := fmt.Sprintf("%s%v", cacheCurrUserInfoUserIdPrefix, userId)
 	var resp CurrUserInfo
 	fmt.Println(userId, "===============")
