@@ -6,7 +6,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"liujun/Time_go-zero_csdn/common/globalkey"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"strings"
+
+	"github.com/Masterminds/squirrel"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -26,9 +30,11 @@ var (
 
 type (
 	newsArticleStatisticModel interface {
+		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsArticleStatistic) (sql.Result, error)
 		UpdateCache(ctx context.Context, data *NewsArticleStatistic) error
 		FindOne(ctx context.Context, articleId int64) (*NewsArticleStatistic, error)
+		FindOneByArticle(ctx context.Context, rowBuilder squirrel.SelectBuilder) (*NewsArticleStatistic, error)
 		Update(ctx context.Context, data *NewsArticleStatistic) error
 		Delete(ctx context.Context, articleId int64) error
 	}
@@ -66,8 +72,9 @@ func (m *defaultNewsArticleStatisticModel) Delete(ctx context.Context, articleId
 }
 
 func (m *defaultNewsArticleStatisticModel) FindOne(ctx context.Context, articleId int64) (*NewsArticleStatistic, error) {
-	newsArticleStatisticArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleStatisticArticleIdPrefix, articleId)
+	newsArticleStatisticArticleIdKey := fmt.Sprintf(globalkey.ArticleStatus, utils.Int64ToString(articleId))
 	var resp NewsArticleStatistic
+
 	err := m.QueryRowCtx(ctx, &resp, newsArticleStatisticArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
 		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleStatisticRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, articleId)
@@ -81,7 +88,20 @@ func (m *defaultNewsArticleStatisticModel) FindOne(ctx context.Context, articleI
 		return nil, err
 	}
 }
-
+func (m *defaultNewsArticleStatisticModel) FindOneByArticle(ctx context.Context, rowBuilder squirrel.SelectBuilder) (*NewsArticleStatistic, error) {
+	query, values, err := rowBuilder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	var resp NewsArticleStatistic
+	err = m.QueryRowNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return &resp, nil
+	default:
+		return nil, err
+	}
+}
 func (m *defaultNewsArticleStatisticModel) Insert(ctx context.Context, data *NewsArticleStatistic) (sql.Result, error) {
 	newsArticleStatisticArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleStatisticArticleIdPrefix, data.ArticleId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -119,4 +139,8 @@ func (m *defaultNewsArticleStatisticModel) queryPrimary(ctx context.Context, con
 
 func (m *defaultNewsArticleStatisticModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultNewsArticleStatisticModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select().From(m.table)
 }

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/channel/model"
-	"strconv"
-	"strings"
 
 	"liujun/Time_go-zero_csdn/common/globalkey"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
@@ -31,25 +29,20 @@ func NewArticleStatusCacheLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *ArticleStatusCacheLogic) ArticleStatusCache(in *channel.ArticleStatusCacheRequest) (*channel.ArticleStatusCacheResponse, error) {
 	// todo: add your logic here and delete this line
-	status_key := globalkey.ArticleStatus
-	status, err := l.svcCtx.RedisClient.Hgetall(status_key)
+	article_ids_key := globalkey.ArticleIds
+	article_status_key := globalkey.ArticleStatus
+	aids, err := l.svcCtx.RedisClient.Smembers(article_ids_key)
 	if err != nil {
 		fmt.Println("获取文章状态失败", err)
 		return nil, err
 	}
-	// fmt.Println("文章状态:", status)
-	ids := make(map[int64]bool)
-	for key, _ := range status {
-		sli := strings.Split(key, ":")
-		aid, _ := strconv.ParseInt(sli[2], 10, 64)
-		ids[aid] = true
-	}
-	for aid, _ := range ids {
-		like_num, _ := l.svcCtx.RedisClient.Hget(status_key, fmt.Sprintf(globalkey.ArticleLikeNum, aid))
-		read_num, _ := l.svcCtx.RedisClient.Hget(status_key, fmt.Sprintf(globalkey.ArticleReadNum, aid))
-		collection_num, _ := l.svcCtx.RedisClient.Hget(status_key, fmt.Sprintf(globalkey.ArticleCollectionNum, aid))
+	for _, aid := range aids {
+		status_key := fmt.Sprintf(article_status_key, aid)
+		like_num, _ := l.svcCtx.RedisClient.Hget(status_key, globalkey.ArticleLikeNum)
+		read_num, _ := l.svcCtx.RedisClient.Hget(status_key, globalkey.ArticleReadNum)
+		collection_num, _ := l.svcCtx.RedisClient.Hget(status_key, globalkey.ArticleCollectionNum)
 		nas := model.NewsArticleStatistic{
-			ArticleId:        aid,
+			ArticleId:        utils.StringToInt64(aid),
 			LikeCount:        utils.StringToInt64(like_num),
 			ReadCount:        utils.StringToInt64(read_num),
 			CollectCount:     utils.StringToInt64(collection_num),
@@ -62,6 +55,12 @@ func (l *ArticleStatusCacheLogic) ArticleStatusCache(in *channel.ArticleStatusCa
 			fmt.Println("文章状态缓存失败", err)
 			return nil, err
 		}
+		// key := fmt.Sprintf("cache:newsArticleStatistic:articleId:%v", aid)
+		// data, _ := json.Marshal(nas)
+		// err = l.svcCtx.RedisClient.Set(key, string(data))
+		// if err != nil {
+		// 	fmt.Println("单个文章缓存状态失败")
+		// }
 	}
 	return &channel.ArticleStatusCacheResponse{}, nil
 }
