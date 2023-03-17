@@ -33,6 +33,7 @@ type ChannelClient interface {
 	ArticleLike(ctx context.Context, in *ArticleLikeRequest, opts ...grpc.CallOption) (*ArticleLikeResponse, error)
 	ArticleToLike(ctx context.Context, in *ArticleToLikeRequest, opts ...grpc.CallOption) (*ArticleToLikeResponse, error)
 	ArticleToDisLike(ctx context.Context, in *ArticleToDisLikeRequest, opts ...grpc.CallOption) (*ArticleToDisLikeResponse, error)
+	ArticleStatusCache(ctx context.Context, in *ArticleStatusCacheRequest, opts ...grpc.CallOption) (*ArticleStatusCacheResponse, error)
 }
 
 type channelClient struct {
@@ -142,6 +143,15 @@ func (c *channelClient) ArticleToDisLike(ctx context.Context, in *ArticleToDisLi
 	return out, nil
 }
 
+func (c *channelClient) ArticleStatusCache(ctx context.Context, in *ArticleStatusCacheRequest, opts ...grpc.CallOption) (*ArticleStatusCacheResponse, error) {
+	out := new(ArticleStatusCacheResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleStatusCache", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
@@ -157,6 +167,7 @@ type ChannelServer interface {
 	ArticleLike(context.Context, *ArticleLikeRequest) (*ArticleLikeResponse, error)
 	ArticleToLike(context.Context, *ArticleToLikeRequest) (*ArticleToLikeResponse, error)
 	ArticleToDisLike(context.Context, *ArticleToDisLikeRequest) (*ArticleToDisLikeResponse, error)
+	ArticleStatusCache(context.Context, *ArticleStatusCacheRequest) (*ArticleStatusCacheResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -196,6 +207,9 @@ func (UnimplementedChannelServer) ArticleToLike(context.Context, *ArticleToLikeR
 }
 func (UnimplementedChannelServer) ArticleToDisLike(context.Context, *ArticleToDisLikeRequest) (*ArticleToDisLikeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArticleToDisLike not implemented")
+}
+func (UnimplementedChannelServer) ArticleStatusCache(context.Context, *ArticleStatusCacheRequest) (*ArticleStatusCacheResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleStatusCache not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -408,6 +422,24 @@ func _Channel_ArticleToDisLike_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_ArticleStatusCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleStatusCacheRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleStatusCache(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleStatusCache",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleStatusCache(ctx, req.(*ArticleStatusCacheRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -458,6 +490,10 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArticleToDisLike",
 			Handler:    _Channel_ArticleToDisLike_Handler,
+		},
+		{
+			MethodName: "ArticleStatusCache",
+			Handler:    _Channel_ArticleStatusCache_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

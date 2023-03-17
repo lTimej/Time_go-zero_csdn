@@ -27,6 +27,7 @@ var (
 type (
 	newsArticleStatisticModel interface {
 		Insert(ctx context.Context, data *NewsArticleStatistic) (sql.Result, error)
+		UpdateCache(ctx context.Context, data *NewsArticleStatistic) error
 		FindOne(ctx context.Context, articleId int64) (*NewsArticleStatistic, error)
 		Update(ctx context.Context, data *NewsArticleStatistic) error
 		Delete(ctx context.Context, articleId int64) error
@@ -88,6 +89,14 @@ func (m *defaultNewsArticleStatisticModel) Insert(ctx context.Context, data *New
 		return conn.ExecCtx(ctx, query, data.ArticleId, data.ReadCount, data.LikeCount, data.DislikeCount, data.RepostCount, data.CollectCount, data.FansCommentCount)
 	}, newsArticleStatisticArticleIdKey)
 	return ret, err
+}
+
+func (m *defaultNewsArticleStatisticModel) UpdateCache(ctx context.Context, data *NewsArticleStatistic) error {
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `article_id` = ?", m.table, newsArticleStatisticRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, data.ReadCount, data.LikeCount, data.DislikeCount, data.RepostCount, data.CollectCount, data.FansCommentCount, data.ArticleId)
+	})
+	return err
 }
 
 func (m *defaultNewsArticleStatisticModel) Update(ctx context.Context, data *NewsArticleStatistic) error {

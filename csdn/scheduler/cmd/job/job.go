@@ -1,19 +1,17 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"os"
 
-	"liujun/Time_go-zero_csdn/csdn/scheduler/job/internal/config"
-	"liujun/Time_go-zero_csdn/csdn/scheduler/job/internal/server"
-	"liujun/Time_go-zero_csdn/csdn/scheduler/job/internal/svc"
-	"liujun/Time_go-zero_csdn/csdn/scheduler/job/job"
+	"liujun/Time_go-zero_csdn/csdn/scheduler/cmd/job/internal/config"
+	"liujun/Time_go-zero_csdn/csdn/scheduler/cmd/job/internal/logic"
+	"liujun/Time_go-zero_csdn/csdn/scheduler/cmd/job/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
-	"github.com/zeromicro/go-zero/core/service"
-	"github.com/zeromicro/go-zero/zrpc"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 var configFile = flag.String("f", "etc/job.yaml", "the config file")
@@ -22,18 +20,22 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
-	ctx := svc.NewServiceContext(c)
 
-	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		job.RegisterJobServer(grpcServer, server.NewJobServer(ctx))
+	conf.MustLoad(*configFile, &c, conf.UseEnv())
 
-		if c.Mode == service.DevMode || c.Mode == service.TestMode {
-			reflection.Register(grpcServer)
-		}
-	})
-	defer s.Stop()
+	// log、prometheus、trace、metricsUrl
+	if err := c.SetUp(); err != nil {
+		panic(err)
+	}
 
-	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
-	s.Start()
+	// conf.MustLoad(*configFile, &c)
+	svcCtx := svc.NewServiceContext(c)
+	ctx := context.Background()
+	cronJob := logic.NewCronJob(ctx, svcCtx)
+	mux := cronJob.Register()
+	if err := svcCtx.AsynqServer.Run(mux); err != nil {
+		fmt.Println(err)
+		logx.WithContext(ctx).Errorf("!!!CronJobErr!!! run err:%+v", err)
+		os.Exit(1)
+	}
 }

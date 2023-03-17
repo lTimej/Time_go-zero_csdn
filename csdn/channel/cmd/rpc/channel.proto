@@ -131,6 +131,10 @@ message ArticleToDisLikeResponse{
     int64 Aid = 3;
 }
 
+message ArticleStatusCacheRequest{}
+
+message ArticleStatusCacheResponse{}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
@@ -143,4 +147,5 @@ service Channel {
     rpc ArticleLike(ArticleLikeRequest) returns(ArticleLikeResponse);
     rpc ArticleToLike(ArticleToLikeRequest) returns(ArticleToLikeResponse);
     rpc ArticleToDisLike(ArticleToDisLikeRequest) returns(ArticleToDisLikeResponse);
+    rpc ArticleStatusCache(ArticleStatusCacheRequest) returns(ArticleStatusCacheResponse);
 }

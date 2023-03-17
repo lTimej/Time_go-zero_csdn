@@ -21,6 +21,8 @@ type (
 	ArticleList                  = channel.ArticleList
 	ArticleReadRequest           = channel.ArticleReadRequest
 	ArticleReadResponse          = channel.ArticleReadResponse
+	ArticleStatusCacheRequest    = channel.ArticleStatusCacheRequest
+	ArticleStatusCacheResponse   = channel.ArticleStatusCacheResponse
 	ArticleToDisLikeRequest      = channel.ArticleToDisLikeRequest
 	ArticleToDisLikeResponse     = channel.ArticleToDisLikeResponse
 	ArticleToLikeRequest         = channel.ArticleToLikeRequest
@@ -51,6 +53,7 @@ type (
 		ArticleLike(ctx context.Context, in *ArticleLikeRequest, opts ...grpc.CallOption) (*ArticleLikeResponse, error)
 		ArticleToLike(ctx context.Context, in *ArticleToLikeRequest, opts ...grpc.CallOption) (*ArticleToLikeResponse, error)
 		ArticleToDisLike(ctx context.Context, in *ArticleToDisLikeRequest, opts ...grpc.CallOption) (*ArticleToDisLikeResponse, error)
+		ArticleStatusCache(ctx context.Context, in *ArticleStatusCacheRequest, opts ...grpc.CallOption) (*ArticleStatusCacheResponse, error)
 	}
 
 	defaultChannel struct {
@@ -117,4 +120,9 @@ func (m *defaultChannel) ArticleToLike(ctx context.Context, in *ArticleToLikeReq
 func (m *defaultChannel) ArticleToDisLike(ctx context.Context, in *ArticleToDisLikeRequest, opts ...grpc.CallOption) (*ArticleToDisLikeResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleToDisLike(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleStatusCache(ctx context.Context, in *ArticleStatusCacheRequest, opts ...grpc.CallOption) (*ArticleStatusCacheResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleStatusCache(ctx, in, opts...)
 }

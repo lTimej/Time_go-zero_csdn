@@ -44,3 +44,8 @@ func (l *ArticleStatusLogic) ArticleStatus(in *channel.ArticlestatusRequest) (*c
 		Islike:        ok,
 	}, nil
 }
+
+func (l *ArticleStatusLogic) ArticleStatusCache() error {
+
+	return nil
+}

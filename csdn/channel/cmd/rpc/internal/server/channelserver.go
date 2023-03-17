@@ -76,3 +76,8 @@ func (s *ChannelServer) ArticleToDisLike(ctx context.Context, in *channel.Articl
 	l := logic.NewArticleToDisLikeLogic(ctx, s.svcCtx)
 	return l.ArticleToDisLike(in)
 }
+
+func (s *ChannelServer) ArticleStatusCache(ctx context.Context, in *channel.ArticleStatusCacheRequest) (*channel.ArticleStatusCacheResponse, error) {
+	l := logic.NewArticleStatusCacheLogic(ctx, s.svcCtx)
+	return l.ArticleStatusCache(in)
+}

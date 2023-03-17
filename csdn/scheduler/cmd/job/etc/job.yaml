@@ -1,6 +1,17 @@
 Name: job.rpc
-ListenOn: 0.0.0.0:8080
-Etcd:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: job.rpc
+ListenOn: 0.0.0.0:8892
+
+Redis:
+  Host: 127.0.0.1:16379
+  Pass: liujun
+  Type: node
+
+ChannelRpcConf:
+  Endpoints:
+    - 127.0.0.1:8081
+  NonBlock: true
+
+UserRpcConf:
+  Endpoints:
+    - 127.0.0.1:8079
+  NonBlock: true
