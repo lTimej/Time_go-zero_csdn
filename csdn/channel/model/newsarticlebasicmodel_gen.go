@@ -33,6 +33,7 @@ type (
 		Insert(ctx context.Context, data *NewsArticleBasic) (sql.Result, error)
 		FindOne(ctx context.Context, articleId int64) (*NewsArticleBasic, error)
 		FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error)
+		FindAllArticleByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder,user_id string,page,page_num int32)([]*AllArticleInfo,error)
 		Update(ctx context.Context, data *NewsArticleBasic) error
 		Delete(ctx context.Context, articleId int64) error
 	}
@@ -44,7 +45,7 @@ type (
 
 	NewsArticleBasic struct {
 		ArticleId     int64     `db:"article_id"`     // 文章ID
-		UserId        int64     `db:"user_id"`        // 用户ID
+		UserId        string     `db:"user_id"`        // 用户ID
 		ChannelId     int64     `db:"channel_id"`     // 频道ID
 		Title         string    `db:"title"`          // 标题
 		IsAdvertising int64     `db:"is_advertising"` // 是否投放广告，0-不投放，1-投放
@@ -130,6 +131,29 @@ func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context,rowBui
 		return nil, err
 	}
 }
+
+func(m *defaultNewsArticleBasicModel) FindAllArticleByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder,user_id string,page,page_num int32)([]*AllArticleInfo,error){
+	if page <= 0{
+		page = 1
+	}
+	offset := (page - 1) * page_num
+	q,values,err := rowBuilder.Join("news_article_content,user_basic,user_profile,news_collection where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_collection.user_id = %s limit %d,%d").ToSql()
+	query := fmt.Sprintf(q,user_id,offset,page_num)
+	fmt.Println(query,"-------------")
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*AllArticleInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultNewsArticleBasicModel) Insert(ctx context.Context, data *NewsArticleBasic) (sql.Result, error) {
 	newsArticleBasicArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleBasicArticleIdPrefix, data.ArticleId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {

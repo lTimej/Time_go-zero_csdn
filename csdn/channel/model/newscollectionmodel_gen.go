@@ -123,7 +123,7 @@ func (m *defaultNewsCollectionModel) FindOneByUserIdArticleId(ctx context.Contex
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+		return nil, nil
 	default:
 		return nil, err
 	}
