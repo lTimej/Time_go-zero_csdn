@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"net/http"
 
@@ -15,6 +16,7 @@ func ArticleToCommentHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		var req types.ArticleToCommentRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
+			fmt.Println(err, "**********************************")
 			return
 		}
 

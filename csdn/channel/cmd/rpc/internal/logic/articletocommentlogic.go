@@ -53,9 +53,9 @@ func (l *ArticleToCommentLogic) ArticleToComment(in *channel.ArticleToCommnetReq
 	if err != nil {
 		return nil, err
 	}
-	return &channel.ArticleToCommentResponse{
-		ArticleId:       Aid,
-		CommentId:       comment_obj.CommentId,
-		CommentParentId: comment_id,
-	}, nil
+	resp := new(channel.ArticleToCommentResponse)
+	resp.ArticleId = Aid
+	resp.CommentId = comment_obj.CommentId
+	resp.CommentParentId = comment_id
+	return resp, nil
 }

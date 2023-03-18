@@ -155,7 +155,7 @@ type ArticleUserCollectionResponse struct {
 
 type ArticleToCommentRequest struct {
 	ArticleId int64  `json:"article_id"`
-	CommentId int64  `json:"comment_id"`
+	CommentId int64  `json:"comment_id,optional"`
 	Content   string `json:"content"`
 }
 

@@ -105,7 +105,8 @@ func (m *defaultNewsCommentModel)FindOneByArticleIdUserIdParentId(ctx context.Co
 }
 
 func (m *defaultNewsCommentModel) Insert(ctx context.Context, data *NewsComment) (sql.Result, error) {
-	newsCommentCommentIdKey := fmt.Sprintf("%s%v", cacheNewsCommentCommentIdPrefix, data.CommentId)
+	newsCommentCommentIdKey := fmt.Sprintf("%s%v:%v:%v", cacheNewsCommentArticleIdUserIdPrefix, data.ArticleId,data.UserId,data.ParentId)
+	//newsCommentCommentIdKey := fmt.Sprintf("%s%v", cacheNewsCommentCommentIdPrefix, data.CommentId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, newsCommentRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.UserId, data.ArticleId, data.ParentId, data.LikeCount, data.ReplyCount, data.Content, data.IsTop, data.Status)
