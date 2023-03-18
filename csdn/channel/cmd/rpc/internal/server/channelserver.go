@@ -96,3 +96,8 @@ func (s *ChannelServer) ArticleUserCollection(ctx context.Context, in *channel.A
 	l := logic.NewArticleUserCollectionLogic(ctx, s.svcCtx)
 	return l.ArticleUserCollection(in)
 }
+
+func (s *ChannelServer) ArticleToComment(ctx context.Context, in *channel.ArticleToCommnetRequest) (*channel.ArticleToCommentResponse, error) {
+	l := logic.NewArticleToCommentLogic(ctx, s.svcCtx)
+	return l.ArticleToComment(in)
+}

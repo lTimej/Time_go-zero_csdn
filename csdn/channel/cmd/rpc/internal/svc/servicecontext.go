@@ -17,6 +17,7 @@ type ServiceContext struct {
 	ArticleStaticModel     model.NewsArticleStatisticModel
 	ArticleReadModel       model.NewsReadModel
 	ArticleAttitudeModel   model.NewsAttitudeModel
+	ArticleCommentModel    model.NewsCommentModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -34,5 +35,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ArticleStaticModel:     model.NewNewsArticleStatisticModel(sqlConn, c.Cache),
 		ArticleReadModel:       model.NewNewsReadModel(sqlConn, c.Cache),
 		ArticleAttitudeModel:   model.NewNewsAttitudeModel(sqlConn, c.Cache),
+		ArticleCommentModel:    model.NewNewsCommentModel(sqlConn, c.Cache),
 	}
 }

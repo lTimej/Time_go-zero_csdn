@@ -152,3 +152,15 @@ type ArticleUserCollectionResponse struct {
 	PageNum     int32         `json:"page_num"`
 	TotalNum    int32         `json:"total_num"`
 }
+
+type ArticleToCommentRequest struct {
+	ArticleId int64  `json:"article_id"`
+	CommentId int64  `json:"comment_id"`
+	Content   string `json:"content"`
+}
+
+type ArticleToCommentResponse struct {
+	ArticleId       int64 `json:"art_id"`
+	CommentParentId int64 `json:"comment_parent_id"`
+	CommentId       int64 `json:"comment_id"`
+}

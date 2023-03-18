@@ -14,6 +14,7 @@ goctl rpc protoc channel.proto --go_out=./types --go-grpc_out=./types --zrpc_out
 
 # 通过ddl生成model
 goctl model mysql ddl -src="./sql/user.sql" -dir="./csdn/user/model" -c
+goctl model mysql ddl -src="./sql/article.sql" -dir="./csdn/channel/model" -c
 
 ### user.proto
 syntax = "proto3";

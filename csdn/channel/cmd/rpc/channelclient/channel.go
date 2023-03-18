@@ -25,6 +25,8 @@ type (
 	ArticleStatusCacheResponse     = channel.ArticleStatusCacheResponse
 	ArticleToCollectionRequest     = channel.ArticleToCollectionRequest
 	ArticleToCollectionResponse    = channel.ArticleToCollectionResponse
+	ArticleToCommentResponse       = channel.ArticleToCommentResponse
+	ArticleToCommnetRequest        = channel.ArticleToCommnetRequest
 	ArticleToDisCollectionRequest  = channel.ArticleToDisCollectionRequest
 	ArticleToDisCollectionResponse = channel.ArticleToDisCollectionResponse
 	ArticleToDisLikeRequest        = channel.ArticleToDisLikeRequest
@@ -63,6 +65,7 @@ type (
 		ArticleToCollection(ctx context.Context, in *ArticleToCollectionRequest, opts ...grpc.CallOption) (*ArticleToCollectionResponse, error)
 		ArticleToDisCollection(ctx context.Context, in *ArticleToDisCollectionRequest, opts ...grpc.CallOption) (*ArticleToDisCollectionResponse, error)
 		ArticleUserCollection(ctx context.Context, in *ArticleUserCollectionRequest, opts ...grpc.CallOption) (*ArticleUserCollectionResponse, error)
+		ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error)
 	}
 
 	defaultChannel struct {
@@ -149,4 +152,9 @@ func (m *defaultChannel) ArticleToDisCollection(ctx context.Context, in *Article
 func (m *defaultChannel) ArticleUserCollection(ctx context.Context, in *ArticleUserCollectionRequest, opts ...grpc.CallOption) (*ArticleUserCollectionResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleUserCollection(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleToComment(ctx, in, opts...)
 }

@@ -137,6 +137,18 @@ type ArticleUserCollectionResponse {
 	TotalNum    int32         `json:"total_num"`
 }
 
+type ArticleToCommentRequest {
+	ArticleId int64  `json:"article_id"`
+	CommentId int64  `json:"comment_id"`
+	Content   string `json:"content"`
+}
+
+type ArticleToCommentResponse {
+	ArticleId       int64 `json:"art_id"`
+	CommentParentId int64 `json:"comment_parent_id"`
+	CommentId       int64 `json:"comment_id"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -174,4 +186,6 @@ service api-api {
 	delete /v1/article/collection(ArticleToDisCollectionRequest) returns (ArticleToDisCollectionResponse)
 	@handler ArticleUserCollection
 	get /v1/article/collection(ArticleUserCollectionRequest) returns (ArticleUserCollectionResponse)
+	@handler ArticleToComment
+	post /v1/article/comment(ArticleToCommentRequest) returns (ArticleToCommentResponse)
 }
