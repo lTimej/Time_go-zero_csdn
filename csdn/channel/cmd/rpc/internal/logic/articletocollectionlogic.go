@@ -31,9 +31,18 @@ func (l *ArticleToCollectionLogic) ArticleToCollection(in *channel.ArticleToColl
 		UserId:    in.UserId,
 		IsDeleted: 0,
 	}
-	_, err := l.svcCtx.ArticleCollectionModel.Insert(l.ctx, &article_collection)
-	if err != nil {
-		return nil, err
+	res, err := l.svcCtx.ArticleCollectionModel.FindOneByUserIdArticleId(l.ctx, in.UserId, in.Aid)
+	if res == nil && err == nil {
+		_, err := l.svcCtx.ArticleCollectionModel.Insert(l.ctx, &article_collection)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		res.IsDeleted = 0
+		err := l.svcCtx.ArticleCollectionModel.Update(l.ctx, res)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &channel.ArticleToCollectionResponse{Aid: in.Aid}, nil
 }

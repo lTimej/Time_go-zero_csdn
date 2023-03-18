@@ -9,6 +9,24 @@ message ChannelList{
     string channel_name = 2;
 }
 
+message ArticleList{
+    string Title = 1;
+    string UserId = 2;
+    string CreateTime = 3;
+    int64 ArtId = 4;
+    int64 ChannelId = 5;
+    string Content = 6;
+    int32 AllowComment = 7;
+    string UserName = 8;
+    string HeadPhoto = 9;
+    string career = 10;
+    int32 CodeYear = 11;
+    int32 ReadNum = 12;
+    int32 CommentNum = 13;
+    int32 LikeNum = 14;
+    int32 CollectionNum = 15;
+}
+
 message ChannelListRequest {}
 
 message ChannelListResponse {
@@ -52,24 +70,6 @@ message ArticleChannelRequest{
     int64 ChannelId = 1;
     int32 Page = 2;
     int32 PageNum = 3;
-}
-
-message ArticleList{
-    string Title = 1;
-    string UserId = 2;
-    string CreateTime = 3;
-    int64 ArtId = 4;
-    int64 ChannelId = 5;
-    string Content = 6;
-    int32 AllowComment = 7;
-    string UserName = 8;
-    string HeadPhoto = 9;
-    string career = 10;
-    int32 CodeYear = 11;
-    int32 ReadNum = 12;
-    int32 CommentNum = 13;
-    int32 LikeNum = 14;
-    int32 CollectionNum = 15;
 }
 
 message ArticleChannelResponse{
@@ -151,6 +151,16 @@ message ArticleToDisCollectionRequest{
 
 message ArticleToDisCollectionResponse{}
 
+message ArticleUserCollectionRequest{
+    string UserId = 1;
+    int32 Page = 2;
+    int32 PageNum = 3;
+}
+
+message ArticleUserCollectionResponse{
+    repeated ArticleList articles = 1;
+}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
@@ -166,4 +176,5 @@ service Channel {
     rpc ArticleStatusCache(ArticleStatusCacheRequest) returns(ArticleStatusCacheResponse);
     rpc ArticleToCollection(ArticleToCollectionRequest) returns(ArticleToCollectionResponse);
     rpc ArticleToDisCollection(ArticleToDisCollectionRequest) returns(ArticleToDisCollectionResponse);
+    rpc ArticleUserCollection(ArticleUserCollectionRequest) returns(ArticleUserCollectionResponse);
 }

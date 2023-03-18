@@ -91,3 +91,8 @@ func (s *ChannelServer) ArticleToDisCollection(ctx context.Context, in *channel.
 	l := logic.NewArticleToDisCollectionLogic(ctx, s.svcCtx)
 	return l.ArticleToDisCollection(in)
 }
+
+func (s *ChannelServer) ArticleUserCollection(ctx context.Context, in *channel.ArticleUserCollectionRequest) (*channel.ArticleUserCollectionResponse, error) {
+	l := logic.NewArticleUserCollectionLogic(ctx, s.svcCtx)
+	return l.ArticleUserCollection(in)
+}
