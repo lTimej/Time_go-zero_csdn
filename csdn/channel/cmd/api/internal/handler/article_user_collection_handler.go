@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"liujun/Time_go-zero_csdn/common/httpResp"
 	"net/http"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/logic"
@@ -16,13 +18,12 @@ func ArticleUserCollectionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
+		page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+		page_num, _ := strconv.Atoi(r.URL.Query().Get("page_num"))
+		req.Page = int32(page)
+		req.PageNum = int32(page_num)
 		l := logic.NewArticleUserCollectionLogic(r.Context(), svcCtx)
 		resp, err := l.ArticleUserCollection(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		httpResp.HttpResp(w, r, resp, err)
 	}
 }

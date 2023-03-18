@@ -140,3 +140,15 @@ type ArticleToDisCollectionRequest struct {
 type ArticleToDisCollectionResponse struct {
 	Message string `json:"message"`
 }
+
+type ArticleUserCollectionRequest struct {
+	Page    int32 `json:"page,optional"`
+	PageNum int32 `json:"page_num,optional"`
+}
+
+type ArticleUserCollectionResponse struct {
+	Collections []ArticleList `json:"collections"`
+	Page        int32         `json:"page"`
+	PageNum     int32         `json:"page_num"`
+	TotalNum    int32         `json:"total_num"`
+}

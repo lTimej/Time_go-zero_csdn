@@ -84,8 +84,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/article/collection",
 					Handler: ArticleToDisCollectionHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/article/collection",
+					Handler: ArticleUserCollectionHandler(serverCtx),
+				},
 			}...,
 		),
-		//rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret)
+		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 	)
 }

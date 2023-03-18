@@ -125,6 +125,18 @@ type ArticleToDisCollectionResponse {
 	Message string `json:"message"`
 }
 
+type ArticleUserCollectionRequest {
+	Page    int32 `json:"page,optional"`
+	PageNum int32 `json:"page_num,optional"`
+}
+
+type ArticleUserCollectionResponse {
+	Collections []ArticleList `json:"collections"`
+	Page        int32         `json:"page"`
+	PageNum     int32         `json:"page_num"`
+	TotalNum    int32         `json:"total_num"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -160,4 +172,6 @@ service api-api {
 	post /v1/article/collection(ArticleToCollectionRequest) returns (ArticleToCollectionResponse)
 	@handler ArticleToDisCollection
 	delete /v1/article/collection(ArticleToDisCollectionRequest) returns (ArticleToDisCollectionResponse)
+	@handler ArticleUserCollection
+	get /v1/article/collection(ArticleUserCollectionRequest) returns (ArticleUserCollectionResponse)
 }

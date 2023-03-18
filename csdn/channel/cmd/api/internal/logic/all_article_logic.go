@@ -60,5 +60,4 @@ func (l *AllArticleLogic) AllArticle(req *types.AllArticleRequest, channel_id in
 	return &types.AllArticleResponse{
 		Articles: data,
 	}, nil
-	return
 }
