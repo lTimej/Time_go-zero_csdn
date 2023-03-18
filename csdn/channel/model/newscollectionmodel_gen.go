@@ -31,8 +31,8 @@ type (
 	newsCollectionModel interface {
 		Insert(ctx context.Context, data *NewsCollection) (sql.Result, error)
 		FindOne(ctx context.Context, collectionId int64) (*NewsCollection, error)
-		FindArticleCollectionNum(ctx context.Context, ArticleId string)(int64,error)
-		FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsCollection, error)
+		FindArticleCollectionNum(ctx context.Context, ArticleId int64)(int64,error)
+		FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsCollection, error)
 		Update(ctx context.Context, data *NewsCollection) error
 		Delete(ctx context.Context, collectionId int64) error
 	}
@@ -44,7 +44,7 @@ type (
 
 	NewsCollection struct {
 		CollectionId int64     `db:"collection_id"` // 主键id
-		UserId       int64     `db:"user_id"`       // 用户ID
+		UserId       string     `db:"user_id"`       // 用户ID
 		ArticleId    int64     `db:"article_id"`    // 文章ID
 		CreateTime   time.Time `db:"create_time"`   // 创建时间
 		IsDeleted    int64     `db:"is_deleted"`    // 是否取消收藏, 0-未取消, 1-已取消
@@ -93,7 +93,7 @@ func (m *defaultNewsCollectionModel) FindOne(ctx context.Context, collectionId i
 		return nil, err
 	}
 }
-func (m *defaultNewsCollectionModel)FindArticleCollectionNum(ctx context.Context, ArticleId string)(int64,error){
+func (m *defaultNewsCollectionModel)FindArticleCollectionNum(ctx context.Context, ArticleId int64)(int64,error){
 	newsArticleCollectionNumKey := fmt.Sprintf("%s%v", cacheNewsArticleCollectionNumPrefix, ArticleId)
 	var resp NewsCollectionNum
 	err := m.QueryRowCtx(ctx, &resp, newsArticleCollectionNumKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
@@ -109,7 +109,7 @@ func (m *defaultNewsCollectionModel)FindArticleCollectionNum(ctx context.Context
 		return 0, err
 	}
 }
-func (m *defaultNewsCollectionModel) FindOneByUserIdArticleId(ctx context.Context, userId int64, articleId int64) (*NewsCollection, error) {
+func (m *defaultNewsCollectionModel) FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsCollection, error) {
 	newsCollectionUserIdArticleIdKey := fmt.Sprintf("%s%v:%v", cacheNewsCollectionUserIdArticleIdPrefix, userId, articleId)
 	var resp NewsCollection
 	err := m.QueryRowIndexCtx(ctx, &resp, newsCollectionUserIdArticleIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
@@ -136,11 +136,14 @@ func (m *defaultNewsCollectionModel) Insert(ctx context.Context, data *NewsColle
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, newsCollectionRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.UserId, data.ArticleId, data.IsDeleted)
 	}, newsCollectionCollectionIdKey, newsCollectionUserIdArticleIdKey)
+	if err == nil{
+		m.FindOneByUserIdArticleId(ctx,data.UserId,data.ArticleId)
+	}
 	return ret, err
 }
 
 func (m *defaultNewsCollectionModel) Update(ctx context.Context, newData *NewsCollection) error {
-	data, err := m.FindOne(ctx, newData.CollectionId)
+	data, err := m.FindOneByUserIdArticleId(ctx, newData.UserId,newData.ArticleId)
 	if err != nil {
 		return err
 	}
@@ -148,8 +151,8 @@ func (m *defaultNewsCollectionModel) Update(ctx context.Context, newData *NewsCo
 	newsCollectionCollectionIdKey := fmt.Sprintf("%s%v", cacheNewsCollectionCollectionIdPrefix, data.CollectionId)
 	newsCollectionUserIdArticleIdKey := fmt.Sprintf("%s%v:%v", cacheNewsCollectionUserIdArticleIdPrefix, data.UserId, data.ArticleId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `collection_id` = ?", m.table, newsCollectionRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.UserId, newData.ArticleId, newData.IsDeleted, newData.CollectionId)
+		query := fmt.Sprintf("update %s set %s where `article_id` = ? and user_id = ?", m.table, "is_deleted = ?")
+		return conn.ExecCtx(ctx, query, newData.IsDeleted, newData.ArticleId, newData.UserId)
 	}, newsCollectionCollectionIdKey, newsCollectionUserIdArticleIdKey)
 	return err
 }

@@ -124,3 +124,19 @@ type ArticleToDisLikeRequest struct {
 type ArticleToDisLikeResponse struct {
 	Message string `json:"message"`
 }
+
+type ArticleToCollectionRequest struct {
+	ArticleId int64 `json:"aid"`
+}
+
+type ArticleToCollectionResponse struct {
+	ArticleId int64 `json:"aid"`
+}
+
+type ArticleToDisCollectionRequest struct {
+	ArticleId int64 `json:"aid"`
+}
+
+type ArticleToDisCollectionResponse struct {
+	Message string `json:"message"`
+}

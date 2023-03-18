@@ -98,6 +98,8 @@ func (m *defaultNewsArticleStatisticModel) FindOneByArticle(ctx context.Context,
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, nil
 	default:
 		return nil, err
 	}
@@ -142,5 +144,5 @@ func (m *defaultNewsArticleStatisticModel) tableName() string {
 }
 
 func (m *defaultNewsArticleStatisticModel) RowBuilder() squirrel.SelectBuilder {
-	return squirrel.Select().From(m.table)
+	return squirrel.Select(newsArticleStatisticRows).From(m.table)
 }

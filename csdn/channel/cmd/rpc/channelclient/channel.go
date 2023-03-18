@@ -13,33 +13,37 @@ import (
 )
 
 type (
-	ArticleChannelRequest        = channel.ArticleChannelRequest
-	ArticleChannelResponse       = channel.ArticleChannelResponse
-	ArticleLikeRequest           = channel.ArticleLikeRequest
-	ArticleLikeResponse          = channel.ArticleLikeResponse
-	ArticleLikeResponse_UserInfo = channel.ArticleLikeResponse_UserInfo
-	ArticleList                  = channel.ArticleList
-	ArticleReadRequest           = channel.ArticleReadRequest
-	ArticleReadResponse          = channel.ArticleReadResponse
-	ArticleStatusCacheRequest    = channel.ArticleStatusCacheRequest
-	ArticleStatusCacheResponse   = channel.ArticleStatusCacheResponse
-	ArticleToDisLikeRequest      = channel.ArticleToDisLikeRequest
-	ArticleToDisLikeResponse     = channel.ArticleToDisLikeResponse
-	ArticleToLikeRequest         = channel.ArticleToLikeRequest
-	ArticleToLikeResponse        = channel.ArticleToLikeResponse
-	ArticlestatusRequest         = channel.ArticlestatusRequest
-	ArticlestatusResponse        = channel.ArticlestatusResponse
-	ChannelList                  = channel.ChannelList
-	ChannelListRequest           = channel.ChannelListRequest
-	ChannelListResponse          = channel.ChannelListResponse
-	DefaultChannelRequest        = channel.DefaultChannelRequest
-	DefaultChannelResponse       = channel.DefaultChannelResponse
-	UserAddChannelRequest        = channel.UserAddChannelRequest
-	UserAddChannelResponse       = channel.UserAddChannelResponse
-	UserChannelRequest           = channel.UserChannelRequest
-	UserChannelResponse          = channel.UserChannelResponse
-	UserPatchChannelRequest      = channel.UserPatchChannelRequest
-	UserPatchChannelResponse     = channel.UserPatchChannelResponse
+	ArticleChannelRequest          = channel.ArticleChannelRequest
+	ArticleChannelResponse         = channel.ArticleChannelResponse
+	ArticleLikeRequest             = channel.ArticleLikeRequest
+	ArticleLikeResponse            = channel.ArticleLikeResponse
+	ArticleLikeResponse_UserInfo   = channel.ArticleLikeResponse_UserInfo
+	ArticleList                    = channel.ArticleList
+	ArticleReadRequest             = channel.ArticleReadRequest
+	ArticleReadResponse            = channel.ArticleReadResponse
+	ArticleStatusCacheRequest      = channel.ArticleStatusCacheRequest
+	ArticleStatusCacheResponse     = channel.ArticleStatusCacheResponse
+	ArticleToCollectionRequest     = channel.ArticleToCollectionRequest
+	ArticleToCollectionResponse    = channel.ArticleToCollectionResponse
+	ArticleToDisCollectionRequest  = channel.ArticleToDisCollectionRequest
+	ArticleToDisCollectionResponse = channel.ArticleToDisCollectionResponse
+	ArticleToDisLikeRequest        = channel.ArticleToDisLikeRequest
+	ArticleToDisLikeResponse       = channel.ArticleToDisLikeResponse
+	ArticleToLikeRequest           = channel.ArticleToLikeRequest
+	ArticleToLikeResponse          = channel.ArticleToLikeResponse
+	ArticlestatusRequest           = channel.ArticlestatusRequest
+	ArticlestatusResponse          = channel.ArticlestatusResponse
+	ChannelList                    = channel.ChannelList
+	ChannelListRequest             = channel.ChannelListRequest
+	ChannelListResponse            = channel.ChannelListResponse
+	DefaultChannelRequest          = channel.DefaultChannelRequest
+	DefaultChannelResponse         = channel.DefaultChannelResponse
+	UserAddChannelRequest          = channel.UserAddChannelRequest
+	UserAddChannelResponse         = channel.UserAddChannelResponse
+	UserChannelRequest             = channel.UserChannelRequest
+	UserChannelResponse            = channel.UserChannelResponse
+	UserPatchChannelRequest        = channel.UserPatchChannelRequest
+	UserPatchChannelResponse       = channel.UserPatchChannelResponse
 
 	Channel interface {
 		AllChannel(ctx context.Context, in *ChannelListRequest, opts ...grpc.CallOption) (*ChannelListResponse, error)
@@ -54,6 +58,8 @@ type (
 		ArticleToLike(ctx context.Context, in *ArticleToLikeRequest, opts ...grpc.CallOption) (*ArticleToLikeResponse, error)
 		ArticleToDisLike(ctx context.Context, in *ArticleToDisLikeRequest, opts ...grpc.CallOption) (*ArticleToDisLikeResponse, error)
 		ArticleStatusCache(ctx context.Context, in *ArticleStatusCacheRequest, opts ...grpc.CallOption) (*ArticleStatusCacheResponse, error)
+		ArticleToCollection(ctx context.Context, in *ArticleToCollectionRequest, opts ...grpc.CallOption) (*ArticleToCollectionResponse, error)
+		ArticleToDisCollection(ctx context.Context, in *ArticleToDisCollectionRequest, opts ...grpc.CallOption) (*ArticleToDisCollectionResponse, error)
 	}
 
 	defaultChannel struct {
@@ -125,4 +131,14 @@ func (m *defaultChannel) ArticleToDisLike(ctx context.Context, in *ArticleToDisL
 func (m *defaultChannel) ArticleStatusCache(ctx context.Context, in *ArticleStatusCacheRequest, opts ...grpc.CallOption) (*ArticleStatusCacheResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleStatusCache(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleToCollection(ctx context.Context, in *ArticleToCollectionRequest, opts ...grpc.CallOption) (*ArticleToCollectionResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleToCollection(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleToDisCollection(ctx context.Context, in *ArticleToDisCollectionRequest, opts ...grpc.CallOption) (*ArticleToDisCollectionResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleToDisCollection(ctx, in, opts...)
 }

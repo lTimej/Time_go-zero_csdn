@@ -111,6 +111,20 @@ type ArticleToDisLikeResponse {
 	Message string `json:"message"`
 }
 
+type ArticleToCollectionRequest {
+	ArticleId int64 `json:"aid"`
+}
+type ArticleToCollectionResponse {
+	ArticleId int64 `json:"aid"`
+}
+
+type ArticleToDisCollectionRequest {
+	ArticleId int64 `json:"aid"`
+}
+type ArticleToDisCollectionResponse {
+	Message string `json:"message"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -142,4 +156,8 @@ service api-api {
 	delete /v1/article/likes(ArticleToDisLikeRequest) returns (ArticleToDisLikeResponse)
 	@handler ArticleStatus
 	get /v1/article/status(ArticleStatusRequest) returns (ArticleStatusResponse)
+	@handler ArticleToCollection
+	post /v1/article/collection(ArticleToCollectionRequest) returns (ArticleToCollectionResponse)
+	@handler ArticleToDisCollection
+	delete /v1/article/collection(ArticleToDisCollectionRequest) returns (ArticleToDisCollectionResponse)
 }

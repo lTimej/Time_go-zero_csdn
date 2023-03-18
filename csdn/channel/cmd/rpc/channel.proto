@@ -135,6 +135,22 @@ message ArticleStatusCacheRequest{}
 
 message ArticleStatusCacheResponse{}
 
+message ArticleToCollectionRequest{
+    string UserId = 1;
+    int64 Aid = 2;
+}
+
+message ArticleToCollectionResponse{
+    int64 Aid = 1;
+}
+
+message ArticleToDisCollectionRequest{
+    string UserId = 1;
+    int64 Aid = 2;
+}
+
+message ArticleToDisCollectionResponse{}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
@@ -148,4 +164,6 @@ service Channel {
     rpc ArticleToLike(ArticleToLikeRequest) returns(ArticleToLikeResponse);
     rpc ArticleToDisLike(ArticleToDisLikeRequest) returns(ArticleToDisLikeResponse);
     rpc ArticleStatusCache(ArticleStatusCacheRequest) returns(ArticleStatusCacheResponse);
+    rpc ArticleToCollection(ArticleToCollectionRequest) returns(ArticleToCollectionResponse);
+    rpc ArticleToDisCollection(ArticleToDisCollectionRequest) returns(ArticleToDisCollectionResponse);
 }

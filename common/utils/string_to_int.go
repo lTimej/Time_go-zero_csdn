@@ -14,7 +14,7 @@ func StringToInt64(str string) int64 {
 
 func Int64ToString(n int64) string {
 	if n == 0 {
-		return ""
+		return "0"
 	}
 	return strconv.FormatInt(n, 10)
 }

@@ -14,31 +14,29 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ArticleToLikeLogic struct {
+type ArticleToDisCollectionLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewArticleToLikeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ArticleToLikeLogic {
-	return &ArticleToLikeLogic{
+func NewArticleToDisCollectionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ArticleToDisCollectionLogic {
+	return &ArticleToDisCollectionLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *ArticleToLikeLogic) ArticleToLike(req *types.ArticleToLikeRequest) (resp *types.ArticleToLikeResponse, err error) {
+func (l *ArticleToDisCollectionLogic) ArticleToDisCollection(req *types.ArticleToDisCollectionRequest) (resp *types.ArticleToDisCollectionResponse, err error) {
 	// todo: add your logic here and delete this line
-	uid := ctxdata.GetUidFromCtx(l.ctx)
-	aid := req.ArticleId
-	res, err := l.svcCtx.ChannelRpc.ArticleToLike(l.ctx, &channelclient.ArticleToLikeRequest{UserId: uid, ArticleId: aid})
+	user_id := ctxdata.GetUidFromCtx(l.ctx)
+	_, err = l.svcCtx.ChannelRpc.ArticleToDisCollection(l.ctx, &channelclient.ArticleToDisCollectionRequest{UserId: user_id, Aid: req.ArticleId})
 	if err != nil {
 		return nil, err
 	}
 	key := fmt.Sprintf(globalkey.ArticleStatus, utils.Int64ToString(req.ArticleId))
-	field := globalkey.ArticleLikeNum
-	fmt.Println(key, ":", field)
-	l.svcCtx.RedisClient.Hincrby(key, field, 1)
-	return &types.ArticleToLikeResponse{ArticleId: res.Aid}, nil
+	field := globalkey.ArticleCollectionNum
+	l.svcCtx.RedisClient.Hincrby(key, field, -1)
+	return &types.ArticleToDisCollectionResponse{Message: "success"}, nil
 }

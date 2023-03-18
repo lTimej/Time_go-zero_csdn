@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
+	"liujun/Time_go-zero_csdn/common/globalkey"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/channelclient"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/svc"
@@ -36,5 +38,9 @@ func (l *ArticleToDisLikeLogic) ArticleToDisLike(req *types.ArticleToDisLikeRequ
 	if err != nil {
 		return nil, err
 	}
+	key := fmt.Sprintf(globalkey.ArticleStatus, utils.Int64ToString(req.ArticleId))
+	field := globalkey.ArticleLikeNum
+	fmt.Println(key, ":", field)
+	l.svcCtx.RedisClient.Hincrby(key, field, -1)
 	return &types.ArticleToDisLikeResponse{Message: "success"}, nil
 }

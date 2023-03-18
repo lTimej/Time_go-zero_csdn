@@ -55,12 +55,6 @@ func (l *ArticleStatusCacheLogic) ArticleStatusCache(in *channel.ArticleStatusCa
 			fmt.Println("文章状态缓存失败", err)
 			return nil, err
 		}
-		// key := fmt.Sprintf("cache:newsArticleStatistic:articleId:%v", aid)
-		// data, _ := json.Marshal(nas)
-		// err = l.svcCtx.RedisClient.Set(key, string(data))
-		// if err != nil {
-		// 	fmt.Println("单个文章缓存状态失败")
-		// }
 	}
 	return &channel.ArticleStatusCacheResponse{}, nil
 }

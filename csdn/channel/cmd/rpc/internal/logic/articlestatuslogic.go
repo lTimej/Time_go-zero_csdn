@@ -32,6 +32,12 @@ func (l *ArticleStatusLogic) ArticleStatus(in *channel.ArticlestatusRequest) (*c
 	if err != nil {
 		return nil, err
 	}
+	newsCollectionUserIdArticleIdkey := fmt.Sprintf("%s%v:%v", "cache:newsCollection:userId:articleId:", in.UserId, in.ArticleId)
+	is_collection, err := l.svcCtx.RedisClient.Exists(newsCollectionUserIdArticleIdkey)
+	fmt.Println(newsCollectionUserIdArticleIdkey, "=====", is_collection)
+	if err != nil {
+		return nil, err
+	}
 	newsArticleStatisticArticleIdKey := fmt.Sprintf(globalkey.ArticleStatus, utils.Int64ToString(in.ArticleId))
 	ok, err := l.svcCtx.RedisClient.Exists(newsArticleStatisticArticleIdKey)
 	if err != nil {
@@ -42,6 +48,17 @@ func (l *ArticleStatusLogic) ArticleStatus(in *channel.ArticlestatusRequest) (*c
 		article_static, err := l.svcCtx.ArticleStaticModel.FindOneByArticle(l.ctx, build)
 		if err != nil {
 			return nil, err
+		}
+		if article_static == nil && err == nil {
+			return &channel.ArticlestatusResponse{
+				CollectionNum: 0,
+				LikeNum:       0,
+				ReadNum:       0,
+				Aid:           in.ArticleId,
+				Isfocus:       false,
+				Iscollection:  is_collection,
+				Islike:        is_like,
+			}, nil
 		}
 		l.svcCtx.RedisClient.Hset(newsArticleStatisticArticleIdKey, globalkey.ArticleLikeNum, utils.Int64ToString(article_static.LikeCount))
 		l.svcCtx.RedisClient.Hset(newsArticleStatisticArticleIdKey, globalkey.ArticleReadNum, utils.Int64ToString(article_static.ReadCount))
@@ -57,7 +74,7 @@ func (l *ArticleStatusLogic) ArticleStatus(in *channel.ArticlestatusRequest) (*c
 		ReadNum:       utils.StringToInt64(article_static[globalkey.ArticleReadNum]),
 		Aid:           in.ArticleId,
 		Isfocus:       false,
-		Iscollection:  false,
+		Iscollection:  is_collection,
 		Islike:        is_like,
 	}, nil
 }

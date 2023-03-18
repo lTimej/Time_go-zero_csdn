@@ -81,3 +81,13 @@ func (s *ChannelServer) ArticleStatusCache(ctx context.Context, in *channel.Arti
 	l := logic.NewArticleStatusCacheLogic(ctx, s.svcCtx)
 	return l.ArticleStatusCache(in)
 }
+
+func (s *ChannelServer) ArticleToCollection(ctx context.Context, in *channel.ArticleToCollectionRequest) (*channel.ArticleToCollectionResponse, error) {
+	l := logic.NewArticleToCollectionLogic(ctx, s.svcCtx)
+	return l.ArticleToCollection(in)
+}
+
+func (s *ChannelServer) ArticleToDisCollection(ctx context.Context, in *channel.ArticleToDisCollectionRequest) (*channel.ArticleToDisCollectionResponse, error) {
+	l := logic.NewArticleToDisCollectionLogic(ctx, s.svcCtx)
+	return l.ArticleToDisCollection(in)
+}
