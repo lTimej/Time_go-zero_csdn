@@ -27,6 +27,27 @@ message ArticleList{
     int32 CollectionNum = 15;
 }
 
+message CommentList{
+    int64 CommentId = 1;
+    int64 ParentCommentId = 2;
+    string Ctime = 3;
+    int64 AuthorId = 4;
+    int64 IsTop = 5;
+    string Content = 6;
+    int64 CommentIsLike = 7;
+}
+
+message ArticleCommentList{
+    int64 CommentId = 1;
+    int64 ParentCommentId = 2;
+    string Ctime = 3;
+    int64 AuthorId = 4;
+    int64 IsTop = 5;
+    string Content = 6;
+    int64 CommentIsLike = 7;
+    repeated CommentList CComments = 8;
+}
+
 message ChannelListRequest {}
 
 message ChannelListResponse {
@@ -177,14 +198,15 @@ message ArticleToCommentResponse{
 message ArticleCommentListRequest{
     string type = 1;
     int64 article_id = 2;
-    string offset = 3;
+    int64 offset = 3;
     int64 limit = 4;
 }
 
 message ArticleCommentListResponse{
-    int64 CommentId = 1;
-    int64 ArticleId = 2;
-    int64 CommentParentId = 3;
+    repeated ArticleCommentList Comments = 1;
+    int64 TotalNum = 2;
+    string EndId = 3;
+    string LastId = 4;
 }
 
 service Channel {
@@ -204,4 +226,5 @@ service Channel {
     rpc ArticleToDisCollection(ArticleToDisCollectionRequest) returns(ArticleToDisCollectionResponse);
     rpc ArticleUserCollection(ArticleUserCollectionRequest) returns(ArticleUserCollectionResponse);
     rpc ArticleToComment(ArticleToCommnetRequest) returns(ArticleToCommentResponse);
+    rpc ArticleCommentList(ArticleCommentListRequest) returns(ArticleCommentListResponse);
 }

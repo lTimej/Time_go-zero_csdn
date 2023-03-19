@@ -38,6 +38,7 @@ type ChannelClient interface {
 	ArticleToDisCollection(ctx context.Context, in *ArticleToDisCollectionRequest, opts ...grpc.CallOption) (*ArticleToDisCollectionResponse, error)
 	ArticleUserCollection(ctx context.Context, in *ArticleUserCollectionRequest, opts ...grpc.CallOption) (*ArticleUserCollectionResponse, error)
 	ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error)
+	ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error)
 }
 
 type channelClient struct {
@@ -192,6 +193,15 @@ func (c *channelClient) ArticleToComment(ctx context.Context, in *ArticleToCommn
 	return out, nil
 }
 
+func (c *channelClient) ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error) {
+	out := new(ArticleCommentListResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/ArticleCommentList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
@@ -212,6 +222,7 @@ type ChannelServer interface {
 	ArticleToDisCollection(context.Context, *ArticleToDisCollectionRequest) (*ArticleToDisCollectionResponse, error)
 	ArticleUserCollection(context.Context, *ArticleUserCollectionRequest) (*ArticleUserCollectionResponse, error)
 	ArticleToComment(context.Context, *ArticleToCommnetRequest) (*ArticleToCommentResponse, error)
+	ArticleCommentList(context.Context, *ArticleCommentListRequest) (*ArticleCommentListResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -266,6 +277,9 @@ func (UnimplementedChannelServer) ArticleUserCollection(context.Context, *Articl
 }
 func (UnimplementedChannelServer) ArticleToComment(context.Context, *ArticleToCommnetRequest) (*ArticleToCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArticleToComment not implemented")
+}
+func (UnimplementedChannelServer) ArticleCommentList(context.Context, *ArticleCommentListRequest) (*ArticleCommentListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ArticleCommentList not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -568,6 +582,24 @@ func _Channel_ArticleToComment_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_ArticleCommentList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleCommentListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).ArticleCommentList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/ArticleCommentList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).ArticleCommentList(ctx, req.(*ArticleCommentListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -638,6 +670,10 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArticleToComment",
 			Handler:    _Channel_ArticleToComment_Handler,
+		},
+		{
+			MethodName: "ArticleCommentList",
+			Handler:    _Channel_ArticleCommentList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

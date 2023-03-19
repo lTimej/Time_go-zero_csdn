@@ -2,7 +2,12 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
+	"liujun/Time_go-zero_csdn/common/cacheTTL"
+	"liujun/Time_go-zero_csdn/common/globalkey"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/channel/model"
 
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
@@ -53,6 +58,19 @@ func (l *ArticleToCommentLogic) ArticleToComment(in *channel.ArticleToCommnetReq
 	if err != nil {
 		return nil, err
 	}
+	comment_cid_key := fmt.Sprintf(globalkey.ArticleCommentByCid, comment_obj.CommentId)
+	data, _ := json.Marshal(comment_obj)
+	l.svcCtx.RedisClient.Setex(comment_cid_key, string(data), cacheTTL.ArticleCommentByCid)
+	var comment_aid_key string
+	if comment_id == 0 {
+		comment_aid_key = fmt.Sprintf(globalkey.ArticleCommentByAid, Aid)
+		_, err = l.svcCtx.RedisClient.Zadd(comment_aid_key, utils.TimeToTimeStamp(comment_obj.CreateTime), utils.Int64ToString(comment_obj.CommentId))
+	} else {
+		comment_aid_key = fmt.Sprintf(globalkey.ArticleCommentByAid, comment_id)
+		_, err = l.svcCtx.RedisClient.Zadd(comment_aid_key, utils.TimeToTimeStamp(comment_obj.CreateTime), utils.Int64ToString(comment_obj.CommentId))
+	}
+	l.svcCtx.RedisClient.Expire(comment_aid_key, cacheTTL.ArticleCommentByAid)
+	fmt.Println("评论缓存失败 err:", err)
 	resp := new(channel.ArticleToCommentResponse)
 	resp.ArticleId = Aid
 	resp.CommentId = comment_obj.CommentId

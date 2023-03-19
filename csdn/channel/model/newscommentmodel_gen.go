@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/Masterminds/squirrel"
 	"strings"
 	"time"
 
@@ -28,8 +29,10 @@ var (
 
 type (
 	newsCommentModel interface {
+		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsComment) (sql.Result, error)
 		FindOne(ctx context.Context, commentId int64) (*NewsComment, error)
+		FindAll(ctx context.Context, builder squirrel.SelectBuilder) ([]*NewsComment, error)
 		FindOneByArticleIdUserIdParentId(ctx context.Context, ArticleId int64,UserId string,ParentId int64) (*NewsComment, error)
 		Update(ctx context.Context, data *NewsComment) error
 		Delete(ctx context.Context, commentId int64) error
@@ -87,6 +90,22 @@ func (m *defaultNewsCommentModel) FindOne(ctx context.Context, commentId int64) 
 	}
 }
 
+func (m *defaultNewsCommentModel) FindAll(ctx context.Context, builder squirrel.SelectBuilder) ([]*NewsComment, error){
+	query,values,err := builder.OrderBy("is_top desc,comment_id desc").ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*NewsComment
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultNewsCommentModel)FindOneByArticleIdUserIdParentId(ctx context.Context, ArticleId int64,UserId string,ParentId int64) (*NewsComment, error){
 	newsCommentCommentIdKey := fmt.Sprintf("%s%v:%v:%v", cacheNewsCommentArticleIdUserIdPrefix, ArticleId,UserId,ParentId)
 	var resp NewsComment
@@ -134,4 +153,8 @@ func (m *defaultNewsCommentModel) queryPrimary(ctx context.Context, conn sqlx.Sq
 
 func (m *defaultNewsCommentModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultNewsCommentModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select(newsCommentRows).From(m.table)
 }

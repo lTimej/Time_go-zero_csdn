@@ -15,6 +15,9 @@ import (
 type (
 	ArticleChannelRequest          = channel.ArticleChannelRequest
 	ArticleChannelResponse         = channel.ArticleChannelResponse
+	ArticleCommentList             = channel.ArticleCommentList
+	ArticleCommentListRequest      = channel.ArticleCommentListRequest
+	ArticleCommentListResponse     = channel.ArticleCommentListResponse
 	ArticleLikeRequest             = channel.ArticleLikeRequest
 	ArticleLikeResponse            = channel.ArticleLikeResponse
 	ArticleLikeResponse_UserInfo   = channel.ArticleLikeResponse_UserInfo
@@ -40,6 +43,7 @@ type (
 	ChannelList                    = channel.ChannelList
 	ChannelListRequest             = channel.ChannelListRequest
 	ChannelListResponse            = channel.ChannelListResponse
+	CommentList                    = channel.CommentList
 	DefaultChannelRequest          = channel.DefaultChannelRequest
 	DefaultChannelResponse         = channel.DefaultChannelResponse
 	UserAddChannelRequest          = channel.UserAddChannelRequest
@@ -66,6 +70,7 @@ type (
 		ArticleToDisCollection(ctx context.Context, in *ArticleToDisCollectionRequest, opts ...grpc.CallOption) (*ArticleToDisCollectionResponse, error)
 		ArticleUserCollection(ctx context.Context, in *ArticleUserCollectionRequest, opts ...grpc.CallOption) (*ArticleUserCollectionResponse, error)
 		ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error)
+		ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error)
 	}
 
 	defaultChannel struct {
@@ -157,4 +162,9 @@ func (m *defaultChannel) ArticleUserCollection(ctx context.Context, in *ArticleU
 func (m *defaultChannel) ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleToComment(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleCommentList(ctx, in, opts...)
 }

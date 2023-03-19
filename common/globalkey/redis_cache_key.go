@@ -7,3 +7,8 @@ const (
 	ArticleReadNum       = "article:read:count"       //文章阅读量
 	ArticleCollectionNum = "article:collection:count" //文章收藏量
 )
+
+const (
+	ArticleCommentByAid = "article:comment:article:%d"
+	ArticleCommentByCid = "article:comment:comment:%d"
+)
