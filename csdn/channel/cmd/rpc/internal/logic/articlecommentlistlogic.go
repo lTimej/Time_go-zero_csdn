@@ -82,15 +82,16 @@ func (l *ArticleCommentListLogic) get_comment_ids(in *channel.ArticleCommentList
 	return
 }
 
-func (l *ArticleCommentListLogic) get_comment_list(cids []int64) {
+func (l *ArticleCommentListLogic) get_comment_list(cids []int64) (comments []*model.NewsComment) {
 	for _, cid := range cids {
 		newsCommentCommentIdKey := fmt.Sprintf(globalkey.ArticleCommentByCid, cid)
 		data, err := l.svcCtx.RedisClient.Get(newsCommentCommentIdKey)
 		if err != nil {
 			return
 		}
-		var comments *model.NewsComment
-		json.Unmarshal([]byte(data), &comments)
+		var comment model.NewsComment
+		json.Unmarshal([]byte(data), &comment)
+		comments = append(comments, &comment)
 	}
-
+	return comments
 }
