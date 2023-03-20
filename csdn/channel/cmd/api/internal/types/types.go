@@ -199,3 +199,15 @@ type ArticleCommentListResponse struct {
 	EndId    int64                 `json:"end_id"`
 	LastId   int64                 `json:"last_id"`
 }
+
+type AllArticleUserRequest struct {
+	Page    int32 `json:"page,optional"`
+	PageNum int32 `json:"page_num,optional"`
+}
+
+type AllArticleUserResponse struct {
+	Articles []ArticleList `json:"articles"`
+	Page     int32         `json:"page,optional"`
+	PageNum  int32         `json:"page_num,optional"`
+	TotalNum int64         `json:"total_num,optional"`
+}

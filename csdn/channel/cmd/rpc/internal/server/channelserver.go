@@ -106,3 +106,8 @@ func (s *ChannelServer) ArticleCommentList(ctx context.Context, in *channel.Arti
 	l := logic.NewArticleCommentListLogic(ctx, s.svcCtx)
 	return l.ArticleCommentList(in)
 }
+
+func (s *ChannelServer) ArticleUserList(ctx context.Context, in *channel.ArticleUserRequest) (*channel.ArticleUserResponse, error) {
+	l := logic.NewArticleUserListLogic(ctx, s.svcCtx)
+	return l.ArticleUserList(in)
+}

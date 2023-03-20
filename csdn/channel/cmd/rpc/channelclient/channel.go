@@ -38,6 +38,8 @@ type (
 	ArticleToLikeResponse          = channel.ArticleToLikeResponse
 	ArticleUserCollectionRequest   = channel.ArticleUserCollectionRequest
 	ArticleUserCollectionResponse  = channel.ArticleUserCollectionResponse
+	ArticleUserRequest             = channel.ArticleUserRequest
+	ArticleUserResponse            = channel.ArticleUserResponse
 	ArticlestatusRequest           = channel.ArticlestatusRequest
 	ArticlestatusResponse          = channel.ArticlestatusResponse
 	ChannelList                    = channel.ChannelList
@@ -71,6 +73,7 @@ type (
 		ArticleUserCollection(ctx context.Context, in *ArticleUserCollectionRequest, opts ...grpc.CallOption) (*ArticleUserCollectionResponse, error)
 		ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error)
 		ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error)
+		ArticleUserList(ctx context.Context, in *ArticleUserRequest, opts ...grpc.CallOption) (*ArticleUserResponse, error)
 	}
 
 	defaultChannel struct {
@@ -167,4 +170,9 @@ func (m *defaultChannel) ArticleToComment(ctx context.Context, in *ArticleToComm
 func (m *defaultChannel) ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleCommentList(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleUserList(ctx context.Context, in *ArticleUserRequest, opts ...grpc.CallOption) (*ArticleUserResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleUserList(ctx, in, opts...)
 }

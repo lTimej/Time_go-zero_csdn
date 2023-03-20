@@ -209,6 +209,16 @@ message ArticleCommentListResponse{
     int64 LastId = 4;
 }
 
+message ArticleUserRequest{
+    string UserId = 1;
+    int32 Page = 2;
+    int32 PageNum = 3;
+}
+
+message ArticleUserResponse{
+    repeated ArticleList articles = 1;
+}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
@@ -227,4 +237,5 @@ service Channel {
     rpc ArticleUserCollection(ArticleUserCollectionRequest) returns(ArticleUserCollectionResponse);
     rpc ArticleToComment(ArticleToCommnetRequest) returns(ArticleToCommentResponse);
     rpc ArticleCommentList(ArticleCommentListRequest) returns(ArticleCommentListResponse);
+    rpc ArticleUserList(ArticleUserRequest) returns(ArticleUserResponse);
 }
