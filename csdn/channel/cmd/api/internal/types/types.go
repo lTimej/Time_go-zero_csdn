@@ -24,6 +24,27 @@ type ArticleList struct {
 	CollectionNum int32  `json:"collection_num"`
 }
 
+type CommentList struct {
+	CommentId       int64  `json:"comment_id"`
+	ParentCommentId int64  `json:"parent_comment_id"`
+	Ctime           string `json:"ctime"`
+	AuthorId        string `json:"author_id"`
+	IsTop           int64  `json:"is_top"`
+	Content         string `json:"content"`
+	CommentIsLike   int64  `json:"comment_is_like"`
+}
+
+type ArticleCommentList struct {
+	CommentId       int64          `json:"comment_id"`
+	ParentCommentId int64          `json:"parent_comment_id"`
+	Ctime           string         `json:"ctime"`
+	AuthorId        string         `json:"author_id"`
+	IsTop           int64          `json:"is_top"`
+	Content         string         `json:"content"`
+	CommentIsLike   int64          `json:"comment_is_like"`
+	CComments       []*CommentList `json:"cComments"`
+}
+
 type AllChannelRequest struct {
 }
 
@@ -163,4 +184,18 @@ type ArticleToCommentResponse struct {
 	ArticleId       int64 `json:"art_id"`
 	CommentParentId int64 `json:"comment_parent_id"`
 	CommentId       int64 `json:"comment_id"`
+}
+
+type ArticleCommentListRequest struct {
+	Ty        string `json:"type,optional"`
+	ArticleId int64  `json:"article_id,optional"`
+	Offset    int64  `json:"offset,optional"`
+	Limit     int64  `json:"limit,optional"`
+}
+
+type ArticleCommentListResponse struct {
+	Comments []*ArticleCommentList `json:"comments"`
+	TotalNum int64                 `json:"total_num"`
+	EndId    int64                 `json:"end_id"`
+	LastId   int64                 `json:"last_id"`
 }

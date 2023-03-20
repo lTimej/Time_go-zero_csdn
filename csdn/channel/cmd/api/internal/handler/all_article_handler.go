@@ -1,20 +1,18 @@
 package handler
 
 import (
-	"fmt"
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/logic"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/api/internal/types"
 	"net/http"
 	"strconv"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func AllArticleHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
-	fmt.Println(111112)
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("进来了.....................")
 		var req types.AllArticleRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

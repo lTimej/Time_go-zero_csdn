@@ -7,6 +7,7 @@ require (
 	github.com/cloopen/go-sms-sdk v0.0.0-20200702015230-7c5619f80c9e
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/hibiken/asynq v0.24.0
+	github.com/jinzhu/copier v0.3.5
 	github.com/minio/minio-go/v7 v7.0.49
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0

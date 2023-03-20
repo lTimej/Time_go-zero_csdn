@@ -31,7 +31,7 @@ message CommentList{
     int64 CommentId = 1;
     int64 ParentCommentId = 2;
     string Ctime = 3;
-    int64 AuthorId = 4;
+    string AuthorId = 4;
     int64 IsTop = 5;
     string Content = 6;
     int64 CommentIsLike = 7;
@@ -41,7 +41,7 @@ message ArticleCommentList{
     int64 CommentId = 1;
     int64 ParentCommentId = 2;
     string Ctime = 3;
-    int64 AuthorId = 4;
+    string AuthorId = 4;
     int64 IsTop = 5;
     string Content = 6;
     int64 CommentIsLike = 7;
@@ -205,8 +205,8 @@ message ArticleCommentListRequest{
 message ArticleCommentListResponse{
     repeated ArticleCommentList Comments = 1;
     int64 TotalNum = 2;
-    string EndId = 3;
-    string LastId = 4;
+    int64 EndId = 3;
+    int64 LastId = 4;
 }
 
 service Channel {

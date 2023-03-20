@@ -32,6 +32,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/v1/article/likes",
 				Handler: ArticleLikeHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/v1/article/comment",
+				Handler: ArticleCommentListHandler(serverCtx),
+			},
 		},
 	)
 

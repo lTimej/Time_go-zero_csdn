@@ -19,6 +19,28 @@ type ArticleList {
 	LikeNum       int32  `json:"like_num"`
 	CollectionNum int32  `json:"collection_num"`
 }
+
+type CommentList {
+	CommentId       int64  `json:"comment_id"`
+	ParentCommentId int64  `json:"parent_comment_id"`
+	Ctime           string `json:"ctime"`
+	AuthorId        string `json:"author_id"`
+	IsTop           int64  `json:"is_top"`
+	Content         string `json:"content"`
+	CommentIsLike   int64  `json:"comment_is_like"`
+}
+
+type ArticleCommentList {
+	CommentId       int64          `json:"comment_id"`
+	ParentCommentId int64          `json:"parent_comment_id"`
+	Ctime           string         `json:"ctime"`
+	AuthorId        string         `json:"author_id"`
+	IsTop           int64          `json:"is_top"`
+	Content         string         `json:"content"`
+	CommentIsLike   int64          `json:"comment_is_like"`
+	CComments       []*CommentList `json:"cComments"`
+}
+
 type AllChannelRequest{}
 
 type AllChannelResponse {
@@ -149,6 +171,20 @@ type ArticleToCommentResponse {
 	CommentId       int64 `json:"comment_id"`
 }
 
+type ArticleCommentListRequest {
+	Ty        string `json:"type,optional"`
+	ArticleId int64  `json:"article_id,optional"`
+	Offset    int64  `json:"offset,optional"`
+	Limit     int64  `json:"limit,optional"`
+}
+
+type ArticleCommentListResponse {
+	Comments []*ArticleCommentList `json:"comments"`
+	TotalNum int64                 `json:"total_num"`
+	EndId    int64                 `json:"end_id"`
+	LastId   int64                 `json:"last_id"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -158,6 +194,8 @@ service api-api {
 	get /v1/article/articles/:channel_id(AllArticleRequest) returns (AllArticleResponse)
 	@handler ArticleLike
 	get /v1/article/likes(ArticleLikeRequest) returns (ArticleLikeResponse)
+	@handler ArticleCommentList
+	get /v1/article/comment(ArticleCommentListRequest) returns (ArticleCommentListResponse)
 }
 
 @server (

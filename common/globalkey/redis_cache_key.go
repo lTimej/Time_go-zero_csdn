@@ -11,4 +11,5 @@ const (
 const (
 	ArticleCommentByAid = "article:comment:article:%d"
 	ArticleCommentByCid = "article:comment:comment:%d"
+	ArticleComment      = "article:comment:%d"
 )
