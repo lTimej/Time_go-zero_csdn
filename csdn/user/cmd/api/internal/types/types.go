@@ -75,8 +75,8 @@ type CancelFocusUserResponse struct {
 }
 
 type UserFocusListRequest struct {
-	Page    int64 `json:"page"`
-	PageNum int64 `json:"page_num"`
+	Page    int64 `json:"page,optional"`
+	PageNum int64 `json:"page_num,optional"`
 }
 
 type UserFocusListResponse struct {
@@ -87,8 +87,8 @@ type UserFocusListResponse struct {
 }
 
 type UserFansListRequest struct {
-	Page    int64 `json:"page"`
-	PageNum int64 `json:"page_num"`
+	Page    int64 `json:"page,optional"`
+	PageNum int64 `json:"page_num,optional"`
 }
 
 type UserFansListResponse struct {

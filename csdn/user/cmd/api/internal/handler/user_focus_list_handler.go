@@ -2,6 +2,7 @@ package handler
 
 import (
 	"liujun/Time_go-zero_csdn/common/httpResp"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"net/http"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/logic"
@@ -18,7 +19,8 @@ func UserFocusListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
+		req.Page = utils.StringToInt64(r.URL.Query().Get("page"))
+		req.PageNum = utils.StringToInt64(r.URL.Query().Get("page_num"))
 		l := logic.NewUserFocusListLogic(r.Context(), svcCtx)
 		resp, err := l.UserFocusList(&req)
 		httpResp.HttpResp(w, r, resp, err)

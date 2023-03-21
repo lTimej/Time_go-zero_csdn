@@ -66,8 +66,8 @@ type CancelFocusUserResponse {
 }
 
 type UserFocusListRequest {
-	Page    int64 `json:"page"`
-	PageNum int64 `json:"page_num"`
+	Page    int64 `json:"page,optional"`
+	PageNum int64 `json:"page_num,optional"`
 }
 
 type UserFocusListResponse {
@@ -78,8 +78,8 @@ type UserFocusListResponse {
 }
 
 type UserFansListRequest {
-	Page    int64 `json:"page"`
-	PageNum int64 `json:"page_num"`
+	Page    int64 `json:"page,optional"`
+	PageNum int64 `json:"page_num,optional"`
 }
 
 type UserFansListResponse {
