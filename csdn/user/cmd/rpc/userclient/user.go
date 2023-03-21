@@ -27,6 +27,11 @@ type (
 	SmsResponse             = user.SmsResponse
 	UserCurrInfoRequest     = user.UserCurrInfoRequest
 	UserCurrInfoResponse    = user.UserCurrInfoResponse
+	UserFansListRequest     = user.UserFansListRequest
+	UserFansListResponse    = user.UserFansListResponse
+	UserFocus               = user.UserFocus
+	UserFocusListRequest    = user.UserFocusListRequest
+	UserFocusListResponse   = user.UserFocusListResponse
 
 	User interface {
 		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
@@ -36,6 +41,8 @@ type (
 		IsFocueUser(ctx context.Context, in *IsFocusUserRequest, opts ...grpc.CallOption) (*IsFocusUserResponse, error)
 		FocueUser(ctx context.Context, in *FocusUserRequest, opts ...grpc.CallOption) (*FocusUserResponse, error)
 		CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error)
+		UserFocusList(ctx context.Context, in *UserFocusListRequest, opts ...grpc.CallOption) (*UserFocusListResponse, error)
+		UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error)
 	}
 
 	defaultUser struct {
@@ -82,4 +89,14 @@ func (m *defaultUser) FocueUser(ctx context.Context, in *FocusUserRequest, opts 
 func (m *defaultUser) CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.CancelFocueUser(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserFocusList(ctx context.Context, in *UserFocusListRequest, opts ...grpc.CallOption) (*UserFocusListResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserFocusList(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserFansList(ctx, in, opts...)
 }

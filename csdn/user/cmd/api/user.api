@@ -1,3 +1,12 @@
+type UserFocusFansList {
+	UserId       string `json:"user_id"`
+	Flag         string `json:"flag"`
+	UserName     string `json:"user_name"`
+	HeadPhoto    string `json:"head_photo"`
+	Introduction string `json:"introduction"`
+	MutualFocus  bool   `json:"mutual_focus"`
+}
+
 type UserPasswordLoginRequest {
 	UserName string `json:"username"`
 	Password string `json:"password"`
@@ -56,6 +65,30 @@ type CancelFocusUserResponse {
 	Message string `json:"message"`
 }
 
+type UserFocusListRequest {
+	Page    int64 `json:"page"`
+	PageNum int64 `json:"page_num"`
+}
+
+type UserFocusListResponse {
+	Page     int64                `json:"page"`
+	PageNum  int64                `json:"page_num"`
+	TotalNum int64                `json:"total_num"`
+	Focus    []*UserFocusFansList `json:"focus"`
+}
+
+type UserFansListRequest {
+	Page    int64 `json:"page"`
+	PageNum int64 `json:"page_num"`
+}
+
+type UserFansListResponse {
+	Page     int64                `json:"page"`
+	PageNum  int64                `json:"page_num"`
+	TotalNum int64                `json:"total_num"`
+	Fans     []*UserFocusFansList `json:"fans"`
+}
+
 service api-api {
 	@handler UserPasswordLogin
 	post /v1/user/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
@@ -79,4 +112,8 @@ service api-api {
 	post /v1/user/focus(FocusUserRequest) returns(FocusUserResponse)
 	@handler CancelFocusUser
 	delete /v1/user/focus(CancelFocusUserRequest) returns(CancelFocusUserResponse)
+	@handler UserFocusList
+	get /v1/user/focus(UserFocusListRequest) returns(UserFocusListResponse)
+	@handler UserFansList
+	get /v1/user/fans(UserFansListRequest) returns(UserFansListResponse)
 }

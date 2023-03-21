@@ -29,6 +29,8 @@ type UserClient interface {
 	IsFocueUser(ctx context.Context, in *IsFocusUserRequest, opts ...grpc.CallOption) (*IsFocusUserResponse, error)
 	FocueUser(ctx context.Context, in *FocusUserRequest, opts ...grpc.CallOption) (*FocusUserResponse, error)
 	CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error)
+	UserFocusList(ctx context.Context, in *UserFocusListRequest, opts ...grpc.CallOption) (*UserFocusListResponse, error)
+	UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error)
 }
 
 type userClient struct {
@@ -102,6 +104,24 @@ func (c *userClient) CancelFocueUser(ctx context.Context, in *CancelFocusUserReq
 	return out, nil
 }
 
+func (c *userClient) UserFocusList(ctx context.Context, in *UserFocusListRequest, opts ...grpc.CallOption) (*UserFocusListResponse, error) {
+	out := new(UserFocusListResponse)
+	err := c.cc.Invoke(ctx, "/user.User/UserFocusList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error) {
+	out := new(UserFansListResponse)
+	err := c.cc.Invoke(ctx, "/user.User/UserFansList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -113,6 +133,8 @@ type UserServer interface {
 	IsFocueUser(context.Context, *IsFocusUserRequest) (*IsFocusUserResponse, error)
 	FocueUser(context.Context, *FocusUserRequest) (*FocusUserResponse, error)
 	CancelFocueUser(context.Context, *CancelFocusUserRequest) (*CancelFocusUserResponse, error)
+	UserFocusList(context.Context, *UserFocusListRequest) (*UserFocusListResponse, error)
+	UserFansList(context.Context, *UserFansListRequest) (*UserFansListResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -140,6 +162,12 @@ func (UnimplementedUserServer) FocueUser(context.Context, *FocusUserRequest) (*F
 }
 func (UnimplementedUserServer) CancelFocueUser(context.Context, *CancelFocusUserRequest) (*CancelFocusUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelFocueUser not implemented")
+}
+func (UnimplementedUserServer) UserFocusList(context.Context, *UserFocusListRequest) (*UserFocusListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFocusList not implemented")
+}
+func (UnimplementedUserServer) UserFansList(context.Context, *UserFansListRequest) (*UserFansListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFansList not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -280,6 +308,42 @@ func _User_CancelFocueUser_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserFocusList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFocusListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserFocusList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/UserFocusList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserFocusList(ctx, req.(*UserFocusListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserFansList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFansListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserFansList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.User/UserFansList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserFansList(ctx, req.(*UserFansListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +378,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CancelFocueUser",
 			Handler:    _User_CancelFocueUser_Handler,
+		},
+		{
+			MethodName: "UserFocusList",
+			Handler:    _User_UserFocusList_Handler,
+		},
+		{
+			MethodName: "UserFansList",
+			Handler:    _User_UserFansList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

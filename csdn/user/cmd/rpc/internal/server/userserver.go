@@ -56,3 +56,13 @@ func (s *UserServer) CancelFocueUser(ctx context.Context, in *user.CancelFocusUs
 	l := logic.NewCancelFocueUserLogic(ctx, s.svcCtx)
 	return l.CancelFocueUser(in)
 }
+
+func (s *UserServer) UserFocusList(ctx context.Context, in *user.UserFocusListRequest) (*user.UserFocusListResponse, error) {
+	l := logic.NewUserFocusListLogic(ctx, s.svcCtx)
+	return l.UserFocusList(in)
+}
+
+func (s *UserServer) UserFansList(ctx context.Context, in *user.UserFansListRequest) (*user.UserFansListResponse, error) {
+	l := logic.NewUserFansListLogic(ctx, s.svcCtx)
+	return l.UserFansList(in)
+}

@@ -13,3 +13,8 @@ const (
 	ArticleCommentByCid = "article:comment:comment:%d"
 	ArticleComment      = "article:comment:%d"
 )
+
+const (
+	UserFocusByUserId = "user:focus:%s"
+	UserFansByUserId  = "user:fans:%s"
+)

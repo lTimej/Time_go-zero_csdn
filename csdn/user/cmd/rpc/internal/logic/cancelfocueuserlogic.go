@@ -40,5 +40,13 @@ func (l *CancelFocueUserLogic) CancelFocueUser(in *user.CancelFocusUserRequest) 
 	if err != nil {
 		return nil, err
 	}
+	// relation, err = l.svcCtx.UserRelationModel.FindByUserIdTargetUserId(l.ctx, in.UserId, in.TargetId)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if relation.Relation == model.RELATION().DELETE {
+	// 	userFocuskey := fmt.Sprintf(globalkey.UserFocusByUserId, in.UserId)
+	// 	l.svcCtx.RedisClient.Zrem(userFocuskey, utils.Int64ToString(relation.RelationId))
+	// }
 	return &user.CancelFocusUserResponse{}, nil
 }

@@ -47,6 +47,15 @@ func (l *FocueUserLogic) FocueUser(in *user.FocusUserRequest) (*user.FocusUserRe
 			return nil, err
 		}
 	}
+	// ur, err = l.svcCtx.UserRelationModel.FindByUserIdTargetUserId(l.ctx, in.UserId, in.TargetId)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if ur.Relation == model.RELATION().FOLLOW {
+	// 	userFocuskey := fmt.Sprintf(globalkey.UserFocusByUserId, in.UserId)
+	// 	l.svcCtx.RedisClient.Zadd(userFocuskey, utils.TimeToTimeStamp(ur.CreateTime), utils.Int64ToString(ur.RelationId))
+	// }
+
 	return &user.FocusUserResponse{
 		TargetId: in.TargetId,
 	}, nil

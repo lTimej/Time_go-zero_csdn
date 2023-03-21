@@ -3,6 +3,15 @@ syntax = "proto3";
 package user;
 option go_package = "./user";
 
+message UserFocus{
+  string UserId = 1;
+  string Flag = 2;
+  string UserName = 3;
+  string HeadPhoto = 4;
+  string Introduction = 5;
+  bool MutualFocus = 6;
+}
+
 message LoginRequest {
     string authType = 1;
     string account = 2;
@@ -70,6 +79,32 @@ message CancelFocusUserRequest{
 message CancelFocusUserResponse{
 }
 
+message UserFocusListRequest{
+  int64 Page = 1;
+  int64 PageNum = 2;
+  string UserId = 3;
+}
+
+message UserFocusListResponse{
+  repeated UserFocus Focus = 1;
+  int64 TotalNum = 2;
+  int64 Page = 3;
+  int64 PageNum = 4;
+}
+
+message UserFansListRequest{
+  int64 Page = 1;
+  int64 PageNum = 2;
+  string UserId = 3;
+}
+
+message UserFansListResponse{
+  repeated UserFocus Fans = 1;
+  int64 TotalNum = 2;
+  int64 Page = 3;
+  int64 PageNum = 4;
+}
+
 service User {
   rpc UserLogin(LoginRequest) returns(LoginResponse);
   rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
@@ -78,4 +113,6 @@ service User {
   rpc IsFocueUser(IsFocusUserRequest) returns(IsFocusUserResponse);
   rpc FocueUser(FocusUserRequest) returns(FocusUserResponse);
   rpc CancelFocueUser(CancelFocusUserRequest) returns(CancelFocusUserResponse);
+  rpc UserFocusList(UserFocusListRequest) returns(UserFocusListResponse);
+  rpc UserFansList(UserFansListRequest) returns(UserFansListResponse);
 }

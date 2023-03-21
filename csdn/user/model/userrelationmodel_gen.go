@@ -6,8 +6,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"liujun/Time_go-zero_csdn/common/globalkey"
 	"strings"
 	"time"
+
+	"github.com/Masterminds/squirrel"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -28,8 +31,11 @@ var (
 
 type (
 	userRelationModel interface {
+		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *UserRelation) (sql.Result, error)
 		FindOne(ctx context.Context, relationId int64) (*UserRelation, error)
+		FindFocusByUserId(ctx context.Context, builder squirrel.SelectBuilder, userId string) ([]*FocusList, error)
+		FindFansByUserId(ctx context.Context, builder squirrel.SelectBuilder, userId string) ([]*FocusList, error)
 		FindByUserIdTargetUserId(ctx context.Context, userId string, targetUserId string) (*UserRelation, error)
 		Update(ctx context.Context, data *UserRelation) error
 		Delete(ctx context.Context, relationId int64) error
@@ -39,24 +45,24 @@ type (
 		sqlc.CachedConn
 		table string
 	}
-	FocusList struct{
-		TargetUserId int64     `db:"target_user_id"` // 目标用户ID
+	FocusList struct {
+		TargetUserId string    `db:"target_user_id"` // 目标用户ID
+		CreateTime   time.Time `db:"create_time"`
 	}
 	UserRelation struct {
 		RelationId   int64     `db:"relation_id"`    // 主键id
-		UserId       string     `db:"user_id"`        // 用户ID
-		TargetUserId string     `db:"target_user_id"` // 目标用户ID
+		UserId       string    `db:"user_id"`        // 用户ID
+		TargetUserId string    `db:"target_user_id"` // 目标用户ID
 		Relation     int64     `db:"relation"`       // 关系，0-取消，1-关注，2-拉黑
 		CreateTime   time.Time `db:"create_time"`    // 创建时间
 		UpdateTime   time.Time `db:"update_time"`    // 更新时间
 	}
-
 )
 
-func RELATION()Relation{
+func RELATION() Relation {
 	return Relation{
-		DELETE:0,
-		FOLLOW:1,
+		DELETE:    0,
+		FOLLOW:    1,
 		BLACKLIST: 2,
 	}
 }
@@ -100,6 +106,46 @@ func (m *defaultUserRelationModel) FindOne(ctx context.Context, relationId int64
 	}
 }
 
+func (m *defaultUserRelationModel) FindFocusByUserId(ctx context.Context, builder squirrel.SelectBuilder, userId string) ([]*FocusList, error) {
+	builder = builder.OrderBy("create_time DESC")
+
+	query, values, err := builder.Where("user_id = ?", userId).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*FocusList
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sql.ErrNoRows:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultUserRelationModel) FindFansByUserId(ctx context.Context, builder squirrel.SelectBuilder, userId string) ([]*FocusList, error) {
+	builder = builder.OrderBy("create_time DESC")
+
+	query, values, err := builder.Where("target_user_id = ?", userId).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*FocusList
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sql.ErrNoRows:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context, userId string, targetUserId string) (*UserRelation, error) {
 	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, userId, targetUserId)
 	var resp UserRelation
@@ -110,11 +156,6 @@ func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context,
 		}
 		return resp.RelationId, nil
 	}, m.queryPrimary)
-	//var res int64
-	//if resp.RelationId != 0{
-	//	res = resp.RelationId
-	//}
-	fmt.Println(err,"%%%%%%%%%%err%%%%%%%%%%%")
 	switch err {
 	case nil:
 		return &resp, nil
@@ -128,24 +169,22 @@ func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context,
 func (m *defaultUserRelationModel) Insert(ctx context.Context, data *UserRelation) (sql.Result, error) {
 	userRelationRelationIdKey := fmt.Sprintf("%s%v", cacheUserRelationRelationIdPrefix, data.RelationId)
 	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, data.UserId, data.TargetUserId)
+	userFocusByUserIdKey := fmt.Sprintf(globalkey.UserFocusByUserId, data.UserId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, userRelationRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.UserId, data.TargetUserId, data.Relation)
-	}, userRelationRelationIdKey, userRelationUserIdTargetUserIdKey)
-	fmt.Println(err,"2222222222222222222222222222")
+	}, userRelationRelationIdKey, userRelationUserIdTargetUserIdKey, userFocusByUserIdKey)
 	return ret, err
 }
 
 func (m *defaultUserRelationModel) Update(ctx context.Context, newData *UserRelation) error {
 	userRelationRelationIdKey := fmt.Sprintf("%s%v", cacheUserRelationRelationIdPrefix, newData.RelationId)
 	userRelationUserIdTargetUserIdKey := fmt.Sprintf("%s%v:%v", cacheUserRelationUserIdTargetUserIdPrefix, newData.UserId, newData.TargetUserId)
-	fmt.Println("55555555%%%%%%%%5555555555",newData.RelationId,newData.Relation)
+	userFocusByUserIdKey := fmt.Sprintf(globalkey.UserFocusByUserId, newData.UserId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set relation = ? where `relation_id` = ?", m.table)
-		fmt.Println(query,"###################")
 		return conn.ExecCtx(ctx, query, newData.Relation, newData.RelationId)
-	}, userRelationRelationIdKey, userRelationUserIdTargetUserIdKey)
-	fmt.Println(err,"%%%%%%%%%55555%%%%%%%%%")
+	}, userRelationRelationIdKey, userRelationUserIdTargetUserIdKey, userFocusByUserIdKey)
 	return err
 }
 
@@ -160,4 +199,8 @@ func (m *defaultUserRelationModel) queryPrimary(ctx context.Context, conn sqlx.S
 
 func (m *defaultUserRelationModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultUserRelationModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select("target_user_id", "create_time").From(m.table)
 }
