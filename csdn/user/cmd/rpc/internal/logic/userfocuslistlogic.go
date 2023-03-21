@@ -31,6 +31,7 @@ func NewUserFocusListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Use
 func (l *UserFocusListLogic) UserFocusList(in *user.UserFocusListRequest) (*user.UserFocusListResponse, error) {
 	// todo: add your logic here and delete this line
 	focus_user_ids, err := l.get_focus_user_id(in.UserId)
+	fmt.Println(err, "哈哈哈哈哈")
 	if err != nil {
 		return nil, err
 	}

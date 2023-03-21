@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 	"liujun/Time_go-zero_csdn/common/minIO"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
@@ -34,14 +35,24 @@ func (l *UserCurrInfoLogic) UserCurrInfo(in *user.UserCurrInfoRequest) (*user.Us
 	} else {
 		head_photo = user_info.HeadPhoto
 	}
+	m := NewUserFocusListLogic(l.ctx, l.svcCtx)
+	focus, err := m.get_focus_user_id(in.UserId)
+	if err != nil {
+		return nil, err
+	}
+	fans, err := m.get_fans_user_id(in.UserId)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(len(focus), "@@@@@@@@@@@22222222222")
 	return &user.UserCurrInfoResponse{
 		UserName:  user_info.UserName,
 		HeadPhoto: head_photo,
 		Introduce: user_info.Introduce,
 		CodeYear:  user_info.CodeYear,
 		Career:    user_info.Career,
-		Focus:     0,
-		Fans:      0,
+		Focus:     int32(len(focus)),
+		Fans:      int32(len(fans)),
 		Visitor:   0,
 	}, nil
 }
