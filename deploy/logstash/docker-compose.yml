@@ -1,0 +1,54 @@
+version: "3.3"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_es
+    environment:
+      MYSQL_ROOT_PASSWORD: liujun
+      MYSQL_DATABASE: test
+      LANG: C.UTF-8
+    command: 
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    ports:
+      - 13307:3306
+    restart: unless-stopped
+    privileged: true
+  elasticsearch:
+    image: elasticsearch:7.6.1
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - cluster.name=elasticsearch
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/logs:/usr/share/elasticsearch/logs
+
+  kibana:
+    image: kibana:7.6.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      I18N_LOCALE: zh-CN
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+
+  logstash:
+    image: logstash:7.6.1
+    container_name: logstash
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./logstash/config:/usr/share/logstash/config
+    depends_on:
+      - elasticsearch
