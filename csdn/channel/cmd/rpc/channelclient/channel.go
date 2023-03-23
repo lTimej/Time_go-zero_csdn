@@ -42,6 +42,8 @@ type (
 	ArticleUserCollectionResponse  = channel.ArticleUserCollectionResponse
 	ArticleUserRequest             = channel.ArticleUserRequest
 	ArticleUserResponse            = channel.ArticleUserResponse
+	ArticleUserSearchRequest       = channel.ArticleUserSearchRequest
+	ArticleUserSearchResponse      = channel.ArticleUserSearchResponse
 	ArticlestatusRequest           = channel.ArticlestatusRequest
 	ArticlestatusResponse          = channel.ArticlestatusResponse
 	ChannelList                    = channel.ChannelList
@@ -77,6 +79,7 @@ type (
 		ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error)
 		ArticleUserList(ctx context.Context, in *ArticleUserRequest, opts ...grpc.CallOption) (*ArticleUserResponse, error)
 		ArticleSuggestSearch(ctx context.Context, in *ArticleSuggestSearchRequest, opts ...grpc.CallOption) (*ArticleSuggestSearchResponse, error)
+		ArticleUserSearch(ctx context.Context, in *ArticleUserSearchRequest, opts ...grpc.CallOption) (*ArticleUserSearchResponse, error)
 	}
 
 	defaultChannel struct {
@@ -183,4 +186,9 @@ func (m *defaultChannel) ArticleUserList(ctx context.Context, in *ArticleUserReq
 func (m *defaultChannel) ArticleSuggestSearch(ctx context.Context, in *ArticleSuggestSearchRequest, opts ...grpc.CallOption) (*ArticleSuggestSearchResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleSuggestSearch(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleUserSearch(ctx context.Context, in *ArticleUserSearchRequest, opts ...grpc.CallOption) (*ArticleUserSearchResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleUserSearch(ctx, in, opts...)
 }

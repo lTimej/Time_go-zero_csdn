@@ -227,6 +227,18 @@ message ArticleSuggestSearchResponse{
     repeated string searchs = 1;
 }
 
+message ArticleUserSearchRequest{
+    string Keyword = 1;
+    int64 Page = 2;
+    int64 PageNum = 3;
+}
+
+message ArticleUserSearchResponse{
+    int64 TotalNum = 1;
+    string Message = 2;
+    repeated ArticleList ArticlesList = 3;
+}
+
 service Channel {
     rpc AllChannel(ChannelListRequest) returns(ChannelListResponse);
     rpc DefaultChannel(DefaultChannelRequest) returns(DefaultChannelResponse);
@@ -247,4 +259,5 @@ service Channel {
     rpc ArticleCommentList(ArticleCommentListRequest) returns(ArticleCommentListResponse);
     rpc ArticleUserList(ArticleUserRequest) returns(ArticleUserResponse);
     rpc ArticleSuggestSearch(ArticleSuggestSearchRequest) returns(ArticleSuggestSearchResponse);
+    rpc ArticleUserSearch(ArticleUserSearchRequest) returns(ArticleUserSearchResponse);
 }

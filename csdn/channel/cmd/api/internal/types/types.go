@@ -219,3 +219,15 @@ type ArticleSuggestSearchRequest struct {
 type ArticleSuggestSearchResponse struct {
 	Searchs []string `json:"searchs"`
 }
+
+type ArticleUserSearchRequest struct {
+	Keyword string `json:"keyword,optional"`
+	Page    int64  `json:"page,optional"`
+	PageNum int64  `json:"page_num,optional"`
+}
+
+type ArticleUserSearchResponse struct {
+	ArticlesList []ArticleList `json:"articles_list"`
+	Message      string        `json:"message"`
+	TotalNum     int64         `json:"total_num"`
+}

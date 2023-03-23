@@ -116,3 +116,8 @@ func (s *ChannelServer) ArticleSuggestSearch(ctx context.Context, in *channel.Ar
 	l := logic.NewArticleSuggestSearchLogic(ctx, s.svcCtx)
 	return l.ArticleSuggestSearch(in)
 }
+
+func (s *ChannelServer) ArticleUserSearch(ctx context.Context, in *channel.ArticleUserSearchRequest) (*channel.ArticleUserSearchResponse, error) {
+	l := logic.NewArticleUserSearchLogic(ctx, s.svcCtx)
+	return l.ArticleUserSearch(in)
+}

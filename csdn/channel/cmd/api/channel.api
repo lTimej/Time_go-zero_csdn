@@ -206,6 +206,18 @@ type ArticleSuggestSearchResponse {
 	Searchs []string `json:"searchs"`
 }
 
+type ArticleUserSearchRequest {
+	Keyword string `json:"keyword,optional"`
+	Page    int64  `json:"page,optional"`
+	PageNum int64  `json:"page_num,optional"`
+}
+
+type ArticleUserSearchResponse {
+	ArticlesList []ArticleList `json:"articles_list"`
+	Message      string        `json:"message"`
+	TotalNum     int64         `json:"total_num"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -219,6 +231,8 @@ service api-api {
 	get /v1/article/comment(ArticleCommentListRequest) returns (ArticleCommentListResponse)
 	@handler ArticleSuggestSearch
 	get /v1/article/search/suggest(ArticleSuggestSearchRequest) returns (ArticleSuggestSearchResponse)
+	@handler ArticleUserSearch
+	get /v1/user/search(ArticleUserSearchRequest) returns (ArticleUserSearchResponse)
 }
 
 @server (

@@ -32,6 +32,7 @@ type (
 		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsArticleBasic) (sql.Result, error)
 		FindOne(ctx context.Context, articleId int64) (*NewsArticleBasic, error)
+		FindOneByArticleId(ctx context.Context, articleId int64) (*AllArticleInfo, error)
 		FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error)
 		FindAllArticleByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder,user_id string,page,page_num int32)([]*AllArticleInfo,error)
 		Update(ctx context.Context, data *NewsArticleBasic) error
@@ -110,6 +111,23 @@ func (m *defaultNewsArticleBasicModel) FindOne(ctx context.Context, articleId in
 		return nil, err
 	}
 }
+
+func (m *defaultNewsArticleBasicModel) FindOneByArticleId(ctx context.Context, articleId int64) (*AllArticleInfo, error){
+	newsArticleBasicArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleBasicArticleIdPrefix, articleId)
+	var resp AllArticleInfo
+	err := m.QueryRowCtx(ctx, &resp, newsArticleBasicArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleBasicRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query, articleId)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
 func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error){
 	if page <= 0{
 		page = 1
@@ -117,7 +135,6 @@ func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context,rowBui
 	offset := (page - 1) * page_num
 	q,values,err := rowBuilder.Join("news_article_content,user_basic,user_profile where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_article_basic.channel_id = %d limit %d,%d").ToSql()
 	query := fmt.Sprintf(q,channel_id,offset,page_num)
-	fmt.Println(query,"===============")
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +156,6 @@ func(m *defaultNewsArticleBasicModel) FindAllArticleByUserId(ctx context.Context
 	offset := (page - 1) * page_num
 	q,values,err := rowBuilder.Join("news_article_content,user_basic,user_profile,news_collection where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_collection.user_id = %s limit %d,%d").ToSql()
 	query := fmt.Sprintf(q,user_id,offset,page_num)
-	fmt.Println(query,"-------------")
 	if err != nil {
 		return nil, err
 	}
