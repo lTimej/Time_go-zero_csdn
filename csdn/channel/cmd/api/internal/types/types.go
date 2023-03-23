@@ -211,3 +211,11 @@ type AllArticleUserResponse struct {
 	PageNum  int32         `json:"page_num,optional"`
 	TotalNum int64         `json:"total_num,optional"`
 }
+
+type ArticleSuggestSearchRequest struct {
+	Keyword string `json:"keyword,optional"`
+}
+
+type ArticleSuggestSearchResponse struct {
+	Searchs []string `json:"searchs"`
+}

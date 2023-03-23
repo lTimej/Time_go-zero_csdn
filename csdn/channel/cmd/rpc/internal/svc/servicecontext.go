@@ -1,15 +1,19 @@
 package svc
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/redis"
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"fmt"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/config"
 	"liujun/Time_go-zero_csdn/csdn/channel/model"
+
+	"github.com/olivere/elastic/v7"
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type ServiceContext struct {
 	Config                 config.Config
 	RedisClient            *redis.Redis
+	EsClient               *elastic.Client
 	ArticleModel           model.NewsArticleBasicModel
 	ChannelModel           model.NewsChannelModel
 	UserChannelModel       model.NewsUserChannelModel
@@ -22,12 +26,17 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	sqlConn := sqlx.NewMysql(c.DB.DataSource)
+	EsClient, err := elastic.NewClient(elastic.SetURL(c.Es.Host))
+	if err != nil {
+		fmt.Println("es连接错误", err)
+	}
 	return &ServiceContext{
 		Config: c,
 		RedisClient: redis.New(c.Redis.Host, func(r *redis.Redis) {
 			r.Type = c.Redis.Type
 			r.Pass = c.Redis.Pass
 		}),
+		EsClient:               EsClient,
 		ArticleModel:           model.NewNewsArticleBasicModel(sqlConn, c.Cache),
 		ChannelModel:           model.NewNewsChannelModel(sqlConn, c.Cache),
 		UserChannelModel:       model.NewNewsUserChannelModel(sqlConn, c.Cache),

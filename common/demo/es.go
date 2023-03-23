@@ -1,16 +1,10 @@
 package demo
 
 import (
+	"context"
 	"fmt"
+
 	"github.com/olivere/elastic/v7"
-)
-
-package main
-
-import (
-"context"
-"fmt"
-"github.com/olivere/elastic/v7"
 )
 
 var (
@@ -107,5 +101,3 @@ func Get() {
 	//	fmt.Printf("Tweet by %s: %s\n", t.User, t.Message)
 	//}
 }
-
-

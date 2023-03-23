@@ -15,6 +15,9 @@ type Config struct {
 		Pass string
 		Type string
 	}
+	Es struct {
+		Host string
+	}
 	JwtAuth struct {
 		AccessSecret string
 		AccessExpire int64

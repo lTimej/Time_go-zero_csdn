@@ -26,6 +26,8 @@ type (
 	ArticleReadResponse            = channel.ArticleReadResponse
 	ArticleStatusCacheRequest      = channel.ArticleStatusCacheRequest
 	ArticleStatusCacheResponse     = channel.ArticleStatusCacheResponse
+	ArticleSuggestSearchRequest    = channel.ArticleSuggestSearchRequest
+	ArticleSuggestSearchResponse   = channel.ArticleSuggestSearchResponse
 	ArticleToCollectionRequest     = channel.ArticleToCollectionRequest
 	ArticleToCollectionResponse    = channel.ArticleToCollectionResponse
 	ArticleToCommentResponse       = channel.ArticleToCommentResponse
@@ -74,6 +76,7 @@ type (
 		ArticleToComment(ctx context.Context, in *ArticleToCommnetRequest, opts ...grpc.CallOption) (*ArticleToCommentResponse, error)
 		ArticleCommentList(ctx context.Context, in *ArticleCommentListRequest, opts ...grpc.CallOption) (*ArticleCommentListResponse, error)
 		ArticleUserList(ctx context.Context, in *ArticleUserRequest, opts ...grpc.CallOption) (*ArticleUserResponse, error)
+		ArticleSuggestSearch(ctx context.Context, in *ArticleSuggestSearchRequest, opts ...grpc.CallOption) (*ArticleSuggestSearchResponse, error)
 	}
 
 	defaultChannel struct {
@@ -175,4 +178,9 @@ func (m *defaultChannel) ArticleCommentList(ctx context.Context, in *ArticleComm
 func (m *defaultChannel) ArticleUserList(ctx context.Context, in *ArticleUserRequest, opts ...grpc.CallOption) (*ArticleUserResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleUserList(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleSuggestSearch(ctx context.Context, in *ArticleSuggestSearchRequest, opts ...grpc.CallOption) (*ArticleSuggestSearchResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleSuggestSearch(ctx, in, opts...)
 }
