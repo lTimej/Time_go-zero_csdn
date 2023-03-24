@@ -42,11 +42,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/v1/article/search/suggest",
 				Handler: ArticleSuggestSearchHandler(serverCtx),
 			},
-			{
-				Method:  http.MethodGet,
-				Path:    "/v1/user/search",
-				Handler: ArticleUserSearchHandler(serverCtx),
-			},
 		},
 	)
 
@@ -113,6 +108,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/v1/article/user/articles",
 					Handler: AllArticleUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/article/user/search",
+					Handler: ArticleUserSearchHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/article/search/history",
+					Handler: ArticleUserSearchHistoryHandler(serverCtx),
 				},
 			}...,
 		),

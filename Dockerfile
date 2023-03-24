@@ -1,12 +1,13 @@
-FROM golang:alpine AS builder
+FROM golang:1.19 AS builder
 
 LABEL stage=gobuilder
 
-ENV CGO_ENABLED 0
-ENV GOPROXY https://goproxy.cn,direct
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
 
-RUN apk update --no-cache && apk add --no-cache tzdata
 
 WORKDIR /app
 
@@ -15,19 +16,21 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 
-RUN go build -ldflags="-s -w" -o /app/csdn/user/cmd/rpc/user_rpc ./csdn/user/cmd/rpc
-RUN go build -ldflags="-s -w" -o /app/csdn/user/cmd/api/user_api ./csdn/user/cmd/api
-RUN go build -ldflags="-s -w" -o /app/csdn/channel/cmd/rpc/article_rpc ./csdn/channel/cmd/rpc
-RUN go build -ldflags="-s -w" -o /app/csdn/channel/cmd/rpc/article_api ./csdn/channel/cmd/api
+RUN go build -o /app/csdn/user/cmd/rpc/user_rpc /app/csdn/user/cmd/rpc
+RUN go build -o /app/csdn/user/cmd/api/user_api /app/csdn/user/cmd/api
+RUN go build -o /app/csdn/channel/cmd/rpc/article_rpc /app/csdn/channel/cmd/rpc
+RUN go build -o /app/csdn/channel/cmd/api/article_api /app/csdn/channel/cmd/api
 
-FROM scratch
+RUN chmod +x /app/csdn/user/cmd/rpc/user_rpc
+RUN chmod +x /app/csdn/user/cmd/api/user_api
+RUN chmod +x /app/csdn/channel/cmd/rpc/article_rpc
+RUN chmod +x /app/csdn/channel/cmd/api/article_api
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
-ENV TZ Asia/Shanghai
+FROM debian:stretch-slim
+
 
 WORKDIR /app
 COPY --from=builder /app /app/Time_go-zero_csdn
 
-CMD ["./Time_go-zero_csdn/run.sh"]
+#ENTRYPOINT ["./Time_go-zero_csdn/run.sh"]
 

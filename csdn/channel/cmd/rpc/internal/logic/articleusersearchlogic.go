@@ -2,11 +2,14 @@ package logic
 
 import (
 	"context"
-	"github.com/olivere/elastic/v7"
-	"reflect"
-
+	"fmt"
+	"liujun/Time_go-zero_csdn/common/globalkey"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/types/channel"
+	"reflect"
+	"time"
+
+	"github.com/olivere/elastic/v7"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,6 +32,7 @@ func (l *ArticleUserSearchLogic) ArticleUserSearch(in *channel.ArticleUserSearch
 	// todo: add your logic here and delete this line
 	aids, err := l.get_article_id("articles", in.Keyword, in.Page, in.PageNum)
 	if err != nil {
+		fmt.Println(err, "============")
 		return nil, err
 	}
 	resp := new(channel.ArticleUserSearchResponse)
@@ -57,27 +61,37 @@ func (l *ArticleUserSearchLogic) ArticleUserSearch(in *channel.ArticleUserSearch
 		})
 		resp.TotalNum++
 	}
+	t := time.Now().Unix()
+	//添加数据库
+	// l.svcCtx.UserArticleSearchModel.Insert(l.ctx,)
+	key := fmt.Sprintf(globalkey.UserArticleSearch, in.UserId)
+	l.svcCtx.RedisClient.Zadd(key, t, in.Keyword)
 	resp.Message = "获取成功"
+
 	return resp, nil
 }
 
 func (l *ArticleUserSearchLogic) get_article_id(index, keyword string, page, page_num int64) (aids []int64, err error) {
 	offset := (page - 1) * page_num
+	fmt.Println(index, keyword, offset)
 	termQuery := elastic.NewTermQuery("title", keyword)
 	searchResult, err := l.svcCtx.EsClient.Search().
 		Index(index).
 		Query(termQuery).
-		Sort("user_id", false).
 		From(int(offset)).Size(int(page_num)).
 		Pretty(true).
-		Do(l.ctx)
+		Do(context.Background())
 	if err != nil {
 		return nil, err
 	}
-	var ttyp channel.ArticleList
+	type Article struct {
+		ArticleId int64  `json:"article_id"`
+		Title     string `json:"title"`
+	}
+	var ttyp Article
 	for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
-		t := item.(channel.ArticleList)
-		aids = append(aids, t.ArtId)
+		t := item.(Article)
+		aids = append(aids, t.ArticleId)
 	}
 	return
 }

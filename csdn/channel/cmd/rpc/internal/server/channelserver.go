@@ -121,3 +121,8 @@ func (s *ChannelServer) ArticleUserSearch(ctx context.Context, in *channel.Artic
 	l := logic.NewArticleUserSearchLogic(ctx, s.svcCtx)
 	return l.ArticleUserSearch(in)
 }
+
+func (s *ChannelServer) ArticleUserSearchHistory(ctx context.Context, in *channel.ArticleUserSearchHistoryRequest) (*channel.ArticleUserSearchHistoryResponse, error) {
+	l := logic.NewArticleUserSearchHistoryLogic(ctx, s.svcCtx)
+	return l.ArticleUserSearchHistory(in)
+}

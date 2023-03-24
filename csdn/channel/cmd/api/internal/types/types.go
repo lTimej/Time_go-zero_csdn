@@ -231,3 +231,10 @@ type ArticleUserSearchResponse struct {
 	Message      string        `json:"message"`
 	TotalNum     int64         `json:"total_num"`
 }
+
+type ArticleUserSearchHistoryRequest struct {
+}
+
+type ArticleUserSearchHistoryResponse struct {
+	Keywords []string `json:"keywords"`
+}

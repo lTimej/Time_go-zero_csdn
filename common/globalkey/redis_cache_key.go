@@ -17,4 +17,5 @@ const (
 const (
 	UserFocusByUserId = "user:focus:%s"
 	UserFansByUserId  = "user:fans:%s"
+	UserArticleSearch = "user:article:search:%s"
 )

@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  myapp:
+    image: app:v1
+    container_name: myapp
+    command: sh -c "/app/Time_go-zero_csdn/run.sh"
+    ports:
+      - "8079:8079"
+      - "8888:8888"
+      - "8081:8081"
+      - "8889:8889"
+    restart: unless-stopped
+    privileged: true

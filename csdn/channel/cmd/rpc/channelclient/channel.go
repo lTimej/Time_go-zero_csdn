@@ -13,51 +13,53 @@ import (
 )
 
 type (
-	ArticleChannelRequest          = channel.ArticleChannelRequest
-	ArticleChannelResponse         = channel.ArticleChannelResponse
-	ArticleCommentList             = channel.ArticleCommentList
-	ArticleCommentListRequest      = channel.ArticleCommentListRequest
-	ArticleCommentListResponse     = channel.ArticleCommentListResponse
-	ArticleLikeRequest             = channel.ArticleLikeRequest
-	ArticleLikeResponse            = channel.ArticleLikeResponse
-	ArticleLikeResponse_UserInfo   = channel.ArticleLikeResponse_UserInfo
-	ArticleList                    = channel.ArticleList
-	ArticleReadRequest             = channel.ArticleReadRequest
-	ArticleReadResponse            = channel.ArticleReadResponse
-	ArticleStatusCacheRequest      = channel.ArticleStatusCacheRequest
-	ArticleStatusCacheResponse     = channel.ArticleStatusCacheResponse
-	ArticleSuggestSearchRequest    = channel.ArticleSuggestSearchRequest
-	ArticleSuggestSearchResponse   = channel.ArticleSuggestSearchResponse
-	ArticleToCollectionRequest     = channel.ArticleToCollectionRequest
-	ArticleToCollectionResponse    = channel.ArticleToCollectionResponse
-	ArticleToCommentResponse       = channel.ArticleToCommentResponse
-	ArticleToCommnetRequest        = channel.ArticleToCommnetRequest
-	ArticleToDisCollectionRequest  = channel.ArticleToDisCollectionRequest
-	ArticleToDisCollectionResponse = channel.ArticleToDisCollectionResponse
-	ArticleToDisLikeRequest        = channel.ArticleToDisLikeRequest
-	ArticleToDisLikeResponse       = channel.ArticleToDisLikeResponse
-	ArticleToLikeRequest           = channel.ArticleToLikeRequest
-	ArticleToLikeResponse          = channel.ArticleToLikeResponse
-	ArticleUserCollectionRequest   = channel.ArticleUserCollectionRequest
-	ArticleUserCollectionResponse  = channel.ArticleUserCollectionResponse
-	ArticleUserRequest             = channel.ArticleUserRequest
-	ArticleUserResponse            = channel.ArticleUserResponse
-	ArticleUserSearchRequest       = channel.ArticleUserSearchRequest
-	ArticleUserSearchResponse      = channel.ArticleUserSearchResponse
-	ArticlestatusRequest           = channel.ArticlestatusRequest
-	ArticlestatusResponse          = channel.ArticlestatusResponse
-	ChannelList                    = channel.ChannelList
-	ChannelListRequest             = channel.ChannelListRequest
-	ChannelListResponse            = channel.ChannelListResponse
-	CommentList                    = channel.CommentList
-	DefaultChannelRequest          = channel.DefaultChannelRequest
-	DefaultChannelResponse         = channel.DefaultChannelResponse
-	UserAddChannelRequest          = channel.UserAddChannelRequest
-	UserAddChannelResponse         = channel.UserAddChannelResponse
-	UserChannelRequest             = channel.UserChannelRequest
-	UserChannelResponse            = channel.UserChannelResponse
-	UserPatchChannelRequest        = channel.UserPatchChannelRequest
-	UserPatchChannelResponse       = channel.UserPatchChannelResponse
+	ArticleChannelRequest            = channel.ArticleChannelRequest
+	ArticleChannelResponse           = channel.ArticleChannelResponse
+	ArticleCommentList               = channel.ArticleCommentList
+	ArticleCommentListRequest        = channel.ArticleCommentListRequest
+	ArticleCommentListResponse       = channel.ArticleCommentListResponse
+	ArticleLikeRequest               = channel.ArticleLikeRequest
+	ArticleLikeResponse              = channel.ArticleLikeResponse
+	ArticleLikeResponse_UserInfo     = channel.ArticleLikeResponse_UserInfo
+	ArticleList                      = channel.ArticleList
+	ArticleReadRequest               = channel.ArticleReadRequest
+	ArticleReadResponse              = channel.ArticleReadResponse
+	ArticleStatusCacheRequest        = channel.ArticleStatusCacheRequest
+	ArticleStatusCacheResponse       = channel.ArticleStatusCacheResponse
+	ArticleSuggestSearchRequest      = channel.ArticleSuggestSearchRequest
+	ArticleSuggestSearchResponse     = channel.ArticleSuggestSearchResponse
+	ArticleToCollectionRequest       = channel.ArticleToCollectionRequest
+	ArticleToCollectionResponse      = channel.ArticleToCollectionResponse
+	ArticleToCommentResponse         = channel.ArticleToCommentResponse
+	ArticleToCommnetRequest          = channel.ArticleToCommnetRequest
+	ArticleToDisCollectionRequest    = channel.ArticleToDisCollectionRequest
+	ArticleToDisCollectionResponse   = channel.ArticleToDisCollectionResponse
+	ArticleToDisLikeRequest          = channel.ArticleToDisLikeRequest
+	ArticleToDisLikeResponse         = channel.ArticleToDisLikeResponse
+	ArticleToLikeRequest             = channel.ArticleToLikeRequest
+	ArticleToLikeResponse            = channel.ArticleToLikeResponse
+	ArticleUserCollectionRequest     = channel.ArticleUserCollectionRequest
+	ArticleUserCollectionResponse    = channel.ArticleUserCollectionResponse
+	ArticleUserRequest               = channel.ArticleUserRequest
+	ArticleUserResponse              = channel.ArticleUserResponse
+	ArticleUserSearchHistoryRequest  = channel.ArticleUserSearchHistoryRequest
+	ArticleUserSearchHistoryResponse = channel.ArticleUserSearchHistoryResponse
+	ArticleUserSearchRequest         = channel.ArticleUserSearchRequest
+	ArticleUserSearchResponse        = channel.ArticleUserSearchResponse
+	ArticlestatusRequest             = channel.ArticlestatusRequest
+	ArticlestatusResponse            = channel.ArticlestatusResponse
+	ChannelList                      = channel.ChannelList
+	ChannelListRequest               = channel.ChannelListRequest
+	ChannelListResponse              = channel.ChannelListResponse
+	CommentList                      = channel.CommentList
+	DefaultChannelRequest            = channel.DefaultChannelRequest
+	DefaultChannelResponse           = channel.DefaultChannelResponse
+	UserAddChannelRequest            = channel.UserAddChannelRequest
+	UserAddChannelResponse           = channel.UserAddChannelResponse
+	UserChannelRequest               = channel.UserChannelRequest
+	UserChannelResponse              = channel.UserChannelResponse
+	UserPatchChannelRequest          = channel.UserPatchChannelRequest
+	UserPatchChannelResponse         = channel.UserPatchChannelResponse
 
 	Channel interface {
 		AllChannel(ctx context.Context, in *ChannelListRequest, opts ...grpc.CallOption) (*ChannelListResponse, error)
@@ -80,6 +82,7 @@ type (
 		ArticleUserList(ctx context.Context, in *ArticleUserRequest, opts ...grpc.CallOption) (*ArticleUserResponse, error)
 		ArticleSuggestSearch(ctx context.Context, in *ArticleSuggestSearchRequest, opts ...grpc.CallOption) (*ArticleSuggestSearchResponse, error)
 		ArticleUserSearch(ctx context.Context, in *ArticleUserSearchRequest, opts ...grpc.CallOption) (*ArticleUserSearchResponse, error)
+		ArticleUserSearchHistory(ctx context.Context, in *ArticleUserSearchHistoryRequest, opts ...grpc.CallOption) (*ArticleUserSearchHistoryResponse, error)
 	}
 
 	defaultChannel struct {
@@ -191,4 +194,9 @@ func (m *defaultChannel) ArticleSuggestSearch(ctx context.Context, in *ArticleSu
 func (m *defaultChannel) ArticleUserSearch(ctx context.Context, in *ArticleUserSearchRequest, opts ...grpc.CallOption) (*ArticleUserSearchResponse, error) {
 	client := channel.NewChannelClient(m.cli.Conn())
 	return client.ArticleUserSearch(ctx, in, opts...)
+}
+
+func (m *defaultChannel) ArticleUserSearchHistory(ctx context.Context, in *ArticleUserSearchHistoryRequest, opts ...grpc.CallOption) (*ArticleUserSearchHistoryResponse, error) {
+	client := channel.NewChannelClient(m.cli.Conn())
+	return client.ArticleUserSearchHistory(ctx, in, opts...)
 }

@@ -13,28 +13,28 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ArticleUserSearchLogic struct {
+type ArticleUserSearchHistoryLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewArticleUserSearchLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ArticleUserSearchLogic {
-	return &ArticleUserSearchLogic{
+func NewArticleUserSearchHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ArticleUserSearchHistoryLogic {
+	return &ArticleUserSearchHistoryLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *ArticleUserSearchLogic) ArticleUserSearch(req *types.ArticleUserSearchRequest) (resp *types.ArticleUserSearchResponse, err error) {
+func (l *ArticleUserSearchHistoryLogic) ArticleUserSearchHistory(req *types.ArticleUserSearchHistoryRequest) (resp *types.ArticleUserSearchHistoryResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	articles, err := l.svcCtx.ChannelRpc.ArticleUserSearch(l.ctx, &channelclient.ArticleUserSearchRequest{Keyword: req.Keyword, Page: req.Page, PageNum: req.PageNum, UserId: user_id})
+	keywords, err := l.svcCtx.ChannelRpc.ArticleUserSearchHistory(l.ctx, &channelclient.ArticleUserSearchHistoryRequest{UserId: user_id})
 	if err != nil {
 		return nil, err
 	}
-	resp = new(types.ArticleUserSearchResponse)
-	copier.Copy(resp, articles)
+	resp = new(types.ArticleUserSearchHistoryResponse)
+	_ = copier.Copy(resp, keywords)
 	return
 }

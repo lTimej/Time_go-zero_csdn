@@ -2,18 +2,18 @@ Name: user.rpc
 ListenOn: 0.0.0.0:8079
 Etcd:
   Hosts:
-  - 127.0.0.1:12379
+  - 172.20.16.20:12379
   Key: user.rpc
 DB:
-  DataSource: root:liujun@tcp(127.0.0.1:13306)/csdn?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:liujun@tcp(172.20.16.20:13306)/csdn?charset=utf8mb4&parseTime=True&loc=Local
 
 Redis:
-  Host: 127.0.0.1:16379
+  Host: 172.20.16.20:16379
   Pass: liujun
   Type: node
 
 Cache:
-  - Host: 127.0.0.1:16379
+  - Host: 172.20.16.20:16379
     Pass: liujun
 
 JwtAuth:

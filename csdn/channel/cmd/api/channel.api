@@ -218,6 +218,12 @@ type ArticleUserSearchResponse {
 	TotalNum     int64         `json:"total_num"`
 }
 
+type ArticleUserSearchHistoryRequest {}
+
+type ArticleUserSearchHistoryResponse {
+	Keywords []string `json:"keywords"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -231,8 +237,6 @@ service api-api {
 	get /v1/article/comment(ArticleCommentListRequest) returns (ArticleCommentListResponse)
 	@handler ArticleSuggestSearch
 	get /v1/article/search/suggest(ArticleSuggestSearchRequest) returns (ArticleSuggestSearchResponse)
-	@handler ArticleUserSearch
-	get /v1/user/search(ArticleUserSearchRequest) returns (ArticleUserSearchResponse)
 }
 
 @server (
@@ -265,4 +269,8 @@ service api-api {
 	post /v1/article/comment(ArticleToCommentRequest) returns (ArticleToCommentResponse)
 	@handler AllArticleUser
 	get /v1/article/user/articles(AllArticleUserRequest) returns (AllArticleUserResponse)
+	@handler ArticleUserSearch
+	get /v1/article/user/search(ArticleUserSearchRequest) returns (ArticleUserSearchResponse)
+	@handler ArticleUserSearchHistory
+	get /v1/article/search/history(ArticleUserSearchHistoryRequest) returns (ArticleUserSearchHistoryResponse)
 }
