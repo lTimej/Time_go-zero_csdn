@@ -36,6 +36,7 @@ type (
 		FindOneByUserName(ctx context.Context, userName string) (*UserBasic, error)
 		FindOneJoinUserProfileByUserId(ctx context.Context, userId string) (*CurrUserInfo, error)
 		Update(ctx context.Context, data *UserBasic) error
+		UpdateUserInfo(ctx context.Context, user_id,userstr string,userinter []interface{}) error
 		Delete(ctx context.Context, userId string) error
 	}
 
@@ -202,6 +203,23 @@ func (m *defaultUserBasicModel) Update(ctx context.Context, newData *UserBasic) 
 		query := fmt.Sprintf("update %s set %s where `user_id` = ?", m.table, userBasicRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.Account, newData.Email, newData.Status, newData.Mobile, newData.Password, newData.UserName, newData.ProfilePhoto, newData.LastLogin, newData.IsMedia, newData.IsVerified, newData.Introduction, newData.Certificate, newData.ArticleCount, newData.FollowingCount, newData.FansCount, newData.LikeCount, newData.ReadCount, newData.CodeYear, newData.UserId)
 	}, userBasicMobileKey, userBasicUserIdKey, userBasicUserNameKey)
+	return err
+}
+
+func (m *defaultUserBasicModel) UpdateUserInfo(ctx context.Context, user_id,userstr string,userinter []interface{}) error{
+	data, err := m.FindOne(ctx, user_id)
+	if err != nil {
+		return err
+	}
+
+	userBasicMobileKey := fmt.Sprintf("%s%v", cacheUserBasicMobilePrefix, data.Mobile)
+	userBasicUserIdKey := fmt.Sprintf("%s%v", cacheUserBasicUserIdPrefix, data.UserId)
+	currUserInfoUserIdKey := fmt.Sprintf("%s%v", cacheCurrUserInfoUserIdPrefix, data.UserId)
+	userBasicUserNameKey := fmt.Sprintf("%s%v", cacheUserBasicUserNamePrefix, data.UserName)
+	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `user_id` = ?", m.table, userstr)
+		return conn.ExecCtx(ctx, query, userinter...)
+	}, userBasicMobileKey, userBasicUserIdKey, userBasicUserNameKey,currUserInfoUserIdKey)
 	return err
 }
 

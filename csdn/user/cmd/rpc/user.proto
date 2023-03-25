@@ -105,6 +105,32 @@ message UserFansListResponse{
   int64 PageNum = 4;
 }
 
+message UserInfoEditRequest{
+  string HeadPhoto = 1;
+  string OldPwd = 2;
+  string NewPwd = 3;
+  string UserName = 4;
+  string Gender = 5;
+  string Introduce = 6;
+  string Tag = 7;
+  string AuthName = 8;
+  string Birthday = 9;
+  string Areas = 10;
+  string UserId = 11;
+}
+
+message UserInfoEditResponse{
+  string HeadPhoto = 1;
+  string UserName = 2;
+  string Pwd = 3;
+  int64 Gender = 4;
+  string Introduce = 5;
+  string Tag = 6;
+  string AuthName = 7;
+  string Birthday = 8;
+  string Areas = 9;
+}
+
 service User {
   rpc UserLogin(LoginRequest) returns(LoginResponse);
   rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
@@ -115,4 +141,5 @@ service User {
   rpc CancelFocueUser(CancelFocusUserRequest) returns(CancelFocusUserResponse);
   rpc UserFocusList(UserFocusListRequest) returns(UserFocusListResponse);
   rpc UserFansList(UserFansListRequest) returns(UserFansListResponse);
+  rpc UserInfoEdit(UserInfoEditRequest) returns(UserInfoEditResponse);
 }

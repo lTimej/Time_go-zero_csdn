@@ -66,3 +66,8 @@ func (s *UserServer) UserFansList(ctx context.Context, in *user.UserFansListRequ
 	l := logic.NewUserFansListLogic(ctx, s.svcCtx)
 	return l.UserFansList(in)
 }
+
+func (s *UserServer) UserInfoEdit(ctx context.Context, in *user.UserInfoEditRequest) (*user.UserInfoEditResponse, error) {
+	l := logic.NewUserInfoEditLogic(ctx, s.svcCtx)
+	return l.UserInfoEdit(in)
+}

@@ -33,7 +33,7 @@ func (l *UserCurrInfoLogic) UserCurrInfo(in *user.UserCurrInfoRequest) (*user.Us
 	if user_info.HeadPhoto == "" {
 		head_photo = minIO.DefaultHeadPhoto
 	} else {
-		head_photo = user_info.HeadPhoto
+		head_photo = "http://172.20.16.20:9000/" + user_info.HeadPhoto
 	}
 	m := NewUserFocusListLogic(l.ctx, l.svcCtx)
 	focus, err := m.get_focus_user_id(in.UserId)

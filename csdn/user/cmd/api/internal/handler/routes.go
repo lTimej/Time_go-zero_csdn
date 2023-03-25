@@ -64,6 +64,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/user/fans",
 					Handler: UserFansListHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPatch,
+					Path:    "/v1/user/curr/user",
+					Handler: UserInfoEditHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

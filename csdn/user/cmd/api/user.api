@@ -89,6 +89,31 @@ type UserFansListResponse {
 	Fans     []*UserFocusFansList `json:"fans"`
 }
 
+type UserInfoEditRequest {
+	HeadPhoto string `json:"head_photo,optional"`
+	OldPwd    string `json:"old_pwd,optional"`
+	NewPwd    string `json:"new_pwd,optional"`
+	UserName  string `json:"user_name,optional"`
+	Gender    string `json:"gender,optional"`
+	Introduce string `json:"introduce,optional"`
+	Tag       string `json:"tag,optional"`
+	AuthName  string `json:"auth_name,optional"`
+	Birthday  string `json:"birthday,optional"`
+	Areas     string `json:"areas,optional"`
+}
+
+type UserInfoEditResponse {
+	HeadPhoto string `json:"head_photo,optional"`
+	Pwd       string `json:"pwd,optional"`
+	UserName  string `json:"user_name,optional"`
+	Gender    int64  `json:"gender,optional"`
+	Introduce string `json:"introduce,optional"`
+	Tag       string `json:"tag,optional"`
+	AuthName  string `json:"authName,optional"`
+	Birthday  string `json:"birthday,optional"`
+	Areas     string `json:"areas,optional"`
+}
+
 service api-api {
 	@handler UserPasswordLogin
 	post /v1/user/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
@@ -116,4 +141,6 @@ service api-api {
 	get /v1/user/focus(UserFocusListRequest) returns(UserFocusListResponse)
 	@handler UserFansList
 	get /v1/user/fans(UserFansListRequest) returns(UserFansListResponse)
+	@handler UserInfoEdit
+	patch /v1/user/curr/user(UserInfoEditRequest) returns(UserInfoEditResponse)
 }

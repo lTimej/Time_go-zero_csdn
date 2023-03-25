@@ -32,6 +32,8 @@ type (
 	UserFocus               = user.UserFocus
 	UserFocusListRequest    = user.UserFocusListRequest
 	UserFocusListResponse   = user.UserFocusListResponse
+	UserInfoEditRequest     = user.UserInfoEditRequest
+	UserInfoEditResponse    = user.UserInfoEditResponse
 
 	User interface {
 		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
@@ -43,6 +45,7 @@ type (
 		CancelFocueUser(ctx context.Context, in *CancelFocusUserRequest, opts ...grpc.CallOption) (*CancelFocusUserResponse, error)
 		UserFocusList(ctx context.Context, in *UserFocusListRequest, opts ...grpc.CallOption) (*UserFocusListResponse, error)
 		UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error)
+		UserInfoEdit(ctx context.Context, in *UserInfoEditRequest, opts ...grpc.CallOption) (*UserInfoEditResponse, error)
 	}
 
 	defaultUser struct {
@@ -99,4 +102,9 @@ func (m *defaultUser) UserFocusList(ctx context.Context, in *UserFocusListReques
 func (m *defaultUser) UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserFansList(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserInfoEdit(ctx context.Context, in *UserInfoEditRequest, opts ...grpc.CallOption) (*UserInfoEditResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserInfoEdit(ctx, in, opts...)
 }

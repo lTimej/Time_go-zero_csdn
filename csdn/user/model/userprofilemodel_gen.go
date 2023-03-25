@@ -30,6 +30,7 @@ type (
 		Insert(ctx context.Context, data *UserProfile) (sql.Result, error)
 		FindOne(ctx context.Context, userId int64) (*UserProfile, error)
 		Update(ctx context.Context, data *UserProfile) error
+		UpdateProfileInfo(ctx context.Context, user_id,userprofilestr string,profileinter []interface{}) error
 		Delete(ctx context.Context, userId int64) error
 	}
 
@@ -41,19 +42,19 @@ type (
 	UserProfile struct {
 		UserId            int64          `db:"user_id"`             // 用户ID
 		Gender            int64          `db:"gender"`              // 性别，0-男，1-女
-		Birthday          sql.NullTime   `db:"birthday"`            // 生日
-		RealName          sql.NullString `db:"real_name"`           // 真实姓名
-		IdNumber          sql.NullString `db:"id_number"`           // 身份证号
-		IdCardFront       sql.NullString `db:"id_card_front"`       // 身份证正面
-		IdCardBack        sql.NullString `db:"id_card_back"`        // 身份证背面
-		IdCardHandheld    sql.NullString `db:"id_card_handheld"`    // 手持身份证
+		Birthday          time.Time   `db:"birthday"`            // 生日
+		RealName          string `db:"real_name"`           // 真实姓名
+		IdNumber          string `db:"id_number"`           // 身份证号
+		IdCardFront       string `db:"id_card_front"`       // 身份证正面
+		IdCardBack        string `db:"id_card_back"`        // 身份证背面
+		IdCardHandheld    string `db:"id_card_handheld"`    // 手持身份证
 		CreateTime        time.Time      `db:"create_time"`         // 创建时间
 		UpdateTime        time.Time      `db:"update_time"`         // 更新时间
-		RegisterMediaTime sql.NullTime   `db:"register_media_time"` // 注册自媒体时间
-		Area              sql.NullString `db:"area"`                // 地区
-		Company           sql.NullString `db:"company"`             // 公司
-		Career            sql.NullString `db:"career"`              // 职业
-		Tag               sql.NullString `db:"tag"`                 // 标签
+		RegisterMediaTime time.Time  `db:"register_media_time"` // 注册自媒体时间
+		Area              string `db:"area"`                // 地区
+		Company           string `db:"company"`             // 公司
+		Career            string `db:"career"`              // 职业
+		Tag               string `db:"tag"`                 // 标签
 	}
 )
 
@@ -104,6 +105,15 @@ func (m *defaultUserProfileModel) Update(ctx context.Context, data *UserProfile)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `user_id` = ?", m.table, userProfileRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, data.Gender, data.Birthday, data.RealName, data.IdNumber, data.IdCardFront, data.IdCardBack, data.IdCardHandheld, data.RegisterMediaTime, data.Area, data.Company, data.Career, data.Tag, data.UserId)
+	}, userProfileUserIdKey)
+	return err
+}
+
+func (m *defaultUserProfileModel) UpdateProfileInfo(ctx context.Context, user_id,userprofilestr string,profileinter []interface{}) error{
+	userProfileUserIdKey := fmt.Sprintf("%s%v", cacheUserProfileUserIdPrefix, user_id)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `user_id` = ?", m.table, userprofilestr)
+		return conn.ExecCtx(ctx, query, profileinter...)
 	}, userProfileUserIdKey)
 	return err
 }

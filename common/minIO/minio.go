@@ -10,7 +10,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-func MinIOUpload(r *http.Request) (string, error) {
+func MinIOUpload(r *http.Request, file_name string) (string, error) {
 	ctx := context.Background()
 	// Initialize minio client object.
 	minioClient, err := minio.New(MinIOEndpoint, &minio.Options{
@@ -37,7 +37,7 @@ func MinIOUpload(r *http.Request) (string, error) {
 	// }
 
 	// Upload the zip file
-	file, fileHandler, err := r.FormFile("file")
+	file, fileHandler, err := r.FormFile(file_name)
 	if err != nil {
 		return "", err
 	}
@@ -51,3 +51,27 @@ func MinIOUpload(r *http.Request) (string, error) {
 
 	return MinIOBucket + "/" + objectName, nil
 }
+
+//func MinIOUploadByReader(reader io.Reader) (string, error) {
+//	ctx := context.Background()
+//	minioClient, err := minio.New(MinIOEndpoint, &minio.Options{
+//		Creds: credentials.NewStaticV4(MinIOAccessKeyID, MinIOAccessSecretKey, ""),
+//	})
+//	if err != nil {
+//		return "", err
+//	}
+//
+//	file, fileHandler, err := r.FormFile("file")
+//	if err != nil {
+//		return "", err
+//	}
+//	objectName := utils.UUID() + path.Ext()
+//	contentType := "binary/octet-stream"
+//	// Upload the zip file with FPutObject
+//	_, err = minioClient.PutObject(ctx, MinIOBucket, objectName, reader, reader.S, minio.PutObjectOptions{ContentType: contentType})
+//	if err != nil {
+//		return "", err
+//	}
+//
+//	return MinIOBucket + "/" + objectName, nil
+//}

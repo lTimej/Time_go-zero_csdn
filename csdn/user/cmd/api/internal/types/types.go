@@ -97,3 +97,28 @@ type UserFansListResponse struct {
 	TotalNum int64                `json:"total_num"`
 	Fans     []*UserFocusFansList `json:"fans"`
 }
+
+type UserInfoEditRequest struct {
+	HeadPhoto string `json:"head_photo,optional"`
+	OldPwd    string `json:"old_pwd,optional"`
+	NewPwd    string `json:"new_pwd,optional"`
+	UserName  string `json:"user_name,optional"`
+	Gender    string `json:"gender,optional"`
+	Introduce string `json:"introduce,optional"`
+	Tag       string `json:"tag,optional"`
+	AuthName  string `json:"auth_name,optional"`
+	Birthday  string `json:"birthday,optional"`
+	Areas     string `json:"areas,optional"`
+}
+
+type UserInfoEditResponse struct {
+	HeadPhoto string `json:"head_photo,optional"`
+	Pwd       string `json:"pwd,optional"`
+	UserName  string `json:"user_name,optional"`
+	Gender    int64  `json:"gender,optional"`
+	Introduce string `json:"introduce,optional"`
+	Tag       string `json:"tag,optional"`
+	AuthName  string `json:"authName,optional"`
+	Birthday  string `json:"birthday,optional"`
+	Areas     string `json:"areas,optional"`
+}
