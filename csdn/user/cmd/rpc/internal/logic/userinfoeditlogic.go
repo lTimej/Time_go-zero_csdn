@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"github.com/pkg/errors"
 	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
@@ -27,7 +26,6 @@ func NewUserInfoEditLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserInfoEditLogic) UserInfoEdit(in *user.UserInfoEditRequest) (*user.UserInfoEditResponse, error) {
 	// todo: add your logic here and delete this line
-	fmt.Println(in, "哈哈哈哈哈哈哈")
 	HeadPhoto := in.HeadPhoto
 	OldPwd := in.OldPwd
 	NewPwd := in.NewPwd
@@ -104,14 +102,11 @@ func (l *UserInfoEditLogic) UserInfoEdit(in *user.UserInfoEditRequest) (*user.Us
 
 	if userstr != "" {
 		userstr = userstr[:len(userstr)-1]
-		fmt.Println(userstr, "嘻嘻嘻嘻嘻嘻嘻")
 		userinter = append(userinter, user_id)
-		fmt.Println(userinter, "9999999999")
 		l.svcCtx.UserModel.UpdateUserInfo(l.ctx, user_id, userstr, userinter)
 	}
 	if userprofilestr != "" {
 		userprofilestr = userprofilestr[:len(userprofilestr)-1]
-		fmt.Println(userprofilestr, "呵呵呵呵呵呵呵呵")
 		profileinter = append(profileinter, user_id)
 		l.svcCtx.UserProfileModel.UpdateProfileInfo(l.ctx, user_id, userprofilestr, profileinter)
 	}
