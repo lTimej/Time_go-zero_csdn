@@ -119,6 +119,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/article/search/history",
 					Handler: ArticleUserSearchHistoryHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/v1/article/search/history",
+					Handler: DeleteArticleUserSearchHistoryHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

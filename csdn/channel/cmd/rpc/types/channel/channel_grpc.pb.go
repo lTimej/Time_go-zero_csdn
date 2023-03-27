@@ -43,6 +43,7 @@ type ChannelClient interface {
 	ArticleSuggestSearch(ctx context.Context, in *ArticleSuggestSearchRequest, opts ...grpc.CallOption) (*ArticleSuggestSearchResponse, error)
 	ArticleUserSearch(ctx context.Context, in *ArticleUserSearchRequest, opts ...grpc.CallOption) (*ArticleUserSearchResponse, error)
 	ArticleUserSearchHistory(ctx context.Context, in *ArticleUserSearchHistoryRequest, opts ...grpc.CallOption) (*ArticleUserSearchHistoryResponse, error)
+	DeleteArticleUserSearchHistory(ctx context.Context, in *DeleteArticleUserSearchHistoryRequest, opts ...grpc.CallOption) (*DeleteArticleUserSearchHistoryResponse, error)
 }
 
 type channelClient struct {
@@ -242,6 +243,15 @@ func (c *channelClient) ArticleUserSearchHistory(ctx context.Context, in *Articl
 	return out, nil
 }
 
+func (c *channelClient) DeleteArticleUserSearchHistory(ctx context.Context, in *DeleteArticleUserSearchHistoryRequest, opts ...grpc.CallOption) (*DeleteArticleUserSearchHistoryResponse, error) {
+	out := new(DeleteArticleUserSearchHistoryResponse)
+	err := c.cc.Invoke(ctx, "/channel.Channel/DeleteArticleUserSearchHistory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChannelServer is the server API for Channel service.
 // All implementations must embed UnimplementedChannelServer
 // for forward compatibility
@@ -267,6 +277,7 @@ type ChannelServer interface {
 	ArticleSuggestSearch(context.Context, *ArticleSuggestSearchRequest) (*ArticleSuggestSearchResponse, error)
 	ArticleUserSearch(context.Context, *ArticleUserSearchRequest) (*ArticleUserSearchResponse, error)
 	ArticleUserSearchHistory(context.Context, *ArticleUserSearchHistoryRequest) (*ArticleUserSearchHistoryResponse, error)
+	DeleteArticleUserSearchHistory(context.Context, *DeleteArticleUserSearchHistoryRequest) (*DeleteArticleUserSearchHistoryResponse, error)
 	mustEmbedUnimplementedChannelServer()
 }
 
@@ -336,6 +347,9 @@ func (UnimplementedChannelServer) ArticleUserSearch(context.Context, *ArticleUse
 }
 func (UnimplementedChannelServer) ArticleUserSearchHistory(context.Context, *ArticleUserSearchHistoryRequest) (*ArticleUserSearchHistoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArticleUserSearchHistory not implemented")
+}
+func (UnimplementedChannelServer) DeleteArticleUserSearchHistory(context.Context, *DeleteArticleUserSearchHistoryRequest) (*DeleteArticleUserSearchHistoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticleUserSearchHistory not implemented")
 }
 func (UnimplementedChannelServer) mustEmbedUnimplementedChannelServer() {}
 
@@ -728,6 +742,24 @@ func _Channel_ArticleUserSearchHistory_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Channel_DeleteArticleUserSearchHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteArticleUserSearchHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChannelServer).DeleteArticleUserSearchHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/channel.Channel/DeleteArticleUserSearchHistory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChannelServer).DeleteArticleUserSearchHistory(ctx, req.(*DeleteArticleUserSearchHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Channel_ServiceDesc is the grpc.ServiceDesc for Channel service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -818,6 +850,10 @@ var Channel_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArticleUserSearchHistory",
 			Handler:    _Channel_ArticleUserSearchHistory_Handler,
+		},
+		{
+			MethodName: "DeleteArticleUserSearchHistory",
+			Handler:    _Channel_DeleteArticleUserSearchHistory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -126,3 +126,8 @@ func (s *ChannelServer) ArticleUserSearchHistory(ctx context.Context, in *channe
 	l := logic.NewArticleUserSearchHistoryLogic(ctx, s.svcCtx)
 	return l.ArticleUserSearchHistory(in)
 }
+
+func (s *ChannelServer) DeleteArticleUserSearchHistory(ctx context.Context, in *channel.DeleteArticleUserSearchHistoryRequest) (*channel.DeleteArticleUserSearchHistoryResponse, error) {
+	l := logic.NewDeleteArticleUserSearchHistoryLogic(ctx, s.svcCtx)
+	return l.DeleteArticleUserSearchHistory(in)
+}

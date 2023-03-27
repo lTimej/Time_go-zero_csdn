@@ -241,11 +241,19 @@ message ArticleUserSearchResponse{
 }
 
 message ArticleUserSearchHistoryRequest{
-    string UserId = 4;
+    string UserId = 1;
 }
 
 message ArticleUserSearchHistoryResponse{
     repeated string Keywords = 1;
+}
+
+message DeleteArticleUserSearchHistoryRequest{
+    string UserId = 1;
+}
+
+message DeleteArticleUserSearchHistoryResponse{
+    string Message = 1;
 }
 
 service Channel {
@@ -270,4 +278,5 @@ service Channel {
     rpc ArticleSuggestSearch(ArticleSuggestSearchRequest) returns(ArticleSuggestSearchResponse);
     rpc ArticleUserSearch(ArticleUserSearchRequest) returns(ArticleUserSearchResponse);
     rpc ArticleUserSearchHistory(ArticleUserSearchHistoryRequest) returns(ArticleUserSearchHistoryResponse);
+    rpc DeleteArticleUserSearchHistory(DeleteArticleUserSearchHistoryRequest) returns(DeleteArticleUserSearchHistoryResponse);
 }

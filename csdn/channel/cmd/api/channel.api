@@ -224,6 +224,12 @@ type ArticleUserSearchHistoryResponse {
 	Keywords []string `json:"keywords"`
 }
 
+type DeleteArticleUserSearchHistoryRequest {}
+
+type DeleteArticleUserSearchHistoryResponse {
+	Message string `json:"message"`
+}
+
 service api-api {
 	@handler AllChannel
 	get /v1/channel/articles/channel(AllChannelRequest) returns (AllChannelResponse)
@@ -273,4 +279,6 @@ service api-api {
 	get /v1/article/user/search(ArticleUserSearchRequest) returns (ArticleUserSearchResponse)
 	@handler ArticleUserSearchHistory
 	get /v1/article/search/history(ArticleUserSearchHistoryRequest) returns (ArticleUserSearchHistoryResponse)
+	@handler DeleteArticleUserSearchHistory
+	delete /v1/article/search/history(DeleteArticleUserSearchHistoryRequest) returns (DeleteArticleUserSearchHistoryResponse)
 }

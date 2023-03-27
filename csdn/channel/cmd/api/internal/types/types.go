@@ -238,3 +238,10 @@ type ArticleUserSearchHistoryRequest struct {
 type ArticleUserSearchHistoryResponse struct {
 	Keywords []string `json:"keywords"`
 }
+
+type DeleteArticleUserSearchHistoryRequest struct {
+}
+
+type DeleteArticleUserSearchHistoryResponse struct {
+	Message string `json:"message"`
+}
