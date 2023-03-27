@@ -10,6 +10,12 @@ type UserMessageListResponse {
 	UserInfos []UserInfo `json:"user_infos"`
 }
 
+type UserChatRequest {
+	Token string `josn:"token"`
+}
+
+type UserChatResponse{}
+
 @server (
 	jwt: JwtAuth
 	middleware: SetUidToCtxMiddleware
@@ -18,4 +24,6 @@ type UserMessageListResponse {
 service api-api {
 	@handler UserMessageList
 	get /v1/im/user/list(UserMessageListRequest) returns (UserMessageListResponse)
+	@handler UserChat
+	get /v1/im/user/chat(UserChatRequest) returns (UserChatResponse)
 }

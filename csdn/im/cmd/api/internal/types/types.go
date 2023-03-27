@@ -13,3 +13,10 @@ type UserMessageListRequest struct {
 type UserMessageListResponse struct {
 	UserInfos []UserInfo `json:"user_infos"`
 }
+
+type UserChatRequest struct {
+	Token string `josn:"token"`
+}
+
+type UserChatResponse struct {
+}

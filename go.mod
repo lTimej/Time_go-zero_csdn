@@ -5,7 +5,9 @@ go 1.19
 require (
 	github.com/Masterminds/squirrel v1.5.3
 	github.com/cloopen/go-sms-sdk v0.0.0-20200702015230-7c5619f80c9e
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/gorilla/websocket v1.4.2
 	github.com/hibiken/asynq v0.24.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/minio/minio-go/v7 v7.0.49
@@ -15,6 +17,7 @@ require (
 	github.com/zeromicro/go-zero v1.4.4
 	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
+	gopkg.in/fatih/set.v0 v0.2.1
 )
 
 require (
@@ -31,7 +34,6 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.6.0 // indirect

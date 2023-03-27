@@ -1,15 +1,36 @@
 SET
 @@auto_increment_increment=9;
 
-CREATE TABLE `contact` (
+-- CREATE TABLE `contact` (
+--   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+--   `created_at` datetime(3) DEFAULT NULL,
+--   `updated_at` datetime(3) DEFAULT NULL,
+--   `deleted_at` datetime(3) DEFAULT NULL,
+--   `owner_id` char(20)  DEFAULT NULL,
+--   `target_id` char(20)  DEFAULT NULL,
+--   `type` bigint(20) DEFAULT NULL,
+--   `desc` longtext,
+--   PRIMARY KEY (`id`),
+--   KEY `idx_contact_deleted_at` (`deleted_at`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime(3) DEFAULT NULL,
   `updated_at` datetime(3) DEFAULT NULL,
   `deleted_at` datetime(3) DEFAULT NULL,
-  `owner_id` char(20)  DEFAULT NULL,
-  `target_id` char(20)  DEFAULT NULL,
-  `type` bigint(20) DEFAULT NULL,
+  `form_id` longtext,
+  `target_id` char(20),
+  `user_id` char(20),
+  `type` longtext,
+  `media` bigint(20) DEFAULT NULL,
+  `content` longtext,
+  `create_time` bigint(20) unsigned,
+	`read_time`   bigint(20) unsigned,
+  `pic` longtext,
+  `url` longtext,
   `desc` longtext,
+  `amount` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_contact_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8;
+  KEY `idx_message_deleted_at` (`deleted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
