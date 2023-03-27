@@ -19,3 +19,7 @@ const (
 	UserFansByUserId  = "user:fans:%s"
 	UserArticleSearch = "user:article:search:%s"
 )
+
+const (
+	UserContactByUserId = "user:contact:%s"
+)

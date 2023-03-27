@@ -377,6 +377,9 @@ CREATE TABLE `mis_operation_log`
     `create_time`      datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`operation_log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营日志';
+
+
+
 CREATE TABLE `statistics_basic`
 (
     `id`        bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -445,3 +448,16 @@ CREATE TABLE `recommend_sensitive_word`
     `update_time` datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='敏感词';
+
+CREATE TABLE `contact` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(3) DEFAULT NULL,
+  `updated_at` datetime(3) DEFAULT NULL,
+  `deleted_at` datetime(3) DEFAULT NULL,
+  `owner_id` bigint(20) unsigned DEFAULT NULL,
+  `target_id` bigint(20) unsigned DEFAULT NULL,
+  `type` bigint(20) DEFAULT NULL,
+  `desc` longtext,
+  PRIMARY KEY (`id`),
+  KEY `idx_contact_deleted_at` (`deleted_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8;

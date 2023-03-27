@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package im;
+option go_package="./im";
+
+message UserInfo{
+  string user_name = 1;
+  string head_photo = 2;
+  string introduce = 3;
+}
+
+message UserMessageListRequest {
+  string UserId = 1;
+}
+
+message UserMessageListResponse {
+  repeated UserInfo Userinfos = 1;
+
+}
+
+service Im {
+  rpc UserMessageList(UserMessageListRequest) returns(UserMessageListResponse);
+}

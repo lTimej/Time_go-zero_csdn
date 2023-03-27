@@ -1,0 +1,21 @@
+type UserInfo {
+	UserName  string `json:"user_name"`
+	HeadPhoto string `json:"head_photo"`
+	Introduce string `json:"introduce"`
+}
+
+type UserMessageListRequest {}
+
+type UserMessageListResponse {
+	UserInfos []UserInfo `json:"user_infos"`
+}
+
+@server (
+	jwt: JwtAuth
+	middleware: SetUidToCtxMiddleware
+)
+
+service api-api {
+	@handler UserMessageList
+	get /v1/im/user/list(UserMessageListRequest) returns (UserMessageListResponse)
+}
