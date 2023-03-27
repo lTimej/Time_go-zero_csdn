@@ -13,12 +13,15 @@ import (
 )
 
 type (
+	UserChatRequest         = im.UserChatRequest
+	UserChatResponse        = im.UserChatResponse
 	UserInfo                = im.UserInfo
 	UserMessageListRequest  = im.UserMessageListRequest
 	UserMessageListResponse = im.UserMessageListResponse
 
 	Im interface {
 		UserMessageList(ctx context.Context, in *UserMessageListRequest, opts ...grpc.CallOption) (*UserMessageListResponse, error)
+		UserChat(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error)
 	}
 
 	defaultIm struct {
@@ -35,4 +38,9 @@ func NewIm(cli zrpc.Client) Im {
 func (m *defaultIm) UserMessageList(ctx context.Context, in *UserMessageListRequest, opts ...grpc.CallOption) (*UserMessageListResponse, error) {
 	client := im.NewImClient(m.cli.Conn())
 	return client.UserMessageList(ctx, in, opts...)
+}
+
+func (m *defaultIm) UserChat(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error) {
+	client := im.NewImClient(m.cli.Conn())
+	return client.UserChat(ctx, in, opts...)
 }

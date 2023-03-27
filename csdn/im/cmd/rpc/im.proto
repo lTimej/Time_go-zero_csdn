@@ -18,6 +18,14 @@ message UserMessageListResponse {
 
 }
 
+message UserChatRequest {
+  string UserId = 1;
+  string Token = 2;
+}
+
+message UserChatResponse {}
+
 service Im {
   rpc UserMessageList(UserMessageListRequest) returns(UserMessageListResponse);
+  rpc UserChat(UserChatRequest) returns(UserChatResponse);
 }

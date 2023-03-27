@@ -26,3 +26,8 @@ func (s *ImServer) UserMessageList(ctx context.Context, in *im.UserMessageListRe
 	l := logic.NewUserMessageListLogic(ctx, s.svcCtx)
 	return l.UserMessageList(in)
 }
+
+func (s *ImServer) UserChat(ctx context.Context, in *im.UserChatRequest) (*im.UserChatResponse, error) {
+	l := logic.NewUserChatLogic(ctx, s.svcCtx)
+	return l.UserChat(in)
+}

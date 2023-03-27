@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImClient interface {
 	UserMessageList(ctx context.Context, in *UserMessageListRequest, opts ...grpc.CallOption) (*UserMessageListResponse, error)
+	UserChat(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error)
 }
 
 type imClient struct {
@@ -42,11 +43,21 @@ func (c *imClient) UserMessageList(ctx context.Context, in *UserMessageListReque
 	return out, nil
 }
 
+func (c *imClient) UserChat(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error) {
+	out := new(UserChatResponse)
+	err := c.cc.Invoke(ctx, "/im.Im/UserChat", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImServer is the server API for Im service.
 // All implementations must embed UnimplementedImServer
 // for forward compatibility
 type ImServer interface {
 	UserMessageList(context.Context, *UserMessageListRequest) (*UserMessageListResponse, error)
+	UserChat(context.Context, *UserChatRequest) (*UserChatResponse, error)
 	mustEmbedUnimplementedImServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedImServer struct {
 
 func (UnimplementedImServer) UserMessageList(context.Context, *UserMessageListRequest) (*UserMessageListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserMessageList not implemented")
+}
+func (UnimplementedImServer) UserChat(context.Context, *UserChatRequest) (*UserChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserChat not implemented")
 }
 func (UnimplementedImServer) mustEmbedUnimplementedImServer() {}
 
@@ -88,6 +102,24 @@ func _Im_UserMessageList_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Im_UserChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImServer).UserChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/im.Im/UserChat",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImServer).UserChat(ctx, req.(*UserChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Im_ServiceDesc is the grpc.ServiceDesc for Im service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Im_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserMessageList",
 			Handler:    _Im_UserMessageList_Handler,
+		},
+		{
+			MethodName: "UserChat",
+			Handler:    _Im_UserChat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

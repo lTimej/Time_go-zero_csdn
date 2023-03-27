@@ -1,15 +1,29 @@
 Name: api-api
 Host: 0.0.0.0
 Port: 8890
-ImRpc:
-  Etcd:
-    Hosts:
-      - 172.20.16.20:12379
-    Key: im.rpc
-JwtAuth:
-  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+
+DB:
+  DataSource: root:liujun@tcp(172.20.16.20:13306)/csdn?charset=utf8mb4&parseTime=True&loc=Local
+
+RedisIm:
+  Host: 172.20.16.20:16379
+  Pass: liujun
+  DB: 1
+  PoolSize: 30
+  MinIdleConn: 30
 
 Redis:
   Host: 172.20.16.20:16379
   Pass: liujun
   Type: node
+
+Cache:
+  - Host: 172.20.16.20:16379
+    Pass: liujun
+JwtAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 31536000
+
+Log:
+  ServiceName: usercenter-rpc
+  Level: error
