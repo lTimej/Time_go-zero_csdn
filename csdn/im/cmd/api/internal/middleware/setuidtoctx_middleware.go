@@ -21,14 +21,12 @@ func NewSetUidToCtxMiddleware(c config.Config) *SetUidToCtxMiddleware {
 func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO generate middleware implement function, delete after code implementation
-
 		header := r.Header.Get("Authorization")
-		if !strings.HasPrefix(header, "Bearer") {
-			return
-		}
-		token := strings.Split(header, " ")[1]
-		if token == "" {
+		if header == "" {
 			if r.URL.Path == "/v1/article/status" {
+				next(w, r)
+				return
+			} else if r.URL.Path == "/v1/im/user/chat" {
 				next(w, r)
 				return
 			} else {
@@ -36,6 +34,10 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 		}
+		if !strings.HasPrefix(header, "Bearer") {
+			return
+		}
+		token := strings.Split(header, " ")[1]
 		r.Header.Set("Authorization", token)
 		claim, err := ctxdata.ParseToken(token, m.Config.JwtAuth.AccessSecret)
 		if err != nil {

@@ -7,6 +7,15 @@ type UserInfo struct {
 	Introduce string `json:"introduce"`
 }
 
+type UserChatRecords struct {
+	TargetUserId string `json:"target_user_id"`
+	UserId       string `json:"user_id"`
+	Type         int64  `json:"type"`
+	CreateTime   string `json:"create_time"`
+	Content      string `json:"content"`
+	Media        int64  `json:"media"`
+}
+
 type UserMessageListRequest struct {
 }
 
@@ -19,4 +28,14 @@ type UserChatRequest struct {
 }
 
 type UserChatResponse struct {
+}
+
+type UserChatRecordRequest struct {
+	TargetUserId string `json:"target_user_id,optional"`
+	Page         int64  `json:"page,optional"`
+	PageNum      int64  `json:"page_num,optional"`
+}
+
+type UserChatRecordResponse struct {
+	ChatRecords []UserChatRecords `json:"chat_records"`
 }

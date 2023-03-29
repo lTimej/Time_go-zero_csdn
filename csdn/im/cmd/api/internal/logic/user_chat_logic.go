@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/im/model"
+	"net"
 	"net/http"
 	"sync"
 	"time"
@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
+
 	"github.com/zeromicro/go-zero/core/logx"
 	"gopkg.in/fatih/set.v0"
 )
@@ -50,16 +51,19 @@ func NewUserChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserChat
 
 func (l *UserChatLogic) UserChat(w http.ResponseWriter, r *http.Request) {
 	// todo: add your logic here and delete this line
-	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	isvalida := true //checkToke()  待.........
+	fmt.Println("init goroutine ")
+	user_id := "1391913700415242240"
+	// isvalida := true //checkToke()  待.........
 	conn, err := (&websocket.Upgrader{
 		//token 校验
+		ReadBufferSize:   1024,
+		WriteBufferSize:  1024,
+		HandshakeTimeout: 5 * time.Second,
 		CheckOrigin: func(r *http.Request) bool {
-			return isvalida
+			return true
 		},
 	}).Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	//2.获取conn
@@ -81,8 +85,16 @@ func (l *UserChatLogic) UserChat(w http.ResponseWriter, r *http.Request) {
 	go l.sendProc(node)
 	//6.完成接受逻辑
 	go l.recvProc(node)
+
+	go l.udpSendProc()
+	go l.udpRecvProc()
 	//7.加入在线用户到缓存
-	// SetUserOnlineInfo("online_"+Id, []byte(node.Addr), time.Duration(viper.GetInt("timeout.RedisOnlineTime"))*time.Hour)
+	l.SetUserOnlineInfo("online_"+user_id, []byte(node.Addr), time.Duration(4*time.Hour))
+}
+
+func (l *UserChatLogic) SetUserOnlineInfo(key string, val []byte, timeTTL time.Duration) {
+	ctx := context.Background()
+	l.svcCtx.RedisIm.Set(ctx, key, val, timeTTL)
 }
 
 func (l *UserChatLogic) sendProc(node *Node) {
@@ -131,6 +143,7 @@ func (node *Node) Heartbeat(currentTime uint64) {
 
 // 后端调度逻辑处理
 func (l *UserChatLogic) dispatch(data []byte) {
+	fmt.Println(string(data), "===========")
 	msg := model.Message{}
 	msg.CreateTime = time.Now().Unix()
 	err := json.Unmarshal(data, &msg)
@@ -138,9 +151,10 @@ func (l *UserChatLogic) dispatch(data []byte) {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println(msg, "===========")
 	switch msg.Type {
 	case 1: //私信
-		fmt.Println("dispatch  data :", string(data))
+		fmt.Println("dispatch  data ===:", string(data))
 		l.sendMsg(msg.TargetId, data)
 	case 2: //群发
 		l.sendGroupMsg(msg.TargetId, data) //发送的群ID ，消息内容
@@ -157,6 +171,52 @@ func (l *UserChatLogic) broadMsg(data []byte) {
 	udpsendChan <- data
 }
 
+// 完成udp数据发送协程
+func (l *UserChatLogic) udpSendProc() {
+	con, err := net.DialUDP("udp", nil, &net.UDPAddr{
+		IP:   net.IPv4(172, 20, 16, 20),
+		Port: 3001,
+	})
+	defer con.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for {
+		select {
+		case data := <-udpsendChan:
+			fmt.Println("udpSendProc  data :", string(data))
+			_, err := con.Write(data)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		}
+	}
+
+}
+
+// 完成udp数据接收协程
+func (l *UserChatLogic) udpRecvProc() {
+	con, err := net.ListenUDP("udp", &net.UDPAddr{
+		IP:   net.IPv4zero,
+		Port: 3001,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer con.Close()
+	for {
+		var buf [512]byte
+		n, err := con.Read(buf[0:])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println("udpRecvProc  data :", string(buf[0:n]))
+		l.dispatch(buf[0:n])
+	}
+}
+
 func (l *UserChatLogic) sendMsg(userId string, msg []byte) {
 
 	rwLocker.RLock()
@@ -164,7 +224,6 @@ func (l *UserChatLogic) sendMsg(userId string, msg []byte) {
 	rwLocker.RUnlock()
 	jsonMsg := model.Message{}
 	json.Unmarshal(msg, &jsonMsg)
-	ctx := context.Background()
 	targetIdStr := userId
 	userIdStr := jsonMsg.UserId
 	jsonMsg.CreateTime = time.Now().Unix()
@@ -184,12 +243,12 @@ func (l *UserChatLogic) sendMsg(userId string, msg []byte) {
 	} else {
 		key = "msg_" + targetIdStr + "_" + userIdStr
 	}
-	res, err := l.svcCtx.RedisIm.ZRevRange(ctx, key, 0, -1).Result()
+	res, err := l.svcCtx.RedisIm.ZRevRange(l.ctx, key, 0, -1).Result()
 	if err != nil {
 		fmt.Println(err)
 	}
 	score := float64(cap(res)) + 1
-	ress, e := l.svcCtx.RedisIm.ZAdd(ctx, key, &redis.Z{score, msg}).Result() //jsonMsg
+	ress, e := l.svcCtx.RedisIm.ZAdd(l.ctx, key, &redis.Z{score, msg}).Result() //jsonMsg
 	//res, e := utils.Red.Do(ctx, "zadd", key, 1, jsonMsg).Result() //备用 后续拓展 记录完整msg
 	if e != nil {
 		fmt.Println(e)

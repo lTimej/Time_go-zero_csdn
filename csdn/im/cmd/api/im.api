@@ -4,6 +4,15 @@ type UserInfo {
 	Introduce string `json:"introduce"`
 }
 
+type UserChatRecords {
+	TargetUserId string `json:"target_user_id"`
+	UserId       string `json:"user_id"`
+	Type         int64  `json:"type"`
+	CreateTime   string `json:"create_time"`
+	Content      string `json:"content"`
+	Media        int64  `json:"media"`
+}
+
 type UserMessageListRequest {}
 
 type UserMessageListResponse {
@@ -16,8 +25,18 @@ type UserChatRequest {
 
 type UserChatResponse{}
 
+type UserChatRecordRequest {
+	TargetUserId string `json:"target_user_id,optional"`
+	Page         int64  `json:"page,optional"`
+	PageNum      int64  `json:"page_num,optional"`
+}
+
+type UserChatRecordResponse {
+	ChatRecords []UserChatRecords `json:"chat_records"`
+}
+
 @server (
-	jwt: JwtAuth
+	// jwt: JwtAuth
 	middleware: SetUidToCtxMiddleware
 )
 
@@ -26,4 +45,6 @@ service api-api {
 	get /v1/im/user/list(UserMessageListRequest) returns (UserMessageListResponse)
 	@handler UserChat
 	get /v1/im/user/chat(UserChatRequest) returns (UserChatResponse)
+	@handler UserChatRecord
+	get /v1/im/chat/records(UserChatRecordRequest) returns (UserChatRecordResponse)
 }

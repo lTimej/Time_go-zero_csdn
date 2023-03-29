@@ -24,8 +24,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/im/user/chat",
 					Handler: UserChatHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/im/chat/records",
+					Handler: UserChatRecordHandler(serverCtx),
+				},
 			}...,
 		),
-		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 	)
 }
