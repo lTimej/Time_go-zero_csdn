@@ -20,7 +20,7 @@ import (
 
 var (
 	contactFieldNames          = builder.RawFieldNames(&Contact{})
-	contactRows                = strings.Join(contactFieldNames, ",")
+	contactRows                = "id,owner_id,target_id,type"
 	contactRowsExpectAutoSet   = strings.Join(stringx.Remove(contactFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	contactInfo                = "type,owner_id,target_id"
 	contactRowsWithPlaceHolder = strings.Join(stringx.Remove(contactFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
@@ -34,7 +34,7 @@ type (
 		RowDefaultBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *Contact) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Contact, error)
-		FindOneByUserIdTargetId(ctx context.Context, user_id, target_id string) (*Contact, error)
+		FindOneByUserIdTargetId(ctx context.Context, user_id, target_id string) (*ContactInfo, error)
 		FindAllByUserId(ctx context.Context, orderBy string, builder squirrel.SelectBuilder) ([]*Contact, error)
 		Update(ctx context.Context, data *Contact) error
 		Delete(ctx context.Context, id int64) error
@@ -54,6 +54,12 @@ type (
 		TargetId  string    `db:"target_id"`
 		Type      int64     `db:"type"`
 		Desc      string    `db:"desc"`
+	}
+	ContactInfo struct {
+		Id       int64  `db:"id"`
+		OwnerId  string `db:"owner_id"`
+		TargetId string `db:"target_id"`
+		Type     int64  `db:"type"`
 	}
 )
 
@@ -90,18 +96,20 @@ func (m *defaultContactModel) FindOne(ctx context.Context, id int64) (*Contact, 
 	}
 }
 
-func (m *defaultContactModel) FindOneByUserIdTargetId(ctx context.Context, user_id, target_id string) (*Contact, error) {
+func (m *defaultContactModel) FindOneByUserIdTargetId(ctx context.Context, user_id, target_id string) (*ContactInfo, error) {
 	contactIdKey := fmt.Sprintf("%s%v:%v", cacheContactUserIdTargetIdPrefix, user_id, target_id)
-	var resp Contact
+	fmt.Println(contactIdKey, "----------**************")
+	var resp ContactInfo
 	err := m.QueryRowCtx(ctx, &resp, contactIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `owner_id` = ? and `target_id` = ? limit 1", contactRows, m.table)
+		fmt.Println(query, "&&&&&&&&&&*************", user_id, target_id)
 		return conn.QueryRowCtx(ctx, v, query, user_id, target_id)
 	})
 	switch err {
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+		return nil, nil
 	default:
 		return nil, err
 	}
@@ -141,7 +149,7 @@ func (m *defaultContactModel) Insert(ctx context.Context, data *Contact) (sql.Re
 func (m *defaultContactModel) Update(ctx context.Context, data *Contact) error {
 	contactIdKey := fmt.Sprintf("%s%v:%v", cacheContactUserIdTargetIdPrefix, data.OwnerId, data.TargetId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, "desc = '修改'")
+		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, "type = 1")
 		return conn.ExecCtx(ctx, query, data.Id)
 	}, contactIdKey)
 	return err

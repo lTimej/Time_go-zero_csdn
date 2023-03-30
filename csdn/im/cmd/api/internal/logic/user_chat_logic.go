@@ -274,8 +274,9 @@ func (l *UserChatLogic) sendMsg(userId string, msg []byte, user_id string) {
 		OwnerId:  user_id,
 	}
 	contact_obj, err := l.svcCtx.UserContact.FindOneByUserIdTargetId(l.ctx, user_id, userId)
+	fmt.Println(err, "66666666666")
 	if err == nil {
-		if contact_obj.OwnerId == "" {
+		if contact_obj == nil {
 			_, err = l.svcCtx.UserContact.Insert(l.ctx, &data)
 			if err != nil {
 				fmt.Println("保存数据库失败", err)
