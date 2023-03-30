@@ -105,6 +105,7 @@ func (m *defaultContactModel) FindOneByUserIdTargetId(ctx context.Context, user_
 		fmt.Println(query, "&&&&&&&&&&*************", user_id, target_id)
 		return conn.QueryRowCtx(ctx, v, query, user_id, target_id)
 	})
+	fmt.Println(err, "9999999999999999")
 	switch err {
 	case nil:
 		return &resp, nil
@@ -149,8 +150,8 @@ func (m *defaultContactModel) Insert(ctx context.Context, data *Contact) (sql.Re
 func (m *defaultContactModel) Update(ctx context.Context, data *Contact) error {
 	contactIdKey := fmt.Sprintf("%s%v:%v", cacheContactUserIdTargetIdPrefix, data.OwnerId, data.TargetId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, "type = 1")
-		return conn.ExecCtx(ctx, query, data.Id)
+		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, "updated_at = ?")
+		return conn.ExecCtx(ctx, query, data.CreatedAt, data.Id)
 	}, contactIdKey)
 	return err
 }

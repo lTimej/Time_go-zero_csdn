@@ -33,8 +33,10 @@ func (l *UserMessageListLogic) UserMessageList(req *types.UserMessageListRequest
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
 	fmt.Println(user_id, "呵呵呵呵呵呵呵呵呵")
 	key := fmt.Sprintf(globalkey.UserContactByUserId, user_id)
-	target_ids, err := l.svcCtx.RedisIm.ZRevRange(l.ctx, key, 0, -1).Result()
+	fmt.Println(key, "0000000")
+	target_ids, err := l.svcCtx.RedisIm.ZRevRange(l.ctx, key, 0, 1).Result()
 	if err != nil {
+		fmt.Println(err, "111111111111")
 		return nil, err
 	}
 	//缓存没有从数据库取
@@ -54,7 +56,10 @@ func (l *UserMessageListLogic) UserMessageList(req *types.UserMessageListRequest
 	}
 	infos := []types.UserInfo{}
 	for _, target_id := range target_ids {
-		user, _ := l.svcCtx.UserBasic.FindOne(l.ctx, target_id)
+		user, err := l.svcCtx.UserBasic.FindOne(l.ctx, target_id)
+		if err != nil {
+			fmt.Println(err, "2222222222222222")
+		}
 		infos = append(infos, types.UserInfo{
 			UserName:  user.UserName,
 			HeadPhoto: user.ProfilePhoto,

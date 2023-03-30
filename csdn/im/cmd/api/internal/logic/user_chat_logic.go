@@ -274,7 +274,7 @@ func (l *UserChatLogic) sendMsg(userId string, msg []byte, user_id string) {
 		OwnerId:  user_id,
 	}
 	contact_obj, err := l.svcCtx.UserContact.FindOneByUserIdTargetId(l.ctx, user_id, userId)
-	fmt.Println(err, "66666666666")
+	fmt.Println(err, "66666666666", contact_obj)
 	if err == nil {
 		if contact_obj == nil {
 			_, err = l.svcCtx.UserContact.Insert(l.ctx, &data)
@@ -283,9 +283,10 @@ func (l *UserChatLogic) sendMsg(userId string, msg []byte, user_id string) {
 			}
 		} else {
 			data = model.Contact{
-				Id:       contact_obj.Id,
-				TargetId: userId,
-				OwnerId:  user_id,
+				Id:        contact_obj.Id,
+				TargetId:  userId,
+				OwnerId:   user_id,
+				CreatedAt: time.Now(),
 			}
 			err = l.svcCtx.UserContact.Update(l.ctx, &data)
 			if err != nil {

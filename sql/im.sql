@@ -9,7 +9,7 @@ CREATE TABLE `contact` (
   `owner_id` char(20)  DEFAULT NULL,
   `target_id` char(20)  DEFAULT NULL,
   `type` bigint(20) DEFAULT NULL,
-  `desc` varchar(255),
+  `desc` varchar(255) DEFAULT "",
   PRIMARY KEY (`id`),
   KEY `idx_contact_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8;
