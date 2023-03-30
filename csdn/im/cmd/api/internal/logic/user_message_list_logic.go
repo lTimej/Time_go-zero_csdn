@@ -31,6 +31,7 @@ func NewUserMessageListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *U
 func (l *UserMessageListLogic) UserMessageList(req *types.UserMessageListRequest) (resp *types.UserMessageListResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
+	fmt.Println(user_id, "呵呵呵呵呵呵呵呵呵")
 	key := fmt.Sprintf(globalkey.UserContactByUserId, user_id)
 	target_ids, err := l.svcCtx.RedisIm.ZRevRange(l.ctx, key, 0, -1).Result()
 	if err != nil {
@@ -58,6 +59,7 @@ func (l *UserMessageListLogic) UserMessageList(req *types.UserMessageListRequest
 			UserName:  user.UserName,
 			HeadPhoto: user.ProfilePhoto,
 			Introduce: user.Introduction,
+			UserId:    user.UserId,
 		})
 	}
 	return &types.UserMessageListResponse{UserInfos: infos}, nil

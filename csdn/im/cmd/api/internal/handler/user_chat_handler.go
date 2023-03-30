@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"liujun/Time_go-zero_csdn/csdn/im/cmd/api/internal/logic"
@@ -17,7 +18,8 @@ func UserChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
+		path := r.URL.Query().Get("token")
+		fmt.Println(path, "11111")
 		l := logic.NewUserChatLogic(r.Context(), svcCtx)
 		l.UserChat(w, r)
 	}

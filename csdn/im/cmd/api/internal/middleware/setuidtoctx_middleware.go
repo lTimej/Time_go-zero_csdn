@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"liujun/Time_go-zero_csdn/common/xerr"
@@ -21,6 +22,12 @@ func NewSetUidToCtxMiddleware(c config.Config) *SetUidToCtxMiddleware {
 func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO generate middleware implement function, delete after code implementation
+		if r.URL.Path == "/v1/im/user/chat" {
+			fmt.Println(r.Header.Get("Authorization"), "33333333333333")
+			r.Header.Set("Authorization", r.URL.Query().Get("token"))
+			// next(w, r)
+			// return
+		}
 		header := r.Header.Get("Authorization")
 		if header == "" {
 			if r.URL.Path == "/v1/article/status" {
