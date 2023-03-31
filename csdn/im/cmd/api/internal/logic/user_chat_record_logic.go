@@ -31,7 +31,12 @@ func (l *UserChatRecordLogic) UserChatRecord(req *types.UserChatRecordRequest) (
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
 	fmt.Println(user_id, "===========")
-	key := "msg_" + req.TargetUserId + "_" + user_id
+	var key string
+	if req.TargetUserId > user_id {
+		key = "msg_" + user_id + "_" + req.TargetUserId
+	} else {
+		key = "msg_" + req.TargetUserId + "_" + user_id
+	}
 	fmt.Println(key, "---------------")
 	data, err := l.svcCtx.RedisIm.ZRange(l.ctx, key, req.Page, req.PageNum).Result()
 	if err != nil {

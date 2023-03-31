@@ -40,5 +40,6 @@ func (l *UserCurrInfoLogic) UserCurrInfo(req *types.UserCurrInfoRequest) (resp *
 	resp.CodeYear = res.CodeYear
 	resp.Focus = res.Focus
 	resp.Fans = res.Fans
+	resp.UserId = user_id
 	return resp, nil
 }

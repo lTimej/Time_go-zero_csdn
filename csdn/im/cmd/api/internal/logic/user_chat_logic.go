@@ -27,6 +27,7 @@ type Message struct {
 	Content    string `json:"content"`
 	CreateTime int64  `json:"create_time"`
 	UserId     string `json:"user_id"`
+	Media      int64  `json:"media"`
 }
 type Node struct {
 	Conn          *websocket.Conn //连接
@@ -44,6 +45,8 @@ var clientMap map[string]*Node = make(map[string]*Node, 0)
 // 读写锁
 var rwLocker sync.RWMutex
 
+var ml *UserChatLogic
+
 type UserChatLogic struct {
 	logx.Logger
 	ctx    context.Context
@@ -60,10 +63,8 @@ func NewUserChatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserChat
 
 func (l *UserChatLogic) UserChat(w http.ResponseWriter, r *http.Request) {
 	// todo: add your logic here and delete this line
-
-	fmt.Println("init goroutine ")
+	ml = l
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	fmt.Println(user_id, "~~~~~~~~~~~~~")
 	// isvalida := true //checkToke()  待.........
 	conn, err := (&websocket.Upgrader{
 		//token 校验
@@ -93,12 +94,9 @@ func (l *UserChatLogic) UserChat(w http.ResponseWriter, r *http.Request) {
 	clientMap[user_id] = node
 	rwLocker.Unlock()
 	//5.完成发送逻辑
-	go l.sendProc(node)
+	go sendProc(node)
 	//6.完成接受逻辑
-	go l.recvProc(node, user_id)
-
-	go l.udpSendProc()
-	go l.udpRecvProc(user_id)
+	go recvProc(node)
 	//7.加入在线用户到缓存
 	l.SetUserOnlineInfo("online_"+user_id, []byte(node.Addr), time.Duration(4*time.Hour))
 }
@@ -108,7 +106,7 @@ func (l *UserChatLogic) SetUserOnlineInfo(key string, val []byte, timeTTL time.D
 	l.svcCtx.RedisIm.Set(ctx, key, val, timeTTL)
 }
 
-func (l *UserChatLogic) sendProc(node *Node) {
+func sendProc(node *Node) {
 	for {
 		select {
 		case data := <-node.DataQueue:
@@ -122,14 +120,14 @@ func (l *UserChatLogic) sendProc(node *Node) {
 	}
 }
 
-func (l *UserChatLogic) recvProc(node *Node, user_id string) {
+func recvProc(node *Node) {
 	for {
 		_, data, err := node.Conn.ReadMessage()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		msg := Message{UserId: user_id}
+		msg := Message{}
 		err = json.Unmarshal(data, &msg)
 		if err != nil {
 			fmt.Println(err)
@@ -139,8 +137,8 @@ func (l *UserChatLogic) recvProc(node *Node, user_id string) {
 			currentTime := uint64(time.Now().Unix())
 			node.Heartbeat(currentTime)
 		} else {
-			l.dispatch(data, user_id)
-			l.broadMsg(data) //todo 将消息广播到局域网
+			dispatch(data)
+			broadMsg(data) //todo 将消息广播到局域网
 			fmt.Println("[ws] recvProc <<<<< ", string(data))
 		}
 
@@ -153,22 +151,20 @@ func (node *Node) Heartbeat(currentTime uint64) {
 }
 
 // 后端调度逻辑处理
-func (l *UserChatLogic) dispatch(data []byte, user_id string) {
-	fmt.Println(string(data), "===========")
-	msg := Message{UserId: user_id}
+func dispatch(data []byte) {
+	msg := Message{}
 	msg.CreateTime = time.Now().Unix()
 	err := json.Unmarshal(data, &msg)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(msg, "===========")
 	switch msg.Type {
 	case 1: //私信
 		fmt.Println("dispatch  data ===:", string(data), "-------------", msg.TargetId, msg.Content)
-		l.sendMsg(msg.TargetId, data, user_id)
+		sendMsg(msg.TargetId, data)
 	case 2: //群发
-		l.sendGroupMsg(msg.TargetId, data) //发送的群ID ，消息内容
+		sendGroupMsg(msg.TargetId, data) //发送的群ID ，消息内容
 		// case 4: // 心跳
 		// 	node.Heartbeat()
 		//case 4:
@@ -176,14 +172,22 @@ func (l *UserChatLogic) dispatch(data []byte, user_id string) {
 	}
 }
 
+func init() {
+	fmt.Println("*******************************************************************************************")
+	go udpSendProc()
+	go udpRecvProc()
+	fmt.Println("init goroutine ")
+	fmt.Println("*******************************************************************************************")
+}
+
 var udpsendChan chan []byte = make(chan []byte, 1024)
 
-func (l *UserChatLogic) broadMsg(data []byte) {
+func broadMsg(data []byte) {
 	udpsendChan <- data
 }
 
 // 完成udp数据发送协程
-func (l *UserChatLogic) udpSendProc() {
+func udpSendProc() {
 	con, err := net.DialUDP("udp", nil, &net.UDPAddr{
 		IP:   net.IPv4(172, 20, 16, 20),
 		Port: 3001,
@@ -203,11 +207,10 @@ func (l *UserChatLogic) udpSendProc() {
 			}
 		}
 	}
-
 }
 
 // 完成udp数据接收协程
-func (l *UserChatLogic) udpRecvProc(user_id string) {
+func udpRecvProc() {
 	con, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   net.IPv4zero,
 		Port: 3001,
@@ -224,85 +227,65 @@ func (l *UserChatLogic) udpRecvProc(user_id string) {
 			return
 		}
 		fmt.Println("udpRecvProc  data :", string(buf[0:n]))
-		l.dispatch(buf[0:n], user_id)
+		dispatch(buf[0:n])
 	}
 }
 
-func (l *UserChatLogic) sendMsg(userId string, msg []byte, user_id string) {
+func sendMsg(targetId string, msg []byte) {
 	ctx := context.Background()
 	rwLocker.RLock()
-	node, ok := clientMap[userId]
-	fmt.Println(node, ok, "33333333", userId, "444444", user_id)
+	node, ok := clientMap[targetId]
 	rwLocker.RUnlock()
-	jsonMsg := Message{UserId: user_id}
+	jsonMsg := Message{}
 	json.Unmarshal(msg, &jsonMsg)
-	targetIdStr := userId
+	targetIdStr := targetId
 	userIdStr := jsonMsg.UserId
 	jsonMsg.CreateTime = time.Now().Unix()
-	r, err := l.svcCtx.RedisIm.Get(ctx, "online_"+userIdStr).Result()
+	r, err := ml.svcCtx.RedisIm.Get(ctx, "online_"+userIdStr).Result()
 	if err != nil {
 		fmt.Println(err, "444444444444")
 	}
 	if r != "" {
 		if ok {
-			fmt.Println("sendMsg >>> userID: ", userId, "  msg:", string(msg))
+			fmt.Println("sendMsg >>> userID: ", targetId, "  msg:", string(msg))
 			node.DataQueue <- msg
 		}
 	}
 	var key string
-	if userId > jsonMsg.UserId {
+	if targetId > jsonMsg.UserId {
 		key = "msg_" + userIdStr + "_" + targetIdStr
-		fmt.Println(key, "&&&&&&&&&&&&&&&")
 	} else {
 		key = "msg_" + targetIdStr + "_" + userIdStr
-		fmt.Println(key, "%%%%%%%%%%%*")
 	}
-
-	res, err := l.svcCtx.RedisIm.ZRevRange(ctx, key, 0, -1).Result()
+	res, err := ml.svcCtx.RedisIm.ZRevRange(ctx, key, 0, -1).Result()
 	if err != nil {
 		fmt.Println(err)
 	}
 	score := float64(cap(res)) + 1
-	ress, e := l.svcCtx.RedisIm.ZAdd(ctx, key, &redis.Z{score, msg}).Result() //jsonMsg
+	ress, e := ml.svcCtx.RedisIm.ZAdd(ctx, key, &redis.Z{score, msg}).Result() //jsonMsg
 	//res, e := utils.Red.Do(ctx, "zadd", key, 1, jsonMsg).Result() //备用 后续拓展 记录完整msg
 	if e != nil {
 		fmt.Println(e)
 	}
-	data := model.Contact{
-		Type:     jsonMsg.Type,
-		TargetId: userId,
-		OwnerId:  user_id,
+	//存入数据库逻辑
+	save_db(userIdStr, targetId, jsonMsg.Type)
+	save_db(targetId, userIdStr, jsonMsg.Type)
+	contact_userId_key := fmt.Sprintf(globalkey.UserContactByUserId, jsonMsg.UserId)
+	//添加联系列表缓存
+	_, e = ml.svcCtx.RedisIm.ZAdd(ctx, contact_userId_key, &redis.Z{float64(jsonMsg.CreateTime), targetId}).Result()
+	if e != nil {
+		fmt.Println(e)
 	}
-	contact_obj, err := l.svcCtx.UserContact.FindOneByUserIdTargetId(l.ctx, user_id, userId)
-	fmt.Println(err, "66666666666", contact_obj)
-	if err == nil {
-		if contact_obj == nil {
-			_, err = l.svcCtx.UserContact.Insert(l.ctx, &data)
-			if err != nil {
-				fmt.Println("保存数据库失败", err)
-			}
-		} else {
-			data = model.Contact{
-				Id:        contact_obj.Id,
-				TargetId:  userId,
-				OwnerId:   user_id,
-				CreatedAt: time.Now(),
-			}
-			err = l.svcCtx.UserContact.Update(l.ctx, &data)
-			if err != nil {
-				fmt.Println("修改数据库失败", err)
-			}
-		}
-	}
-	contact_key := fmt.Sprintf(globalkey.UserContactByUserId, user_id)
-	_, e = l.svcCtx.RedisIm.ZAdd(l.ctx, contact_key, &redis.Z{float64(jsonMsg.CreateTime), userId}).Result()
+	contact_targetId_key := fmt.Sprintf(globalkey.UserContactByUserId, targetId)
+	//添加对方联系列表缓存
+	_, e = ml.svcCtx.RedisIm.ZAdd(ctx, contact_targetId_key, &redis.Z{float64(jsonMsg.CreateTime), jsonMsg.UserId}).Result()
 	if e != nil {
 		fmt.Println(e)
 	}
 	fmt.Println(ress, "this is a message===================")
 }
 
-func (l *UserChatLogic) sendGroupMsg(targetId string, msg []byte) {
+func sendGroupMsg(targetId string, msg []byte) {
 	fmt.Println("开始群发消息")
 	// userIds := SearchUserByGroupId(uint(targetId))
 	// for i := 0; i < len(userIds); i++ {
@@ -312,4 +295,32 @@ func (l *UserChatLogic) sendGroupMsg(targetId string, msg []byte) {
 	// 	}
 
 	// }
+}
+
+func save_db(user_id, target_id string, ty int64) {
+	data := model.Contact{
+		Type:     ty,
+		TargetId: target_id,
+		OwnerId:  user_id,
+	}
+	contact_obj, err := ml.svcCtx.UserContact.FindOneByUserIdTargetId(ml.ctx, user_id, target_id)
+	if err == nil {
+		if contact_obj == nil {
+			_, err = ml.svcCtx.UserContact.Insert(ml.ctx, &data)
+			if err != nil {
+				fmt.Println("保存数据库失败", err)
+			}
+		} else {
+			data = model.Contact{
+				Id:        contact_obj.Id,
+				TargetId:  target_id,
+				OwnerId:   user_id,
+				CreatedAt: time.Now(),
+			}
+			err = ml.svcCtx.UserContact.Update(ml.ctx, &data)
+			if err != nil {
+				fmt.Println("修改数据库失败", err)
+			}
+		}
+	}
 }

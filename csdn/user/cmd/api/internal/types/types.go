@@ -40,6 +40,7 @@ type UserCurrInfoRequest struct {
 }
 
 type UserCurrInfoResponse struct {
+	UserId    string `json:"user_id"`
 	UserName  string `json:"user_name"`
 	HeadPhoto string `json:"head_photo"`
 	Introduce string `json:"introduce"`

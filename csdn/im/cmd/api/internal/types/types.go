@@ -9,12 +9,12 @@ type UserInfo struct {
 }
 
 type UserChatRecords struct {
-	TargetUserId string `json:"target_user_id"`
-	UserId       string `json:"user_id"`
-	Type         int64  `json:"type"`
-	CreateTime   string `json:"create_time"`
-	Content      string `json:"content"`
-	Media        int64  `json:"media"`
+	TargetId   string `json:"target_id"`
+	UserId     string `json:"user_id"`
+	Type       int64  `json:"type"`
+	CreateTime int64  `json:"create_time"`
+	Content    string `json:"content"`
+	Media      int64  `json:"media"`
 }
 
 type UserMessageListRequest struct {

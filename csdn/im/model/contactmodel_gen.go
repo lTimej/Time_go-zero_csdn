@@ -20,7 +20,7 @@ import (
 
 var (
 	contactFieldNames          = builder.RawFieldNames(&Contact{})
-	contactRows                = "id,owner_id,target_id,type"
+	contactRows                = "id,owner_id,target_id,type,created_at"
 	contactRowsExpectAutoSet   = strings.Join(stringx.Remove(contactFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	contactInfo                = "type,owner_id,target_id"
 	contactRowsWithPlaceHolder = strings.Join(stringx.Remove(contactFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
@@ -35,7 +35,7 @@ type (
 		Insert(ctx context.Context, data *Contact) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Contact, error)
 		FindOneByUserIdTargetId(ctx context.Context, user_id, target_id string) (*ContactInfo, error)
-		FindAllByUserId(ctx context.Context, orderBy string, builder squirrel.SelectBuilder) ([]*Contact, error)
+		FindAllByUserId(ctx context.Context, orderBy string, builder squirrel.SelectBuilder) ([]*ContactInfo, error)
 		Update(ctx context.Context, data *Contact) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -56,10 +56,11 @@ type (
 		Desc      string    `db:"desc"`
 	}
 	ContactInfo struct {
-		Id       int64  `db:"id"`
-		OwnerId  string `db:"owner_id"`
-		TargetId string `db:"target_id"`
-		Type     int64  `db:"type"`
+		Id        int64     `db:"id"`
+		OwnerId   string    `db:"owner_id"`
+		TargetId  string    `db:"target_id"`
+		Type      int64     `db:"type"`
+		CreatedAt time.Time `db:"created_at"`
 	}
 )
 
@@ -116,7 +117,7 @@ func (m *defaultContactModel) FindOneByUserIdTargetId(ctx context.Context, user_
 	}
 }
 
-func (m *defaultContactModel) FindAllByUserId(ctx context.Context, orderBy string, builder squirrel.SelectBuilder) ([]*Contact, error) {
+func (m *defaultContactModel) FindAllByUserId(ctx context.Context, orderBy string, builder squirrel.SelectBuilder) ([]*ContactInfo, error) {
 	if orderBy == "" {
 		builder = builder.OrderBy("contact.created_at DESC")
 	} else {
@@ -127,8 +128,8 @@ func (m *defaultContactModel) FindAllByUserId(ctx context.Context, orderBy strin
 	if err != nil {
 		return nil, err
 	}
-
-	var resp []*Contact
+	fmt.Println(query, "------query--------")
+	var resp []*ContactInfo
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
