@@ -30,7 +30,14 @@ func (l *UserChatCountLogic) UserChatCount(req *types.UserChatCountRequest) (res
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
 	user_chat_count_key := fmt.Sprintf(globalkey.UserChatCount, user_id)
-	msg_count := l.svcCtx.RedisIm.ZCard(l.ctx, user_chat_count_key).Val()
+	msgs := l.svcCtx.RedisIm.ZRangeWithScores(l.ctx, user_chat_count_key, 0, -1).Val()
+	var msg_count int64
+	fmt.Println(msgs, len(msgs), "哈哈哈哈哈")
+	for _, msg := range msgs {
+		fmt.Println(msg_count, "------------999999999999")
+		msg_count += int64(msg.Score)
+	}
+	// msg_count := l.svcCtx.RedisIm.ZCard(l.ctx, user_chat_count_key).Val()
 	return &types.UserChatCountResponse{
 		Count: msg_count,
 	}, nil
