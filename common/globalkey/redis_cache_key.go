@@ -22,4 +22,5 @@ const (
 
 const (
 	UserContactByUserId = "user:contact:%s"
+	UserChatCount       = "user:chat:count:%s"
 )

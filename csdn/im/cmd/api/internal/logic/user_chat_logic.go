@@ -283,6 +283,8 @@ func sendMsg(targetId string, msg []byte) {
 	if e != nil {
 		fmt.Println(e)
 	}
+	user_chat_count_key := fmt.Sprintf(globalkey.UserChatCount, targetIdStr)
+	ml.svcCtx.RedisIm.ZIncrBy(ctx, user_chat_count_key, 1, userIdStr)
 	fmt.Println(ress, "this is a message===================")
 }
 

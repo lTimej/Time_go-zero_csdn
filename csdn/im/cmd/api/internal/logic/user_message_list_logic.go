@@ -2,12 +2,14 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/common/globalkey"
 	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/im/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/im/cmd/api/internal/types"
+	"time"
 
 	redisclient "github.com/go-redis/redis/v8"
 
@@ -63,11 +65,37 @@ func (l *UserMessageListLogic) UserMessageList(req *types.UserMessageListRequest
 		if err != nil {
 			fmt.Println(err, "2222222222222222")
 		}
+		var record_key string
+		if target_id > user_id {
+			record_key = "msg_" + user_id + "_" + target_id
+		} else {
+			record_key = "msg_" + target_id + "_" + user_id
+		}
+		// l.svcCtx.RedisIm.ZRevRangeByScoreWithScores(l.ctx, record_key)
+		records := l.svcCtx.RedisIm.ZRevRangeWithScores(l.ctx, record_key, 0, 0).Val()
+		record := records[0]
+		msg := Message{}
+		json.Unmarshal([]byte(record.Member.(string)), &msg)
+		var c string
+		// var t string
+		if msg.Media == 1 {
+			c = msg.Content
+		} else if msg.Media == 4 || msg.Media == 5 {
+			c = msg.Url
+		}
+		now := time.Now().Unix()
+		t := utils.TimeCompare(now, msg.CreateTime)
+		user_chat_count_key := fmt.Sprintf(globalkey.UserChatCount, user_id)
+		msg_count := l.svcCtx.RedisIm.ZScore(l.ctx, user_chat_count_key, target_id).Val()
 		infos = append(infos, types.UserInfo{
-			UserName:  user.UserName,
-			HeadPhoto: user.ProfilePhoto,
-			Introduce: user.Introduction,
-			UserId:    user.UserId,
+			UserName:   user.UserName,
+			HeadPhoto:  user.ProfilePhoto,
+			Introduce:  user.Introduction,
+			UserId:     user.UserId,
+			CreateTime: t,
+			Msg:        c,
+			Media:      msg.Media,
+			MsgCount:   int64(msg_count),
 		})
 	}
 	return &types.UserMessageListResponse{UserInfos: infos}, nil

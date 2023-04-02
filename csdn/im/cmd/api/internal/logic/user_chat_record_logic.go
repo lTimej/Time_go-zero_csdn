@@ -6,10 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
+	"liujun/Time_go-zero_csdn/common/globalkey"
 
 	"liujun/Time_go-zero_csdn/csdn/im/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/im/cmd/api/internal/types"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -48,5 +50,8 @@ func (l *UserChatRecordLogic) UserChatRecord(req *types.UserChatRecordRequest) (
 		json.Unmarshal([]byte(record), &records)
 		resp.ChatRecords = append(resp.ChatRecords, records)
 	}
+	user_chat_count_key := fmt.Sprintf(globalkey.UserChatCount, user_id)
+	l.svcCtx.RedisIm.ZAdd(l.ctx, user_chat_count_key, &redis.Z{float64(0), req.TargetUserId})
+	l.svcCtx.RedisIm.Zrem(l.ctx, user_chat_count_key, req.TargetUserId)
 	return resp, nil
 }

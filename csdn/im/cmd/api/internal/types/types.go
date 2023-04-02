@@ -2,10 +2,14 @@
 package types
 
 type UserInfo struct {
-	UserName  string `json:"user_name"`
-	HeadPhoto string `json:"head_photo"`
-	Introduce string `json:"introduce"`
-	UserId    string `json:"user_id"`
+	UserName   string `json:"user_name"`
+	HeadPhoto  string `json:"head_photo"`
+	Introduce  string `json:"introduce"`
+	UserId     string `json:"user_id"`
+	CreateTime string `json:"create_time"`
+	Msg        string `json:"msg"`
+	Media      int64  `json:"media"`
+	MsgCount   int64  `json:"msg_count"`
 }
 
 type UserChatRecords struct {
@@ -48,4 +52,11 @@ type UserChatUploadPictureRequest struct {
 
 type UserChatUploadPictureResponse struct {
 	Picture string `json:"picture"`
+}
+
+type UserChatCountRequest struct {
+}
+
+type UserChatCountResponse struct {
+	Count int64 `json:"count"`
 }
