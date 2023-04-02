@@ -15,6 +15,7 @@ type UserChatRecords struct {
 	CreateTime int64  `json:"create_time"`
 	Content    string `json:"content"`
 	Media      int64  `json:"media"`
+	Url        string `json:"url"`
 }
 
 type UserMessageListRequest struct {
@@ -39,4 +40,12 @@ type UserChatRecordRequest struct {
 
 type UserChatRecordResponse struct {
 	ChatRecords []UserChatRecords `json:"chat_records"`
+}
+
+type UserChatUploadPictureRequest struct {
+	Picture string `json:"picture,optional"`
+}
+
+type UserChatUploadPictureResponse struct {
+	Picture string `json:"picture"`
 }

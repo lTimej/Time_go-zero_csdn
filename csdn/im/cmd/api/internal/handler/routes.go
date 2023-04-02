@@ -29,6 +29,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/im/chat/records",
 					Handler: UserChatRecordHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/v1/im/chat/upload/picture",
+					Handler: UserChatUploadPictureHandler(serverCtx),
+				},
 			}...,
 		),
 	)

@@ -12,6 +12,7 @@ type UserChatRecords {
 	CreateTime int64  `json:"create_time"`
 	Content    string `json:"content"`
 	Media      int64  `json:"media"`
+	Url        string `json:"url"`
 }
 
 type UserMessageListRequest {}
@@ -36,6 +37,12 @@ type UserChatRecordResponse {
 	ChatRecords []UserChatRecords `json:"chat_records"`
 }
 
+type UserChatUploadPictureRequest {
+	Picture string `json:"picture,optional"`
+}
+type UserChatUploadPictureResponse {
+	Picture string `json:"picture"`
+}
 @server (
 	// jwt: JwtAuth
 	middleware: SetUidToCtxMiddleware
@@ -48,4 +55,6 @@ service api-api {
 	get /v1/im/user/chat(UserChatRequest) returns (UserChatResponse)
 	@handler UserChatRecord
 	get /v1/im/chat/records(UserChatRecordRequest) returns (UserChatRecordResponse)
+	@handler UserChatUploadPicture
+	post /v1/im/chat/upload/picture(UserChatUploadPictureRequest) returns (UserChatUploadPictureResponse)
 }

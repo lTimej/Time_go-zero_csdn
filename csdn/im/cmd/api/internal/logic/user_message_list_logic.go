@@ -58,6 +58,7 @@ func (l *UserMessageListLogic) UserMessageList(req *types.UserMessageListRequest
 	}
 	infos := []types.UserInfo{}
 	for _, target_id := range target_ids {
+		fmt.Println(target_id, "4$$$5555")
 		user, err := l.svcCtx.UserBasic.FindOne(l.ctx, target_id)
 		if err != nil {
 			fmt.Println(err, "2222222222222222")

@@ -28,6 +28,7 @@ type Message struct {
 	CreateTime int64  `json:"create_time"`
 	UserId     string `json:"user_id"`
 	Media      int64  `json:"media"`
+	Url        string `json:""url`
 }
 type Node struct {
 	Conn          *websocket.Conn //连接
@@ -172,13 +173,13 @@ func dispatch(data []byte) {
 	}
 }
 
-func init() {
-	fmt.Println("*******************************************************************************************")
-	go udpSendProc()
-	go udpRecvProc()
-	fmt.Println("init goroutine ")
-	fmt.Println("*******************************************************************************************")
-}
+// func init() {
+// 	fmt.Println("*******************************************************************************************")
+// 	go udpSendProc()
+// 	go udpRecvProc()
+// 	fmt.Println("init goroutine ")
+// 	fmt.Println("*******************************************************************************************")
+// }
 
 var udpsendChan chan []byte = make(chan []byte, 1024)
 
@@ -190,7 +191,7 @@ func broadMsg(data []byte) {
 func udpSendProc() {
 	con, err := net.DialUDP("udp", nil, &net.UDPAddr{
 		IP:   net.IPv4(172, 20, 16, 20),
-		Port: 3001,
+		Port: 0,
 	})
 	defer con.Close()
 	if err != nil {
@@ -213,7 +214,7 @@ func udpSendProc() {
 func udpRecvProc() {
 	con, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   net.IPv4zero,
-		Port: 3001,
+		Port: 0,
 	})
 	if err != nil {
 		fmt.Println(err)
