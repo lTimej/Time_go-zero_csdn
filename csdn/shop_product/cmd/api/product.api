@@ -1,0 +1,22 @@
+type ProductList {
+	Title string `json:"title"`
+	Image string `json:"image"`
+	Introduce string `json:"introduce"`
+}
+
+
+type ProductListRequest {}
+
+type ProductListResponse {
+	Products []ProductList `json:"products"`
+}
+
+service api-api {
+	@handler ProductList
+	post /v1/shop/product/list(ProductListRequest) returns (ProductListResponse)
+}
+
+@server (
+	// jwt: JwtAuth
+	middleware: SetUidToCtxMiddleware
+)

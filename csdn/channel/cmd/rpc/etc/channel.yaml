@@ -21,7 +21,7 @@ JwtAuth:
   AccessExpire: 31536000
 
 Log:
-  ServiceName: usercenter-rpc
+  ServiceName: channel-rpc
   Level: error
   
 Es:
