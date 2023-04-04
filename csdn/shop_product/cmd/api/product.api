@@ -1,9 +1,19 @@
 type ProductList {
-	Title string `json:"title"`
-	Image string `json:"image"`
+	Title     string `json:"title"`
+	Image     string `json:"image"`
 	Introduce string `json:"introduce"`
 }
 
+type SubCategory {
+	Name string `json:"name"`
+	Id   int64  `json:"id"`
+}
+
+type CategoryList {
+	Name         string        `json:"name"`
+	Id           int64         `json:"id"`
+	SubCategorys []SubCategory `json:"subcategory"`
+}
 
 type ProductListRequest {}
 
@@ -11,12 +21,20 @@ type ProductListResponse {
 	Products []ProductList `json:"products"`
 }
 
-service api-api {
-	@handler ProductList
-	post /v1/shop/product/list(ProductListRequest) returns (ProductListResponse)
+type ProductCategoryRequest {}
+
+type ProductCategoryResponse {
+	Categorys []CategoryList `json:"categorys"`
 }
 
-@server (
-	// jwt: JwtAuth
-	middleware: SetUidToCtxMiddleware
-)
+service api-api {
+	@handler ProductList
+	get /v1/shop/product/list(ProductListRequest) returns (ProductListResponse)
+	@handler ProductCategory
+	get /v1/shop/product/category(ProductCategoryRequest) returns (ProductCategoryResponse)
+}
+
+// @server (
+// 	// jwt: JwtAuth
+// 	middleware: SetUidToCtxMiddleware
+// )

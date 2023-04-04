@@ -24,3 +24,7 @@ const (
 	UserContactByUserId = "user:contact:%s"
 	UserChatCount       = "user:chat:count:%s"
 )
+
+const (
+	ProductCategory = "product:category"
+)

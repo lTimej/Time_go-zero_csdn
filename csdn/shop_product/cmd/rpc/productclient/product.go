@@ -13,12 +13,17 @@ import (
 )
 
 type (
-	ProductList         = product.ProductList
-	ProductListRequest  = product.ProductListRequest
-	ProductListResponse = product.ProductListResponse
+	CategoryList            = product.CategoryList
+	ProductCategoryRequest  = product.ProductCategoryRequest
+	ProductCategoryResponse = product.ProductCategoryResponse
+	ProductList             = product.ProductList
+	ProductListRequest      = product.ProductListRequest
+	ProductListResponse     = product.ProductListResponse
+	SubCategory             = product.SubCategory
 
 	Product interface {
 		ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error)
+		ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error)
 	}
 
 	defaultProduct struct {
@@ -35,4 +40,9 @@ func NewProduct(cli zrpc.Client) Product {
 func (m *defaultProduct) ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error) {
 	client := product.NewProductClient(m.cli.Conn())
 	return client.ProductList(ctx, in, opts...)
+}
+
+func (m *defaultProduct) ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error) {
+	client := product.NewProductClient(m.cli.Conn())
+	return client.ProductCategory(ctx, in, opts...)
 }

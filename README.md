@@ -20,6 +20,7 @@ goctl rpc protoc product.proto --go_out=./types --go-grpc_out=./types --zrpc_out
 goctl model mysql ddl -src="./sql/user.sql" -dir="./csdn/user/model" -c
 goctl model mysql ddl -src="./sql/article.sql" -dir="./csdn/channel/model" -c
 goctl model mysql ddl -src="./sql/im.sql" -dir="./csdn/im/model" -c
+goctl model mysql ddl -src="./sql/shop_product.sql" -dir="./csdn/shop_product/model" -c
 ### user.proto
 syntax = "proto3";
 

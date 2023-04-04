@@ -1,0 +1,15 @@
+Name: api-api
+Host: 0.0.0.0
+Port: 8891
+ProductRpc:
+  Etcd:
+    Hosts:
+      - 172.20.16.20:12379
+    Key: product.rpc
+JwtAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+
+Redis:
+  Host: 172.20.16.20:16379
+  Pass: liujun
+  Type: node

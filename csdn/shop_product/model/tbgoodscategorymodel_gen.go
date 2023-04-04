@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -27,8 +29,10 @@ var (
 
 type (
 	tbGoodsCategoryModel interface {
+		Builder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *TbGoodsCategory) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*TbGoodsCategory, error)
+		FindAllByParent(ctx context.Context, builder squirrel.SelectBuilder, parent_id int64) ([]*GoodsCategory, error)
 		Update(ctx context.Context, data *TbGoodsCategory) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -39,11 +43,16 @@ type (
 	}
 
 	TbGoodsCategory struct {
-		Id         int64          `db:"id"`
-		Name       sql.NullString `db:"name"`      // 类名
-		ParentId   sql.NullInt64  `db:"parent_id"` // 目录
-		CreateTime time.Time      `db:"create_time"`
-		UpdateTime time.Time      `db:"update_time"`
+		Id         int64     `db:"id"`
+		Name       string    `db:"name"`      // 类名
+		ParentId   int64     `db:"parent_id"` // 目录
+		CreateTime time.Time `db:"create_time"`
+		UpdateTime time.Time `db:"update_time"`
+	}
+	GoodsCategory struct {
+		Id   int64  `db:"id"`
+		Name string `db:"name"` // 类名
+		// ParentId int64  `db:"parent_id"` // 目录
 	}
 )
 
@@ -80,6 +89,30 @@ func (m *defaultTbGoodsCategoryModel) FindOne(ctx context.Context, id int64) (*T
 	}
 }
 
+func (m *defaultTbGoodsCategoryModel) FindAllByParent(ctx context.Context, builder squirrel.SelectBuilder, parent_id int64) ([]*GoodsCategory, error) {
+	// var parent string
+	var query string
+	var values []interface{}
+	var err error
+	if parent_id == 0 {
+		query, values, err = builder.Where("parent_id is NULL").ToSql()
+	} else {
+		query, values, err = builder.Where("parent_id = ?", parent_id).ToSql()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*GoodsCategory
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultTbGoodsCategoryModel) Insert(ctx context.Context, data *TbGoodsCategory) (sql.Result, error) {
 	tbGoodsCategoryIdKey := fmt.Sprintf("%s%v", cacheTbGoodsCategoryIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -109,4 +142,8 @@ func (m *defaultTbGoodsCategoryModel) queryPrimary(ctx context.Context, conn sql
 
 func (m *defaultTbGoodsCategoryModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultTbGoodsCategoryModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select("id,name").From(m.table)
 }

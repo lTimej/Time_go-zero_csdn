@@ -9,12 +9,31 @@ message ProductList{
   string introduce = 3;
 }
 
+message SubCategory{
+  string name = 1;
+  int64 id = 2;
+}
+
+message CategoryList{
+  string name = 1;
+  int64 id = 2;
+  repeated SubCategory SubCategorys = 3;
+}
+
+message ProductCategoryRequest {}
+
+message ProductCategoryResponse {
+  repeated CategoryList Categorys = 1;
+    
+}
+
 message ProductListRequest {}
 
 message ProductListResponse {
-    repeated ProductList Products = 1;
+  repeated ProductList Products = 1;
 }
 
 service Product {
   rpc ProductList(ProductListRequest) returns(ProductListResponse);
+  rpc ProductCategory(ProductCategoryRequest) returns(ProductCategoryResponse);
 }
