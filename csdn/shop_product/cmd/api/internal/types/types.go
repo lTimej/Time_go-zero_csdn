@@ -21,7 +21,7 @@ type CategoryList struct {
 }
 
 type ProductSpuListRequest struct {
-	CategoryId int64 `json:"category_id"`
+	CategoryId int64 `json:"category_id,optional"`
 }
 
 type ProductSpuListResponse struct {
