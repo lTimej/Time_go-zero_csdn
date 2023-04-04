@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductClient interface {
-	ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error)
+	ProductSpuList(ctx context.Context, in *ProductSpuListRequest, opts ...grpc.CallOption) (*ProductSpuListResponse, error)
 	ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error)
 }
 
@@ -34,9 +34,9 @@ func NewProductClient(cc grpc.ClientConnInterface) ProductClient {
 	return &productClient{cc}
 }
 
-func (c *productClient) ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error) {
-	out := new(ProductListResponse)
-	err := c.cc.Invoke(ctx, "/product.Product/ProductList", in, out, opts...)
+func (c *productClient) ProductSpuList(ctx context.Context, in *ProductSpuListRequest, opts ...grpc.CallOption) (*ProductSpuListResponse, error) {
+	out := new(ProductSpuListResponse)
+	err := c.cc.Invoke(ctx, "/product.Product/ProductSpuList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *productClient) ProductCategory(ctx context.Context, in *ProductCategory
 // All implementations must embed UnimplementedProductServer
 // for forward compatibility
 type ProductServer interface {
-	ProductList(context.Context, *ProductListRequest) (*ProductListResponse, error)
+	ProductSpuList(context.Context, *ProductSpuListRequest) (*ProductSpuListResponse, error)
 	ProductCategory(context.Context, *ProductCategoryRequest) (*ProductCategoryResponse, error)
 	mustEmbedUnimplementedProductServer()
 }
@@ -65,8 +65,8 @@ type ProductServer interface {
 type UnimplementedProductServer struct {
 }
 
-func (UnimplementedProductServer) ProductList(context.Context, *ProductListRequest) (*ProductListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProductList not implemented")
+func (UnimplementedProductServer) ProductSpuList(context.Context, *ProductSpuListRequest) (*ProductSpuListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProductSpuList not implemented")
 }
 func (UnimplementedProductServer) ProductCategory(context.Context, *ProductCategoryRequest) (*ProductCategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProductCategory not implemented")
@@ -84,20 +84,20 @@ func RegisterProductServer(s grpc.ServiceRegistrar, srv ProductServer) {
 	s.RegisterService(&Product_ServiceDesc, srv)
 }
 
-func _Product_ProductList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductListRequest)
+func _Product_ProductSpuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductSpuListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServer).ProductList(ctx, in)
+		return srv.(ProductServer).ProductSpuList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/product.Product/ProductList",
+		FullMethod: "/product.Product/ProductSpuList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServer).ProductList(ctx, req.(*ProductListRequest))
+		return srv.(ProductServer).ProductSpuList(ctx, req.(*ProductSpuListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,8 +128,8 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ProductServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ProductList",
-			Handler:    _Product_ProductList_Handler,
+			MethodName: "ProductSpuList",
+			Handler:    _Product_ProductSpuList_Handler,
 		},
 		{
 			MethodName: "ProductCategory",

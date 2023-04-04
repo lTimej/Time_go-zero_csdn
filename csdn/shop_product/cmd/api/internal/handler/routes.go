@@ -14,8 +14,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/v1/shop/product/list",
-				Handler: ProductListHandler(serverCtx),
+				Path:    "/v1/shop/product/spu",
+				Handler: ProducSputListHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,

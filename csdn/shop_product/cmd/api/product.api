@@ -1,7 +1,9 @@
-type ProductList {
-	Title     string `json:"title"`
-	Image     string `json:"image"`
-	Introduce string `json:"introduce"`
+type ProductSpuList {
+	Name         string `json:"name"`
+	DefaultImage string `json:"default_image"`
+	Sales        int64  `json:"sales"`
+	Cfavs        int64  `json:"cfavs"`
+	SpuId        int64  `json:"spu_id"`
 }
 
 type SubCategory {
@@ -15,10 +17,12 @@ type CategoryList {
 	SubCategorys []SubCategory `json:"subcategory"`
 }
 
-type ProductListRequest {}
+type ProductSpuListRequest {
+	CategoryId int64 `json:"category_id"`
+}
 
-type ProductListResponse {
-	Products []ProductList `json:"products"`
+type ProductSpuListResponse {
+	ProductSpus []ProductSpuList `json:"product_spus"`
 }
 
 type ProductCategoryRequest {}
@@ -28,8 +32,8 @@ type ProductCategoryResponse {
 }
 
 service api-api {
-	@handler ProductList
-	get /v1/shop/product/list(ProductListRequest) returns (ProductListResponse)
+	@handler ProducSputList
+	get /v1/shop/product/spu(ProductSpuListRequest) returns (ProductSpuListResponse)
 	@handler ProductCategory
 	get /v1/shop/product/category(ProductCategoryRequest) returns (ProductCategoryResponse)
 }

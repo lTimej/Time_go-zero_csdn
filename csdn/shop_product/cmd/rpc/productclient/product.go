@@ -16,13 +16,13 @@ type (
 	CategoryList            = product.CategoryList
 	ProductCategoryRequest  = product.ProductCategoryRequest
 	ProductCategoryResponse = product.ProductCategoryResponse
-	ProductList             = product.ProductList
-	ProductListRequest      = product.ProductListRequest
-	ProductListResponse     = product.ProductListResponse
+	ProductSpuList          = product.ProductSpuList
+	ProductSpuListRequest   = product.ProductSpuListRequest
+	ProductSpuListResponse  = product.ProductSpuListResponse
 	SubCategory             = product.SubCategory
 
 	Product interface {
-		ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error)
+		ProductSpuList(ctx context.Context, in *ProductSpuListRequest, opts ...grpc.CallOption) (*ProductSpuListResponse, error)
 		ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error)
 	}
 
@@ -37,9 +37,9 @@ func NewProduct(cli zrpc.Client) Product {
 	}
 }
 
-func (m *defaultProduct) ProductList(ctx context.Context, in *ProductListRequest, opts ...grpc.CallOption) (*ProductListResponse, error) {
+func (m *defaultProduct) ProductSpuList(ctx context.Context, in *ProductSpuListRequest, opts ...grpc.CallOption) (*ProductSpuListResponse, error) {
 	client := product.NewProductClient(m.cli.Conn())
-	return client.ProductList(ctx, in, opts...)
+	return client.ProductSpuList(ctx, in, opts...)
 }
 
 func (m *defaultProduct) ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error) {

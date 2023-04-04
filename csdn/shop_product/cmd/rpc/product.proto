@@ -3,10 +3,12 @@ syntax = "proto3";
 package product;
 option go_package = "./product";
 
-message ProductList{
-  string title = 1;
-  string image = 2;
-  string introduce = 3;
+message ProductSpuList{
+  string name = 1;
+  string default_image = 2;
+  string sales = 3;
+  int64 cfavs = 4;
+  int64 spu_id = 5;
 }
 
 message SubCategory{
@@ -27,13 +29,15 @@ message ProductCategoryResponse {
     
 }
 
-message ProductListRequest {}
+message ProductSpuListRequest {
+  int64 category_id = 1;
+}
 
-message ProductListResponse {
-  repeated ProductList Products = 1;
+message ProductSpuListResponse {
+  repeated ProductSpuList ProductSpus = 1;
 }
 
 service Product {
-  rpc ProductList(ProductListRequest) returns(ProductListResponse);
+  rpc ProductSpuList(ProductSpuListRequest) returns(ProductSpuListResponse);
   rpc ProductCategory(ProductCategoryRequest) returns(ProductCategoryResponse);
 }

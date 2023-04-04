@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -27,8 +28,10 @@ var (
 
 type (
 	tbSpuModel interface {
+		Builder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *TbSpu) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*TbSpu, error)
+		FindAllByCategoryId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SpuInfo, error)
 		Update(ctx context.Context, data *TbSpu) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -39,14 +42,21 @@ type (
 	}
 
 	TbSpu struct {
-		Id          int64          `db:"id"`
-		Name        sql.NullString `db:"name"`         // 名称
-		Category1Id int64          `db:"category1_id"` // 一级类别
-		Category2Id int64          `db:"category2_id"` // 二级类别
-		Sales       sql.NullInt64  `db:"sales"`        // 销量
-		Cfavs       sql.NullInt64  `db:"cfavs"`        // 收藏数
-		CreateTime  time.Time      `db:"create_time"`
-		UpdateTime  time.Time      `db:"update_time"`
+		Id          int64     `db:"id"`
+		Name        string    `db:"name"`         // 名称
+		Category1Id int64     `db:"category1_id"` // 一级类别
+		Category2Id int64     `db:"category2_id"` // 二级类别
+		Sales       int64     `db:"sales"`        // 销量
+		Cfavs       int64     `db:"cfavs"`        // 收藏数
+		CreateTime  time.Time `db:"create_time"`
+		UpdateTime  time.Time `db:"update_time"`
+	}
+	SpuInfo struct {
+		Id           int64  `db:"spu_id"`
+		Name         string `db:"name"`  // 名称
+		Sales        int64  `db:"sales"` // 销量
+		Cfavs        int64  `db:"cfavs"` // 收藏数
+		DefaultImage string `db:"default_image"`
 	}
 )
 
@@ -83,6 +93,21 @@ func (m *defaultTbSpuModel) FindOne(ctx context.Context, id int64) (*TbSpu, erro
 	}
 }
 
+func (m *defaultTbSpuModel) FindAllByCategoryId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SpuInfo, error) {
+	query, values, err := builder.Join("tb_sku on tb_spu.id=tb_sku.spu_id").ToSql()
+	if err != nil {
+		return nil, err
+	}
+	var resp []*SpuInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultTbSpuModel) Insert(ctx context.Context, data *TbSpu) (sql.Result, error) {
 	tbSpuIdKey := fmt.Sprintf("%s%v", cacheTbSpuIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -112,4 +137,8 @@ func (m *defaultTbSpuModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn,
 
 func (m *defaultTbSpuModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultTbSpuModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select("tb_spu.id,tb_spu.name,tb_spu.sales,tb_spu.cfavs,tb_sku.default_image").From(m.table)
 }

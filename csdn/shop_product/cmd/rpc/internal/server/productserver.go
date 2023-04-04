@@ -22,9 +22,9 @@ func NewProductServer(svcCtx *svc.ServiceContext) *ProductServer {
 	}
 }
 
-func (s *ProductServer) ProductList(ctx context.Context, in *product.ProductListRequest) (*product.ProductListResponse, error) {
-	l := logic.NewProductListLogic(ctx, s.svcCtx)
-	return l.ProductList(in)
+func (s *ProductServer) ProductSpuList(ctx context.Context, in *product.ProductSpuListRequest) (*product.ProductSpuListResponse, error) {
+	l := logic.NewProductSpuListLogic(ctx, s.svcCtx)
+	return l.ProductSpuList(in)
 }
 
 func (s *ProductServer) ProductCategory(ctx context.Context, in *product.ProductCategoryRequest) (*product.ProductCategoryResponse, error) {
