@@ -2,6 +2,7 @@ package handler
 
 import (
 	"liujun/Time_go-zero_csdn/common/httpResp"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"net/http"
 
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/api/internal/logic"
@@ -18,7 +19,7 @@ func ProducSputListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
+		req.CategoryId = utils.StringToInt64(r.URL.Query().Get("category_id"))
 		l := logic.NewProducSputListLogic(r.Context(), svcCtx)
 		resp, err := l.ProducSputList(&req)
 		httpResp.HttpResp(w, r, resp, err)
