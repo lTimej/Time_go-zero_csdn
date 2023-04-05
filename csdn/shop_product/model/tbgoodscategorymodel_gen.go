@@ -43,11 +43,11 @@ type (
 	}
 
 	TbGoodsCategory struct {
-		Id         int64     `db:"id"`
-		Name       string    `db:"name"`      // 类名
-		ParentId   int64     `db:"parent_id"` // 目录
-		CreateTime time.Time `db:"create_time"`
-		UpdateTime time.Time `db:"update_time"`
+		Id         int64         `db:"id"`
+		Name       string        `db:"name"`      // 类名
+		ParentId   sql.NullInt64 `db:"parent_id"` // 目录
+		CreateTime time.Time     `db:"create_time"`
+		UpdateTime time.Time     `db:"update_time"`
 	}
 	GoodsCategory struct {
 		Id   int64  `db:"id"`

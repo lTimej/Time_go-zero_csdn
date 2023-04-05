@@ -52,11 +52,13 @@ type (
 		UpdateTime  time.Time `db:"update_time"`
 	}
 	SpuInfo struct {
-		Id           int64  `db:"spu_id"`
-		Name         string `db:"name"`  // 名称
-		Sales        int64  `db:"sales"` // 销量
-		Cfavs        int64  `db:"cfavs"` // 收藏数
-		DefaultImage string `db:"default_image"`
+		Id           int64   `db:"id"`
+		Name         string  `db:"name"`  // 名称
+		Sales        int64   `db:"sales"` // 销量
+		Cfavs        int64   `db:"cfavs"` // 收藏数
+		DefaultImage string  `db:"default_image"`
+		Price        float32 `db:"price"`
+		NowPrice     float32 `db:"now_price"`
 	}
 )
 
@@ -94,7 +96,8 @@ func (m *defaultTbSpuModel) FindOne(ctx context.Context, id int64) (*TbSpu, erro
 }
 
 func (m *defaultTbSpuModel) FindAllByCategoryId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SpuInfo, error) {
-	query, values, err := builder.Join("tb_sku on tb_spu.id=tb_sku.spu_id").ToSql()
+	query, values, err := builder.Join("tb_sku on tb_spu.id=tb_sku.spu_id").Limit(20).ToSql()
+	fmt.Println(query)
 	if err != nil {
 		return nil, err
 	}
@@ -140,5 +143,5 @@ func (m *defaultTbSpuModel) tableName() string {
 }
 
 func (m *defaultTbSpuModel) Builder() squirrel.SelectBuilder {
-	return squirrel.Select("tb_spu.id,tb_spu.name,tb_spu.sales,tb_spu.cfavs,tb_sku.default_image").From(m.table)
+	return squirrel.Select("tb_spu.id,tb_spu.name,tb_spu.sales,tb_spu.cfavs,tb_sku.default_image,tb_sku.price,tb_sku.now_price").From(m.table)
 }

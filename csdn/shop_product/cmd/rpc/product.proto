@@ -6,14 +6,17 @@ option go_package = "./product";
 message ProductSpuList{
   string name = 1;
   string default_image = 2;
-  string sales = 3;
+  int64 sales = 3;
   int64 cfavs = 4;
   int64 spu_id = 5;
+  float price = 6;
+  float now_price = 7;
 }
 
 message SubCategory{
   string name = 1;
   int64 id = 2;
+  string default_image = 3;
 }
 
 message CategoryList{

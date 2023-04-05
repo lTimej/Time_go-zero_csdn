@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/productclient"
 
 	"github.com/jinzhu/copier"
@@ -32,6 +33,7 @@ func (l *ProducSputListLogic) ProducSputList(req *types.ProductSpuListRequest) (
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(spus, "&&&&&&&&&&&&&&&&&&&")
 	resp = new(types.ProductSpuListResponse)
 	copier.Copy(resp, spus)
 	return

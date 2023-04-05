@@ -2,16 +2,19 @@
 package types
 
 type ProductSpuList struct {
-	Name         string `json:"name"`
-	DefaultImage string `json:"default_image"`
-	Sales        int64  `json:"sales"`
-	Cfavs        int64  `json:"cfavs"`
-	SpuId        int64  `json:"spu_id"`
+	Name         string  `json:"name"`
+	DefaultImage string  `json:"default_image"`
+	Sales        int64   `json:"sales"`
+	Cfavs        int64   `json:"cfavs"`
+	SpuId        int64   `json:"spu_id"`
+	Price        float32 `json:"price"`
+	NowPrice     float32 `json:"now_price"`
 }
 
 type SubCategory struct {
-	Name string `json:"name"`
-	Id   int64  `json:"id"`
+	Name         string `json:"name"`
+	Id           int64  `json:"id"`
+	DefaultImage string `json:"default_image"`
 }
 
 type CategoryList struct {

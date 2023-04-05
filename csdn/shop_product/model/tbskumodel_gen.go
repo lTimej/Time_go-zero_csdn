@@ -22,13 +22,15 @@ var (
 	tbSkuRowsExpectAutoSet   = strings.Join(stringx.Remove(tbSkuFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	tbSkuRowsWithPlaceHolder = strings.Join(stringx.Remove(tbSkuFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
-	cacheTbSkuIdPrefix = "cache:tbSku:id:"
+	cacheTbSkuIdPrefix         = "cache:tbSku:id:"
+	cacheTbSkuCategoryIdPrefix = "cache:tbSku:categoryid:"
 )
 
 type (
 	tbSkuModel interface {
 		Insert(ctx context.Context, data *TbSku) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*TbSku, error)
+		FindOneByCategoryId(ctx context.Context, category_id int64) (*TbSku, error)
 		Update(ctx context.Context, data *TbSku) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -39,19 +41,19 @@ type (
 	}
 
 	TbSku struct {
-		Id           int64           `db:"id"`
-		Title        sql.NullString  `db:"title"`         // 名称
-		SpuId        int64           `db:"spu_id"`        // 商品
-		CategoryId   int64           `db:"category_id"`   // 从属类别
-		Price        sql.NullFloat64 `db:"price"`         // 单价
-		NowPrice     sql.NullFloat64 `db:"now_price"`     // 进价
-		Stock        sql.NullInt64   `db:"stock"`         // 库存
-		Sales        sql.NullInt64   `db:"sales"`         // 销量
-		Comments     sql.NullInt64   `db:"comments"`      // 评价数
-		IsLaunched   sql.NullInt64   `db:"is_launched"`   // 是否上架销售
-		DefaultImage sql.NullString  `db:"default_image"` // 默认图片
-		CreateTime   time.Time       `db:"create_time"`
-		UpdateTime   time.Time       `db:"update_time"`
+		Id           int64     `db:"id"`
+		Title        string    `db:"title"`         // 名称
+		SpuId        int64     `db:"spu_id"`        // 商品
+		CategoryId   int64     `db:"category_id"`   // 从属类别
+		Price        float64   `db:"price"`         // 单价
+		NowPrice     float64   `db:"now_price"`     // 进价
+		Stock        int64     `db:"stock"`         // 库存
+		Sales        int64     `db:"sales"`         // 销量
+		Comments     int64     `db:"comments"`      // 评价数
+		IsLaunched   int64     `db:"is_launched"`   // 是否上架销售
+		DefaultImage string    `db:"default_image"` // 默认图片
+		CreateTime   time.Time `db:"create_time"`
+		UpdateTime   time.Time `db:"update_time"`
 	}
 )
 
@@ -83,6 +85,24 @@ func (m *defaultTbSkuModel) FindOne(ctx context.Context, id int64) (*TbSku, erro
 		return &resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultTbSkuModel) FindOneByCategoryId(ctx context.Context, category_id int64) (*TbSku, error) {
+	tbSkuCategoryIdKey := fmt.Sprintf("%s%v", cacheTbSkuCategoryIdPrefix, category_id)
+	var resp TbSku
+	err := m.QueryRowCtx(ctx, &resp, tbSkuCategoryIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s where `category_id` = ? limit 1", tbSkuRows, m.table)
+		fmt.Println(query, category_id, "777777777777")
+		return conn.QueryRowCtx(ctx, v, query, category_id)
+	})
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, nil
 	default:
 		return nil, err
 	}

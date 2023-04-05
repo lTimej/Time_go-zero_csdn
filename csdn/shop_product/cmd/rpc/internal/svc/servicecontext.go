@@ -13,6 +13,7 @@ type ServiceContext struct {
 	RedisClient          *redis.Redis
 	ProductCategoryModel model.TbGoodsCategoryModel
 	ProductSpuModel      model.TbSpuModel
+	ProductSkuModel      model.TbSkuModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -25,5 +26,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}),
 		ProductCategoryModel: model.NewTbGoodsCategoryModel(sqlConn, c.Cache),
 		ProductSpuModel:      model.NewTbSpuModel(sqlConn, c.Cache),
+		ProductSkuModel:      model.NewTbSkuModel(sqlConn, c.Cache),
 	}
 }

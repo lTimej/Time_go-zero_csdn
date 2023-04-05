@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/globalkey"
 
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/internal/svc"
@@ -50,9 +51,22 @@ func (l *ProductCategoryLogic) ProductCategory(in *product.ProductCategoryReques
 				return nil, err
 			}
 			for _, cat := range cats {
+				sku_obj, err := l.svcCtx.ProductSkuModel.FindOneByCategoryId(l.ctx, cat.Id)
+				var default_image string
+				if err != nil {
+					fmt.Println(err, "888888888888888")
+					return nil, err
+				}
+				if sku_obj == nil {
+					default_image = ""
+				} else {
+					default_image = "http://172.20.16.20:9000/" + sku_obj.DefaultImage
+				}
+				fmt.Println(default_image, "999999999999999")
 				sub_category := &product.SubCategory{}
 				sub_category.Id = cat.Id
 				sub_category.Name = cat.Name
+				sub_category.DefaultImage = default_image
 				category.SubCategorys = append(category.SubCategorys, sub_category)
 			}
 			data.Categorys = append(data.Categorys, category)
