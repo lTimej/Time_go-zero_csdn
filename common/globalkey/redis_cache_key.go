@@ -27,4 +27,5 @@ const (
 
 const (
 	ProductCategory = "product:category"
+	ProductSkuDesc  = "product:sku:desc:%d"
 )

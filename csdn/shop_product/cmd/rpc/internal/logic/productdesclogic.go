@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"liujun/Time_go-zero_csdn/common/globalkey"
 
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/types/product"
@@ -26,7 +28,15 @@ func NewProductDescLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Produ
 
 func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product.ProductDescResponse, error) {
 	// todo: add your logic here and delete this line
+	key := fmt.Sprintf(globalkey.ProductSkuDesc, in.SpuId)
 	resp := new(product.ProductDescResponse)
+	okk, _ := l.svcCtx.RedisClient.Exists(key)
+	if okk {
+		data, _ := l.svcCtx.RedisClient.Get(key)
+		json.Unmarshal([]byte(data), resp)
+		return resp, nil
+	}
+	fmt.Println("进来了")
 	builder_spu_specification := l.svcCtx.ProductSpuSpecificationModel.Builder().Where("spu_id = ?", in.SpuId)
 	spu_specificetions, err := l.svcCtx.ProductSpuSpecificationModel.FindBySpuId(l.ctx, builder_spu_specification)
 	if err != nil {
@@ -92,5 +102,7 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 	for _, desc := range descs {
 		resp.SpuDesc.DescImage = append(resp.SpuDesc.DescImage, desc.DescImage)
 	}
+	data, _ := json.Marshal(resp)
+	l.svcCtx.RedisClient.Set(key, string(data))
 	return resp, nil
 }
