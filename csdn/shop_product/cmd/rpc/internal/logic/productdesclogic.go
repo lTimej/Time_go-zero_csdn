@@ -60,7 +60,6 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 		return nil, err
 	}
 	check_labl_name := make(map[string]int)
-	resp.SkuSpec.SpecList = []*product.SpecList{}
 	for _, item := range sku_spec_infos {
 		label_name := item.Label
 		spec_list := new(product.SpecList)
@@ -71,7 +70,6 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 		} else {
 			continue
 		}
-		spec_list.Specs = make([]*product.Specs, 0)
 		for _, item := range sku_spec_infos {
 			if item.Label == label_name {
 				spec_list.Specs = append(spec_list.Specs, &product.Specs{
@@ -79,7 +77,6 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 					SkuImg: item.DefaultImage,
 					Name:   item.Name,
 				})
-
 			}
 		}
 		resp.SkuSpec.SpecList = append(resp.SkuSpec.SpecList, spec_list)
