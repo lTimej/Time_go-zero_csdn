@@ -16,14 +16,21 @@ type (
 	CategoryList            = product.CategoryList
 	ProductCategoryRequest  = product.ProductCategoryRequest
 	ProductCategoryResponse = product.ProductCategoryResponse
+	ProductDescRequest      = product.ProductDescRequest
+	ProductDescResponse     = product.ProductDescResponse
 	ProductSpuList          = product.ProductSpuList
 	ProductSpuListRequest   = product.ProductSpuListRequest
 	ProductSpuListResponse  = product.ProductSpuListResponse
+	SkuSpec                 = product.SkuSpec
+	SpecList                = product.SpecList
+	Specs                   = product.Specs
+	SpuDesc                 = product.SpuDesc
 	SubCategory             = product.SubCategory
 
 	Product interface {
 		ProductSpuList(ctx context.Context, in *ProductSpuListRequest, opts ...grpc.CallOption) (*ProductSpuListResponse, error)
 		ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error)
+		ProductDesc(ctx context.Context, in *ProductDescRequest, opts ...grpc.CallOption) (*ProductDescResponse, error)
 	}
 
 	defaultProduct struct {
@@ -45,4 +52,9 @@ func (m *defaultProduct) ProductSpuList(ctx context.Context, in *ProductSpuListR
 func (m *defaultProduct) ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error) {
 	client := product.NewProductClient(m.cli.Conn())
 	return client.ProductCategory(ctx, in, opts...)
+}
+
+func (m *defaultProduct) ProductDesc(ctx context.Context, in *ProductDescRequest, opts ...grpc.CallOption) (*ProductDescResponse, error) {
+	client := product.NewProductClient(m.cli.Conn())
+	return client.ProductDesc(ctx, in, opts...)
 }

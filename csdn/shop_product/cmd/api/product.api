@@ -34,11 +34,50 @@ type ProductCategoryResponse {
 	Categorys []CategoryList `json:"categorys"`
 }
 
+type SpuDesc {
+	DescInfo  string   `json:"desc_info"`
+	DescImage []string `json:"desc_image"`
+}
+
+type Specs {
+	SkuId  int64  `json:"sku_id"`
+	SkuImg string `json:"sku_img"`
+	Name   string `json:"name"`
+}
+
+type SpecList {
+	SpecId    int64   `json:"spec_id"`
+	LabelName string  `json:"label_name"`
+	Specs     []Specs `json:"specs"`
+}
+
+type SkuSpec {
+	Label    string     `json:"label"`
+	Stock    int64      `json:"stock"`
+	SpecList []SpecList `json:"spec_list"`
+}
+
+type ProductDescRequest {
+	SpuId int64 `json:"spu_id,optional"`
+}
+
+type ProductDescResponse {
+	Title        string   `json:"title"`
+	Price        float32  `json:"price"`
+	NowPrice     float32  `json:"now_price"`
+	Address      string   `json:"address"`
+	SwiperImages []string `json:"swiper_images"`
+	SpuDesc      SpuDesc  `json:"spu_desc"`
+	SkuSpec      SkuSpec  `json:"sku_spec"`
+}
+
 service api-api {
 	@handler ProducSputList
 	get /v1/shop/product/spu(ProductSpuListRequest) returns (ProductSpuListResponse)
 	@handler ProductCategory
 	get /v1/shop/product/category(ProductCategoryRequest) returns (ProductCategoryResponse)
+	@handler ProductDesc
+	get /v1/shop/product/desc(ProductDescRequest) returns (ProductDescResponse)
 }
 
 // @server (

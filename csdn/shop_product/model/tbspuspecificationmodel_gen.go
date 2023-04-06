@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -27,8 +28,10 @@ var (
 
 type (
 	tbSpuSpecificationModel interface {
+		Builder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *TbSpuSpecification) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*TbSpuSpecification, error)
+		FindBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SpuSpecificationName, error)
 		Update(ctx context.Context, data *TbSpuSpecification) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -44,6 +47,9 @@ type (
 		Name       sql.NullString `db:"name"`   // 规格名称
 		CreateTime time.Time      `db:"create_time"`
 		UpdateTime time.Time      `db:"update_time"`
+	}
+	SpuSpecificationName struct {
+		Name string `db:"name"`
 	}
 )
 
@@ -80,6 +86,22 @@ func (m *defaultTbSpuSpecificationModel) FindOne(ctx context.Context, id int64) 
 	}
 }
 
+func (m *defaultTbSpuSpecificationModel) FindBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SpuSpecificationName, error) {
+	query, values, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*SpuSpecificationName
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultTbSpuSpecificationModel) Insert(ctx context.Context, data *TbSpuSpecification) (sql.Result, error) {
 	tbSpuSpecificationIdKey := fmt.Sprintf("%s%v", cacheTbSpuSpecificationIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -109,4 +131,8 @@ func (m *defaultTbSpuSpecificationModel) queryPrimary(ctx context.Context, conn 
 
 func (m *defaultTbSpuSpecificationModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultTbSpuSpecificationModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select("name").From(m.table)
 }

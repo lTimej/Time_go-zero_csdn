@@ -31,3 +31,8 @@ func (s *ProductServer) ProductCategory(ctx context.Context, in *product.Product
 	l := logic.NewProductCategoryLogic(ctx, s.svcCtx)
 	return l.ProductCategory(in)
 }
+
+func (s *ProductServer) ProductDesc(ctx context.Context, in *product.ProductDescRequest) (*product.ProductDescResponse, error) {
+	l := logic.NewProductDescLogic(ctx, s.svcCtx)
+	return l.ProductDesc(in)
+}

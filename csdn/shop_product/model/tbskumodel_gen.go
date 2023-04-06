@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -28,9 +29,13 @@ var (
 
 type (
 	tbSkuModel interface {
+		Builder() squirrel.SelectBuilder
+		BuilderSpec() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *TbSku) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*TbSku, error)
 		FindOneByCategoryId(ctx context.Context, category_id int64) (*TbSku, error)
+		FindAllSkuBasicInfoBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SkuBaseInfo, error)
+		FindAllSkuSpecBySpuId(ctx context.Context, builder squirrel.SelectBuilder, spu_id int64) ([]*SkuSpecInfo, error)
 		Update(ctx context.Context, data *TbSku) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -54,6 +59,24 @@ type (
 		DefaultImage string    `db:"default_image"` // 默认图片
 		CreateTime   time.Time `db:"create_time"`
 		UpdateTime   time.Time `db:"update_time"`
+	}
+	SkuBaseInfo struct {
+		Name         string  `db:"title"`
+		Price        float32 `db:"price"`
+		NowPrice     float32 `db:"now_price"`
+		DefaultImage string  `db:"default_image"`
+		Stock        int64   `db:"stock"`
+	}
+	SkuSpecInfo struct {
+		SkuId        int64   `db:"sku_id"`
+		Title        string  `db:"title"`
+		Stock        int64   `db:"stock"`
+		Price        float32 `db:"price"`
+		NowPrice     float32 `db:"now_price"`
+		DefaultImage string  `db:"default_image"`
+		Label        string  `db:"label"`
+		Name         string  `db:"name"`
+		SpecId       int64   `db:"spec_id"`
 	}
 )
 
@@ -85,6 +108,39 @@ func (m *defaultTbSkuModel) FindOne(ctx context.Context, id int64) (*TbSku, erro
 		return &resp, nil
 	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultTbSkuModel) FindAllSkuBasicInfoBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SkuBaseInfo, error) {
+	query, values, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*SkuBaseInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultTbSkuModel) FindAllSkuSpecBySpuId(ctx context.Context, builder squirrel.SelectBuilder, spu_id int64) ([]*SkuSpecInfo, error) {
+	query, values, err := builder.Join("tb_sku_specification as t2,tb_spu_specification as t3,tb_specification_option as t4 where tb_sku.id=t2.sku_id and t3.id=t4.spec_id and t2.option_id=t4.id").ToSql()
+	query = fmt.Sprintf("%s and tb_sku.spu_id = %d", query, spu_id)
+	fmt.Println(query, "********************")
+	if err != nil {
+		return nil, err
+	}
+	var resp []*SkuSpecInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
 	default:
 		return nil, err
 	}
@@ -137,4 +193,13 @@ func (m *defaultTbSkuModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn,
 
 func (m *defaultTbSkuModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultTbSkuModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select("title,price,now_price,default_image,stock").From(m.table)
+
+}
+
+func (m *defaultTbSkuModel) BuilderSpec() squirrel.SelectBuilder {
+	return squirrel.Select("tb_sku.id as sku_id, tb_sku.title,tb_sku.stock,tb_sku.price,tb_sku.now_price,tb_sku.default_image,t3.name as label,t4.value as name,t3.id as spec_id").From(m.table)
 }

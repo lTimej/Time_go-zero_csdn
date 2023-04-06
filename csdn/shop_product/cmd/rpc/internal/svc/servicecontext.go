@@ -9,11 +9,12 @@ import (
 )
 
 type ServiceContext struct {
-	Config               config.Config
-	RedisClient          *redis.Redis
-	ProductCategoryModel model.TbGoodsCategoryModel
-	ProductSpuModel      model.TbSpuModel
-	ProductSkuModel      model.TbSkuModel
+	Config                       config.Config
+	RedisClient                  *redis.Redis
+	ProductCategoryModel         model.TbGoodsCategoryModel
+	ProductSpuModel              model.TbSpuModel
+	ProductSkuModel              model.TbSkuModel
+	ProductSpuSpecificationModel model.TbSpuSpecificationModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -24,8 +25,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			r.Type = c.Redis.Type
 			r.Pass = c.Redis.Pass
 		}),
-		ProductCategoryModel: model.NewTbGoodsCategoryModel(sqlConn, c.Cache),
-		ProductSpuModel:      model.NewTbSpuModel(sqlConn, c.Cache),
-		ProductSkuModel:      model.NewTbSkuModel(sqlConn, c.Cache),
+		ProductCategoryModel:         model.NewTbGoodsCategoryModel(sqlConn, c.Cache),
+		ProductSpuModel:              model.NewTbSpuModel(sqlConn, c.Cache),
+		ProductSkuModel:              model.NewTbSkuModel(sqlConn, c.Cache),
+		ProductSpuSpecificationModel: model.NewTbSpuSpecificationModel(sqlConn, c.Cache),
 	}
 }

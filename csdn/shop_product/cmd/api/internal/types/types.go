@@ -37,3 +37,40 @@ type ProductCategoryRequest struct {
 type ProductCategoryResponse struct {
 	Categorys []CategoryList `json:"categorys"`
 }
+
+type SpuDesc struct {
+	DescInfo  string   `json:"desc_info"`
+	DescImage []string `json:"desc_image"`
+}
+
+type Specs struct {
+	SkuId  int64  `json:"sku_id"`
+	SkuImg string `json:"sku_img"`
+	Name   string `json:"name"`
+}
+
+type SpecList struct {
+	SpecId    int64   `json:"spec_id"`
+	LabelName string  `json:"label_name"`
+	Specs     []Specs `json:"specs"`
+}
+
+type SkuSpec struct {
+	Label    string     `json:"label"`
+	Stock    int64      `json:"stock"`
+	SpecList []SpecList `json:"spec_list"`
+}
+
+type ProductDescRequest struct {
+	SpuId int64 `json:"spu_id,optional"`
+}
+
+type ProductDescResponse struct {
+	Title        string   `json:"title"`
+	Price        float32  `json:"price"`
+	NowPrice     float32  `json:"now_price"`
+	Address      string   `json:"address"`
+	SwiperImages []string `json:"swiper_images"`
+	SpuDesc      SpuDesc  `json:"spu_desc"`
+	SkuSpec      SkuSpec  `json:"sku_spec"`
+}
