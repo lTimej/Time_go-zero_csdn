@@ -81,5 +81,16 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 		}
 		resp.SkuSpec.SpecList = append(resp.SkuSpec.SpecList, spec_list)
 	}
+	resp.SpuDesc = new(product.SpuDesc)
+	builder_spu_desc := l.svcCtx.ProductSpuDescModel.Builder().Where("spu_id = ?", in.SpuId)
+	descs, err := l.svcCtx.ProductSpuDescModel.FindAllBySpuId(l.ctx, builder_spu_desc)
+	if err != nil {
+		fmt.Println(err, "555555555555")
+		return nil, err
+	}
+	resp.SpuDesc.DescInfo = descs[0].DetailInfo
+	for _, desc := range descs {
+		resp.SpuDesc.DescImage = append(resp.SpuDesc.DescImage, desc.DescImage)
+	}
 	return resp, nil
 }

@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -27,7 +29,9 @@ var (
 
 type (
 	tbSpuDescModel interface {
+		Builder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *TbSpuDesc) (sql.Result, error)
+		FindAllBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*TbSpuDesc, error)
 		FindOne(ctx context.Context, id int64) (*TbSpuDesc, error)
 		Update(ctx context.Context, data *TbSpuDesc) error
 		Delete(ctx context.Context, id int64) error
@@ -39,12 +43,12 @@ type (
 	}
 
 	TbSpuDesc struct {
-		Id         int64          `db:"id"`
-		SpuId      int64          `db:"spu_id"`      // 商品SPU
-		DetailInfo sql.NullString `db:"detail_info"` // 商品详情
-		DescImage  sql.NullString `db:"desc_image"`  // 图片
-		CreateTime time.Time      `db:"create_time"`
-		UpdateTime time.Time      `db:"update_time"`
+		Id         int64     `db:"id"`
+		SpuId      int64     `db:"spu_id"`      // 商品SPU
+		DetailInfo string    `db:"detail_info"` // 商品详情
+		DescImage  string    `db:"desc_image"`  // 图片
+		CreateTime time.Time `db:"create_time"`
+		UpdateTime time.Time `db:"update_time"`
 	}
 )
 
@@ -81,6 +85,22 @@ func (m *defaultTbSpuDescModel) FindOne(ctx context.Context, id int64) (*TbSpuDe
 	}
 }
 
+func (m *defaultTbSpuDescModel) FindAllBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*TbSpuDesc, error) {
+	query, values, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*TbSpuDesc
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultTbSpuDescModel) Insert(ctx context.Context, data *TbSpuDesc) (sql.Result, error) {
 	tbSpuDescIdKey := fmt.Sprintf("%s%v", cacheTbSpuDescIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -110,4 +130,8 @@ func (m *defaultTbSpuDescModel) queryPrimary(ctx context.Context, conn sqlx.SqlC
 
 func (m *defaultTbSpuDescModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultTbSpuDescModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select(tbSpuDescRows).From(m.table)
 }

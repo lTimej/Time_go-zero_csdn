@@ -15,6 +15,7 @@ type ServiceContext struct {
 	ProductSpuModel              model.TbSpuModel
 	ProductSkuModel              model.TbSkuModel
 	ProductSpuSpecificationModel model.TbSpuSpecificationModel
+	ProductSpuDescModel          model.TbSpuDescModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -29,5 +30,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ProductSpuModel:              model.NewTbSpuModel(sqlConn, c.Cache),
 		ProductSkuModel:              model.NewTbSkuModel(sqlConn, c.Cache),
 		ProductSpuSpecificationModel: model.NewTbSpuSpecificationModel(sqlConn, c.Cache),
+		ProductSpuDescModel:          model.NewTbSpuDescModel(sqlConn, c.Cache),
 	}
 }
