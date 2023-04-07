@@ -71,6 +71,12 @@ type ProductDescResponse {
 	SkuSpec      SkuSpec  `json:"sku_spec"`
 }
 
+type AddCartRequest {
+	SkuId int64 `json:"sku_id,optional"`
+}
+
+type AddCartResponse {}
+
 service api-api {
 	@handler ProducSputList
 	get /v1/shop/product/spu(ProductSpuListRequest) returns (ProductSpuListResponse)
@@ -80,7 +86,12 @@ service api-api {
 	get /v1/shop/product/desc(ProductDescRequest) returns (ProductDescResponse)
 }
 
-// @server (
-// 	// jwt: JwtAuth
-// 	middleware: SetUidToCtxMiddleware
-// )
+@server (
+	// jwt: JwtAuth
+	middleware: SetUidToCtxMiddleware
+)
+
+service api-api {
+	@handler AddCart
+	post /v1/shop/add/cart(AddCartRequest) returns (AddCartResponse)
+}

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"liujun/Time_go-zero_csdn/common/blackWhiteList"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"liujun/Time_go-zero_csdn/common/xerr"
@@ -26,14 +27,23 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		token := strings.Split(header, " ")[1]
-		if token == "" {
-			if r.URL.Path == "/v1/article/status" {
+		if token == "null" {
+			if _, ok := blackWhiteList.BlackWhiteList[r.URL.Path]; ok {
+				ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, "0")
+				r = r.WithContext(ctx)
 				next(w, r)
 				return
 			} else {
 				httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "未登录"))
 				return
 			}
+			// if r.URL.Path == "/v1/article/status" {
+			// 	next(w, r)
+			// 	return
+			// } else {
+			// 	httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "未登录"))
+			// 	return
+			// }
 		}
 		r.Header.Set("Authorization", token)
 		claim, err := ctxdata.ParseToken(token, m.Config.JwtAuth.AccessSecret)

@@ -26,6 +26,8 @@ const (
 )
 
 const (
-	ProductCategory = "product:category"
-	ProductSkuDesc  = "product:sku:desc:%d"
+	ProductCategory       = "product:category"
+	ProductSkuDesc        = "product:sku:desc:%d"
+	UserCartList          = "user:cart:%s"
+	AnonymityUserCartList = "anonymity:user:cart"
 )

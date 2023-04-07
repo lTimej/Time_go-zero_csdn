@@ -13,7 +13,11 @@ import (
 )
 
 type (
+	AddCartRequest          = product.AddCartRequest
+	AddCartResponse         = product.AddCartResponse
 	CategoryList            = product.CategoryList
+	GetCartRequest          = product.GetCartRequest
+	GetCartResponse         = product.GetCartResponse
 	ProductCategoryRequest  = product.ProductCategoryRequest
 	ProductCategoryResponse = product.ProductCategoryResponse
 	ProductDescRequest      = product.ProductDescRequest
@@ -31,6 +35,8 @@ type (
 		ProductSpuList(ctx context.Context, in *ProductSpuListRequest, opts ...grpc.CallOption) (*ProductSpuListResponse, error)
 		ProductCategory(ctx context.Context, in *ProductCategoryRequest, opts ...grpc.CallOption) (*ProductCategoryResponse, error)
 		ProductDesc(ctx context.Context, in *ProductDescRequest, opts ...grpc.CallOption) (*ProductDescResponse, error)
+		AddCart(ctx context.Context, in *AddCartRequest, opts ...grpc.CallOption) (*AddCartResponse, error)
+		GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*GetCartResponse, error)
 	}
 
 	defaultProduct struct {
@@ -57,4 +63,14 @@ func (m *defaultProduct) ProductCategory(ctx context.Context, in *ProductCategor
 func (m *defaultProduct) ProductDesc(ctx context.Context, in *ProductDescRequest, opts ...grpc.CallOption) (*ProductDescResponse, error) {
 	client := product.NewProductClient(m.cli.Conn())
 	return client.ProductDesc(ctx, in, opts...)
+}
+
+func (m *defaultProduct) AddCart(ctx context.Context, in *AddCartRequest, opts ...grpc.CallOption) (*AddCartResponse, error) {
+	client := product.NewProductClient(m.cli.Conn())
+	return client.AddCart(ctx, in, opts...)
+}
+
+func (m *defaultProduct) GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*GetCartResponse, error) {
+	client := product.NewProductClient(m.cli.Conn())
+	return client.GetCart(ctx, in, opts...)
 }

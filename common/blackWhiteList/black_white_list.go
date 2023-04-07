@@ -1,9 +1,10 @@
 package blackWhiteList
 
-var BlackWhiteList []map[string]bool
+var BlackWhiteList map[string]bool
 
 func init() {
-	BlackWhiteList = []map[string]bool{
-		map[string]bool{"/v1/article/status": true},
+	BlackWhiteList = map[string]bool{
+		"/v1/article/status": true,
+		"/v1/shop/add/cart":  true,
 	}
 }

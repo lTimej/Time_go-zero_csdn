@@ -36,3 +36,13 @@ func (s *ProductServer) ProductDesc(ctx context.Context, in *product.ProductDesc
 	l := logic.NewProductDescLogic(ctx, s.svcCtx)
 	return l.ProductDesc(in)
 }
+
+func (s *ProductServer) AddCart(ctx context.Context, in *product.AddCartRequest) (*product.AddCartResponse, error) {
+	l := logic.NewAddCartLogic(ctx, s.svcCtx)
+	return l.AddCart(in)
+}
+
+func (s *ProductServer) GetCart(ctx context.Context, in *product.GetCartRequest) (*product.GetCartResponse, error) {
+	l := logic.NewGetCartLogic(ctx, s.svcCtx)
+	return l.GetCart(in)
+}

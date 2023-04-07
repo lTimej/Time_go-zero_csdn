@@ -29,4 +29,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.SetUidToCtxMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/v1/shop/add/cart",
+					Handler: AddCartHandler(serverCtx),
+				},
+			}...,
+		),
+	)
 }

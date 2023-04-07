@@ -62,6 +62,19 @@ message ProductDescResponse{
   SkuSpec sku_spec = 7;
 }
 
+message AddCartRequest{
+  int64 sku_id = 1;
+  string user_id = 2;
+}
+
+message AddCartResponse{}
+
+message GetCartRequest{
+  string user_id = 1;
+}
+
+message GetCartResponse{}
+
 message ProductCategoryRequest {}
 
 message ProductCategoryResponse {
@@ -81,4 +94,6 @@ service Product {
   rpc ProductSpuList(ProductSpuListRequest) returns(ProductSpuListResponse);
   rpc ProductCategory(ProductCategoryRequest) returns(ProductCategoryResponse);
   rpc ProductDesc(ProductDescRequest) returns(ProductDescResponse);
+  rpc AddCart(AddCartRequest) returns (AddCartResponse);
+  rpc GetCart(GetCartRequest) returns (GetCartResponse);
 }

@@ -74,3 +74,10 @@ type ProductDescResponse struct {
 	SpuDesc      SpuDesc  `json:"spu_desc"`
 	SkuSpec      SkuSpec  `json:"sku_spec"`
 }
+
+type AddCartRequest struct {
+	SkuId int64 `json:"sku_id,optional"`
+}
+
+type AddCartResponse struct {
+}
