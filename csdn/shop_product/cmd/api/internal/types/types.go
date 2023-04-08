@@ -44,9 +44,10 @@ type SpuDesc struct {
 }
 
 type Specs struct {
-	SkuId  int64  `json:"sku_id"`
-	SkuImg string `json:"sku_img"`
-	Name   string `json:"name"`
+	SkuId     int64  `json:"sku_id"`
+	SkuImg    string `json:"sku_img"`
+	Name      string `json:"name"`
+	SpecOptId int64  `json:"spec_opt_id"`
 }
 
 type SpecList struct {
@@ -76,7 +77,8 @@ type ProductDescResponse struct {
 }
 
 type AddCartRequest struct {
-	SkuId int64 `json:"sku_id,optional"`
+	SkuId []int64 `json:"sku_id"`
+	Count int64   `json:"count"`
 }
 
 type AddCartResponse struct {

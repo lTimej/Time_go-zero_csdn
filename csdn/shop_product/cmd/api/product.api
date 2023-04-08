@@ -40,9 +40,10 @@ type SpuDesc {
 }
 
 type Specs {
-	SkuId  int64  `json:"sku_id"`
-	SkuImg string `json:"sku_img"`
-	Name   string `json:"name"`
+	SkuId     int64  `json:"sku_id"`
+	SkuImg    string `json:"sku_img"`
+	Name      string `json:"name"`
+	SpecOptId int64  `json:"spec_opt_id"`
 }
 
 type SpecList {
@@ -72,7 +73,8 @@ type ProductDescResponse {
 }
 
 type AddCartRequest {
-	SkuId int64 `json:"sku_id,optional"`
+	SkuId []int64 `json:"sku_id"`
+	Count int64   `json:"count"`
 }
 
 type AddCartResponse {}

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/productclient"
 
@@ -28,7 +29,8 @@ func NewAddCartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddCartLo
 func (l *AddCartLogic) AddCart(req *types.AddCartRequest) (resp *types.AddCartResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	_, err = l.svcCtx.ProductRpc.AddCart(l.ctx, &productclient.AddCartRequest{UserId: user_id, SkuId: req.SkuId})
+	fmt.Println(user_id, "hhhhhhhh")
+	_, err = l.svcCtx.ProductRpc.AddCart(l.ctx, &productclient.AddCartRequest{UserId: user_id, SkuId: req.SkuId, Count: req.Count})
 	if err != nil {
 		return nil, err
 	}

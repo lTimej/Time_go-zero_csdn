@@ -61,7 +61,7 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 	resp.SkuSpec.Stock = sku_base_infos[0].Stock
 	resp.SkuSpec.Label = label
 	for _, item := range sku_base_infos {
-		resp.SwiperImages = append(resp.SwiperImages, item.DefaultImage)
+		resp.SwiperImages = append(resp.SwiperImages, "http://172.20.16.20:9000/"+item.DefaultImage)
 	}
 	builder_spec := l.svcCtx.ProductSkuModel.BuilderSpec()
 	sku_spec_infos, err := l.svcCtx.ProductSkuModel.FindAllSkuSpecBySpuId(l.ctx, builder_spec, in.SpuId)
@@ -80,13 +80,18 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 		} else {
 			continue
 		}
+		specName := make(map[string]bool)
 		for _, item := range sku_spec_infos {
 			if item.Label == label_name {
-				spec_list.Specs = append(spec_list.Specs, &product.Specs{
-					SkuId:  item.SkuId,
-					SkuImg: item.DefaultImage,
-					Name:   item.Name,
-				})
+				if _, ok := specName[item.Name]; !ok {
+					specName[item.Name] = true
+					spec_list.Specs = append(spec_list.Specs, &product.Specs{
+						SkuId:     item.SkuId,
+						SkuImg:    "http://172.20.16.20:9000/" + item.DefaultImage,
+						Name:      item.Name,
+						SpecOptId: item.SpecOptId,
+					})
+				}
 			}
 		}
 		resp.SkuSpec.SpecList = append(resp.SkuSpec.SpecList, spec_list)

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/blackWhiteList"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/common/httpResp"
@@ -23,6 +24,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO generate middleware implement function, delete after code implementation
 		header := r.Header.Get("Authorization")
+		fmt.Println("header:::::", header)
 		if !strings.HasPrefix(header, "Bearer") {
 			return
 		}
@@ -31,6 +33,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			if _, ok := blackWhiteList.BlackWhiteList[r.URL.Path]; ok {
 				ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, "0")
 				r = r.WithContext(ctx)
+				fmt.Println("劲来了！！！！！！！！！！！！！！！！！！！！！！！！")
 				next(w, r)
 				return
 			} else {

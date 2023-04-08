@@ -77,6 +77,7 @@ type (
 		Label        string  `db:"label"`
 		Name         string  `db:"name"`
 		SpecId       int64   `db:"spec_id"`
+		SpecOptId    int64   `db:"spec_opt_id"`
 	}
 )
 
@@ -201,5 +202,5 @@ func (m *defaultTbSkuModel) Builder() squirrel.SelectBuilder {
 }
 
 func (m *defaultTbSkuModel) BuilderSpec() squirrel.SelectBuilder {
-	return squirrel.Select("tb_sku.id as sku_id, tb_sku.title,tb_sku.stock,tb_sku.price,tb_sku.now_price,tb_sku.default_image,t3.name as label,t4.value as name,t3.id as spec_id").From(m.table)
+	return squirrel.Select("tb_sku.id as sku_id, tb_sku.title,tb_sku.stock,tb_sku.price,tb_sku.now_price,tb_sku.default_image,t3.name as label,t4.value as name,t3.id as spec_id,t4.id as spec_opt_id").From(m.table)
 }

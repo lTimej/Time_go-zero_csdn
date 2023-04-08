@@ -34,6 +34,7 @@ message Specs{
   int64 sku_id = 1;
   string sku_img = 2;
   string name = 3;
+  int64 spec_opt_id = 4;
 }
 
 message SpecList{
@@ -63,8 +64,9 @@ message ProductDescResponse{
 }
 
 message AddCartRequest{
-  int64 sku_id = 1;
+  repeated int64 sku_id = 1;
   string user_id = 2;
+  int64 count = 3;
 }
 
 message AddCartResponse{}

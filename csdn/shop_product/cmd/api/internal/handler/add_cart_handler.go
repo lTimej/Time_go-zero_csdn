@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"net/http"
 
@@ -18,7 +19,7 @@ func AddCartHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
-
+		fmt.Println(r, "==============")
 		l := logic.NewAddCartLogic(r.Context(), svcCtx)
 		resp, err := l.AddCart(&req)
 		httpResp.HttpResp(w, r, resp, err)
