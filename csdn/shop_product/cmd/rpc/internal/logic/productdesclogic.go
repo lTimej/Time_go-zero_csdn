@@ -44,8 +44,13 @@ func (l *ProductDescLogic) ProductDesc(in *product.ProductDescRequest) (*product
 		return nil, err
 	}
 	var label string
-	for _, item := range spu_specificetions {
-		label += item.Name
+	for index, item := range spu_specificetions {
+		if index != len(spu_specificetions)-1 {
+			label += item.Name + " "
+		} else {
+			label += item.Name
+		}
+
 	}
 	builder := l.svcCtx.ProductSkuModel.Builder().Where("spu_id = ?", in.SpuId)
 	sku_base_infos, err := l.svcCtx.ProductSkuModel.FindAllSkuBasicInfoBySpuId(l.ctx, builder)
