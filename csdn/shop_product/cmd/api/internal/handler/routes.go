@@ -39,6 +39,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/v1/shop/add/cart",
 					Handler: AddCartHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/v1/shop/get/cart",
+					Handler: GetCartHandler(serverCtx),
+				},
 			}...,
 		),
 	)

@@ -71,12 +71,6 @@ message AddCartRequest{
 
 message AddCartResponse{}
 
-message GetCartRequest{
-  string user_id = 1;
-}
-
-message GetCartResponse{}
-
 message ProductCategoryRequest {}
 
 message ProductCategoryResponse {
@@ -90,6 +84,24 @@ message ProductSpuListRequest {
 
 message ProductSpuListResponse {
   repeated ProductSpuList ProductSpus = 1;
+}
+
+message GetCartRequest{
+  string user_id = 1;
+}
+
+message SpecLabel{
+	string label = 1;
+	string name = 2;
+}
+
+message GetCartResponse{
+	string title = 1;
+	string default_image = 2;
+	int64 count = 3;
+	int64 total_count = 4;
+	float price = 5;
+	repeated SpecLabel spec_label = 6;
 }
 
 service Product {

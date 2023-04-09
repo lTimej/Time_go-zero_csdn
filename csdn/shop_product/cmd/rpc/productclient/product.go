@@ -26,6 +26,7 @@ type (
 	ProductSpuListRequest   = product.ProductSpuListRequest
 	ProductSpuListResponse  = product.ProductSpuListResponse
 	SkuSpec                 = product.SkuSpec
+	SpecLabel               = product.SpecLabel
 	SpecList                = product.SpecList
 	Specs                   = product.Specs
 	SpuDesc                 = product.SpuDesc

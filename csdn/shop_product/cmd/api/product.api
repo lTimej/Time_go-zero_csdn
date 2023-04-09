@@ -79,6 +79,22 @@ type AddCartRequest {
 
 type AddCartResponse {}
 
+type GetCartRequest{}
+
+type SpecLabel {
+	Label string `json:"label"`
+	Name  string `json:"name"`
+}
+
+type GetCartResponse {
+	Title        string      `json:"title"`
+	DefaultImage string      `json:"default_image"`
+	Count        int64       `json:"count"`
+	TotalCount   int64       `json:"total_count"`
+	Price        float32     `json:"price"`
+	SpecLabel    []SpecLabel `json:"spec_label"`
+}
+
 service api-api {
 	@handler ProducSputList
 	get /v1/shop/product/spu(ProductSpuListRequest) returns (ProductSpuListResponse)
@@ -96,4 +112,7 @@ service api-api {
 service api-api {
 	@handler AddCart
 	post /v1/shop/add/cart(AddCartRequest) returns (AddCartResponse)
+	@handler GetCart
+	get /v1/shop/get/cart(GetCartRequest) returns (GetCartResponse)
+	
 }
