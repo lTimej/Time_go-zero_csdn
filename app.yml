@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_gateway
+    volumes:
+      - /home/go/data/app/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /home/go/data/app/nginx/conf/conf.d:/etc/nginx/conf.d
+      - /home/go/data/app/nginx/log:/var/log/nginx
+      - /home/go/data/app/nginx/html:/usr/share/nginx/html
+      - /home/go/data/app/web:/web
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+    ports:
+      - "0.0.0.0:8988:80"
+    restart: unless-stopped
+    privileged: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  myapp:
+    image: app:v3
+    container_name: myapp
+    restart: unless-stopped
+    privileged: true

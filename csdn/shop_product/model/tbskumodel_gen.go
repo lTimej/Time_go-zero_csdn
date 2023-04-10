@@ -31,11 +31,13 @@ type (
 	tbSkuModel interface {
 		Builder() squirrel.SelectBuilder
 		BuilderSpec() squirrel.SelectBuilder
+		BuilderBySkuId() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *TbSku) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*TbSku, error)
 		FindOneByCategoryId(ctx context.Context, category_id int64) (*TbSku, error)
 		FindAllSkuBasicInfoBySpuId(ctx context.Context, builder squirrel.SelectBuilder) ([]*SkuBaseInfo, error)
 		FindAllSkuSpecBySpuId(ctx context.Context, builder squirrel.SelectBuilder, spu_id int64) ([]*SkuSpecInfo, error)
+		FindOneSkuInfoBySkuId(ctx context.Context, builder squirrel.SelectBuilder, sku_id int64) (*CartInfo, error)
 		Update(ctx context.Context, data *TbSku) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -78,6 +80,13 @@ type (
 		Name         string  `db:"name"`
 		SpecId       int64   `db:"spec_id"`
 		SpecOptId    int64   `db:"spec_opt_id"`
+	}
+	CartInfo struct {
+		Title        string  `db:"title"`
+		Price        float32 `db:"price"`
+		DefaultImage string  `db:"default_image"`
+		Name         string  `db:"name"`
+		Label        string  `db:"label"`
 	}
 )
 
@@ -147,6 +156,23 @@ func (m *defaultTbSkuModel) FindAllSkuSpecBySpuId(ctx context.Context, builder s
 	}
 }
 
+func (m *defaultTbSkuModel) FindOneSkuInfoBySkuId(ctx context.Context, builder squirrel.SelectBuilder, sku_id int64) (*CartInfo, error) {
+	query, values, err := builder.Join("tb_sku_specification,tb_spu_specification,tb_specification_option  where tb_sku.id = tb_sku_specification.sku_id and tb_sku_specification.spec_id=tb_spu_specification.id and tb_sku_specification.option_id=tb_specification_option.id").ToSql()
+	query = fmt.Sprintf("%s and tb_sku.id = %d", query, sku_id)
+	fmt.Println(query, "********************")
+	if err != nil {
+		return nil, err
+	}
+	var resp *CartInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultTbSkuModel) FindOneByCategoryId(ctx context.Context, category_id int64) (*TbSku, error) {
 	tbSkuCategoryIdKey := fmt.Sprintf("%s%v", cacheTbSkuCategoryIdPrefix, category_id)
 	var resp TbSku
@@ -203,4 +229,8 @@ func (m *defaultTbSkuModel) Builder() squirrel.SelectBuilder {
 
 func (m *defaultTbSkuModel) BuilderSpec() squirrel.SelectBuilder {
 	return squirrel.Select("tb_sku.id as sku_id, tb_sku.title,tb_sku.stock,tb_sku.price,tb_sku.now_price,tb_sku.default_image,t3.name as label,t4.value as name,t3.id as spec_id,t4.id as spec_opt_id").From(m.table)
+}
+
+func (m *defaultTbSkuModel) BuilderBySkuId() squirrel.SelectBuilder {
+	return squirrel.Select("tb_sku.title,tb_sku.price,tb_sku.default_image,tb_spu_specification.name as label,tb_specification_option.value as name").From(m.table)
 }

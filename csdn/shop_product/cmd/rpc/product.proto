@@ -99,9 +99,8 @@ message GetCartResponse{
 	string title = 1;
 	string default_image = 2;
 	int64 count = 3;
-	int64 total_count = 4;
-	float price = 5;
-	repeated SpecLabel spec_label = 6;
+	float price = 4;
+	repeated SpecLabel spec_label = 5;
 }
 
 service Product {

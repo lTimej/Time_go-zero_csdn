@@ -96,7 +96,6 @@ type GetCartResponse struct {
 	Title        string      `json:"title"`
 	DefaultImage string      `json:"default_image"`
 	Count        int64       `json:"count"`
-	TotalCount   int64       `json:"total_count"`
 	Price        float32     `json:"price"`
 	SpecLabel    []SpecLabel `json:"spec_label"`
 }

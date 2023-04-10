@@ -8,29 +8,38 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-
 WORKDIR /app
-
 ADD go.mod .
 ADD go.sum .
 RUN go mod download
+
 COPY . .
 
-RUN go build -o /app/csdn/user/cmd/rpc/user_rpc /app/csdn/user/cmd/rpc
-RUN go build -o /app/csdn/user/cmd/api/user_api /app/csdn/user/cmd/api
-RUN go build -o /app/csdn/channel/cmd/rpc/article_rpc /app/csdn/channel/cmd/rpc
-RUN go build -o /app/csdn/channel/cmd/api/article_api /app/csdn/channel/cmd/api
+RUN go build -o /data/server/user-rpc  -v csdn/user/cmd/rpc/user.go
+RUN go build -o /data/server/user-api  -v csdn/user/cmd/api/user.go
+RUN go build -o /data/server/channel-rpc  -v csdn/channel/cmd/rpc/channel.go
+RUN go build -o /data/server/channel-api  -v csdn/channel/cmd/api/api.go
+RUN go build -o /data/server/im-rpc  -v csdn/im/cmd/rpc/im.go
+RUN go build -o /data/server/im-api  -v csdn/im/cmd/api/api.go
+RUN go build -o /data/server/product-rpc  -v csdn/shop_product/cmd/rpc/product.go
+RUN go build -o /data/server/product-api  -v csdn/shop_product/cmd/api/api.go
 
-RUN chmod +x /app/csdn/user/cmd/rpc/user_rpc
-RUN chmod +x /app/csdn/user/cmd/api/user_api
-RUN chmod +x /app/csdn/channel/cmd/rpc/article_rpc
-RUN chmod +x /app/csdn/channel/cmd/api/article_api
+COPY csdn/user/cmd/rpc/etc/user.yaml /etc/user/user.yaml
+COPY csdn/user/cmd/api/etc/api-api.yaml /etc/user/api-api.yaml
+COPY csdn/channel/cmd/rpc/etc/channel.yaml /etc/channel/channel.yaml
+COPY csdn/channel/cmd/api/etc/api-api.yaml /etc/channel/api-api.yaml
+COPY csdn/im/cmd/rpc/etc/im.yaml /etc/im/im.yaml
+COPY csdn/im/cmd/api/etc/api-api.yaml /etc/im/api-api.yaml
+COPY csdn/shop_product/cmd/rpc/etc/product.yaml /etc/product/product.yaml
+COPY csdn/shop_product/cmd/api/etc/api-api.yaml /etc/product/api-api.yaml
 
-FROM debian:stretch-slim
+COPY modd.conf /modd.conf
+COPY modd /modd
+RUN rm -rf /app/
 
+FROM scratch
 
-WORKDIR /app
-COPY --from=builder /app /app/Time_go-zero_csdn
+COPY --from=builder / /
 
-#ENTRYPOINT ["./Time_go-zero_csdn/run.sh"]
+CMD ["/modd"]
 

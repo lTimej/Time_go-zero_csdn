@@ -5,6 +5,8 @@ import (
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/productclient"
 
+	"github.com/jinzhu/copier"
+
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/api/internal/types"
 
@@ -28,6 +30,11 @@ func NewGetCartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCartLo
 func (l *GetCartLogic) GetCart(req *types.GetCartRequest) (resp *types.GetCartResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	l.svcCtx.ProductRpc.GetCart(l.ctx, &productclient.GetCartRequest{UserId: user_id})
-	return
+	cart_info, err := l.svcCtx.ProductRpc.GetCart(l.ctx, &productclient.GetCartRequest{UserId: user_id})
+	if err != nil {
+		return nil, err
+	}
+	resp = new(types.GetCartResponse)
+	copier.Copy(resp, cart_info)
+	return resp, nil
 }
