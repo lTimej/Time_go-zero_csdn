@@ -15,6 +15,7 @@ import (
 type (
 	AddCartRequest          = product.AddCartRequest
 	AddCartResponse         = product.AddCartResponse
+	Carts                   = product.Carts
 	CategoryList            = product.CategoryList
 	GetCartRequest          = product.GetCartRequest
 	GetCartResponse         = product.GetCartResponse

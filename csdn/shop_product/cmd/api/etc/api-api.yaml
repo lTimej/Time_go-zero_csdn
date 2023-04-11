@@ -8,8 +8,16 @@ ProductRpc:
     Key: product.rpc
 JwtAuth:
   AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 31536000
 
 Redis:
   Host: 172.20.16.20:16379
   Pass: liujun
   Type: node
+
+DB:
+  DataSource: root:liujun@tcp(172.20.16.20:13306)/shop?charset=utf8mb4&parseTime=True&loc=Local
+
+Cache:
+  - Host: 172.20.16.20:16379
+    Pass: liujun

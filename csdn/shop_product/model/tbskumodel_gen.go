@@ -20,10 +20,12 @@ import (
 var (
 	tbSkuFieldNames          = builder.RawFieldNames(&TbSku{})
 	tbSkuRows                = strings.Join(tbSkuFieldNames, ",")
+	cartInfoBySkuId          = "tb_sku.title,tb_sku.price,tb_sku.default_image,tb_spu_specification.name as label,tb_specification_option.value as name"
 	tbSkuRowsExpectAutoSet   = strings.Join(stringx.Remove(tbSkuFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	tbSkuRowsWithPlaceHolder = strings.Join(stringx.Remove(tbSkuFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
 	cacheTbSkuIdPrefix         = "cache:tbSku:id:"
+	cacheCartInfoBySkuIdPrefix = "cache:cart:sku:id:"
 	cacheTbSkuCategoryIdPrefix = "cache:tbSku:categoryid:"
 )
 
@@ -157,20 +159,35 @@ func (m *defaultTbSkuModel) FindAllSkuSpecBySpuId(ctx context.Context, builder s
 }
 
 func (m *defaultTbSkuModel) FindOneSkuInfoBySkuId(ctx context.Context, builder squirrel.SelectBuilder, sku_id int64) (*CartInfo, error) {
-	query, values, err := builder.Join("tb_sku_specification,tb_spu_specification,tb_specification_option  where tb_sku.id = tb_sku_specification.sku_id and tb_sku_specification.spec_id=tb_spu_specification.id and tb_sku_specification.option_id=tb_specification_option.id").ToSql()
-	query = fmt.Sprintf("%s and tb_sku.id = %d", query, sku_id)
-	fmt.Println(query, "********************")
-	if err != nil {
-		return nil, err
-	}
-	var resp *CartInfo
-	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	tbSkuIdKey := fmt.Sprintf("%s%v", cacheCartInfoBySkuIdPrefix, sku_id)
+	var resp CartInfo
+	err := m.QueryRowCtx(ctx, &resp, tbSkuIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query := fmt.Sprintf("select %s from %s join tb_spu_specification,tb_specification_option where tb_spu_specification.spu_id in (select tb_spu_specification.spu_id from tb_sku_specification,tb_spu_specification where sku_id = %d and tb_spu_specification.id = tb_sku_specification.spec_id) and tb_spu_specification.id = tb_specification_option.spec_id and tb_sku.id = ? limit 1", cartInfoBySkuId, m.table, sku_id)
+		fmt.Println(query, "********************")
+		return conn.QueryRowCtx(ctx, v, query, sku_id)
+	})
 	switch err {
 	case nil:
-		return resp, nil
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
 	default:
 		return nil, err
 	}
+	// query, values, err := builder.Join("tb_sku_specification,tb_spu_specification,tb_specification_option  where tb_sku.id = tb_sku_specification.sku_id and tb_sku_specification.spec_id=tb_spu_specification.id and tb_sku_specification.option_id=tb_specification_option.id").ToSql()
+	// query = fmt.Sprintf("%s and tb_sku.id = %d", query, sku_id)
+	// fmt.Println(query, "********************")
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// var resp *CartInfo
+	// err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	// switch err {
+	// case nil:
+	// 	return resp, nil
+	// default:
+	// 	return nil, err
+	// }
 }
 
 func (m *defaultTbSkuModel) FindOneByCategoryId(ctx context.Context, category_id int64) (*TbSku, error) {
@@ -228,7 +245,7 @@ func (m *defaultTbSkuModel) Builder() squirrel.SelectBuilder {
 }
 
 func (m *defaultTbSkuModel) BuilderSpec() squirrel.SelectBuilder {
-	return squirrel.Select("tb_sku.id as sku_id, tb_sku.title,tb_sku.stock,tb_sku.price,tb_sku.now_price,tb_sku.default_image,t3.name as label,t4.value as name,t3.id as spec_id,t4.id as spec_opt_id").From(m.table)
+	return squirrel.Select("tb_sku.id as sku_id, tb_sku.title,tb_sku.stock,tb_sku.price,tb_sku.now_price,tb_sku.default_image,t3.name as label,t4.value as name,t2.id as spec_id,t4.id as spec_opt_id").From(m.table)
 }
 
 func (m *defaultTbSkuModel) BuilderBySkuId() squirrel.SelectBuilder {

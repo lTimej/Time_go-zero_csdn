@@ -86,12 +86,16 @@ type SpecLabel {
 	Name  string `json:"name"`
 }
 
-type GetCartResponse {
+type Carts {
 	Title        string      `json:"title"`
 	DefaultImage string      `json:"default_image"`
 	Count        int64       `json:"count"`
 	Price        float32     `json:"price"`
 	SpecLabel    []SpecLabel `json:"spec_label"`
+}
+
+type GetCartResponse {
+	Carts []Carts `json:"carts"`
 }
 
 service api-api {

@@ -29,36 +29,34 @@ func NewGetCartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCartLo
 
 func (l *GetCartLogic) GetCart(in *product.GetCartRequest) (*product.GetCartResponse, error) {
 	// todo: add your logic here and delete this line
-	key := ""
-	if in.UserId == "0" { //未登录
-		key = globalkey.AnonymityUserCartList
-	} else {
-		key = fmt.Sprintf(globalkey.UserCartList, in.UserId)
-	}
+	key := fmt.Sprintf(globalkey.UserCartList, in.UserId)
 	carts, err := l.svcCtx.RedisClient.Hgetall(key)
 	if err != nil {
+		fmt.Println(err, "1111111111")
 		return nil, err
 	}
 	resp := new(product.GetCartResponse)
 	for key, val := range carts {
-		fmt.Println(key, val, "hahhah")
-		var spus []int64
-		json.Unmarshal([]byte(key), &spus)
-		for _, spu := range spus {
+		cart_obj := product.Carts{}
+		var sku_ids []int64
+		json.Unmarshal([]byte(key), &sku_ids)
+		for _, sku_id := range sku_ids {
 			builderByskuId := l.svcCtx.ProductSkuModel.BuilderBySkuId()
-			cart_info, err := l.svcCtx.ProductSkuModel.FindOneSkuInfoBySkuId(l.ctx, builderByskuId, spu)
+			cart_info, err := l.svcCtx.ProductSkuModel.FindOneSkuInfoBySkuId(l.ctx, builderByskuId, sku_id)
 			if err != nil {
+				fmt.Println(err, "2222222222")
 				return nil, err
 			}
-			resp.DefaultImage = cart_info.DefaultImage
-			resp.Price = cart_info.Price
-			resp.Title = cart_info.Title
-			resp.SpecLabel = append(resp.SpecLabel, &product.SpecLabel{
+			cart_obj.DefaultImage = cart_info.DefaultImage
+			cart_obj.Price = cart_info.Price
+			cart_obj.Title = cart_info.Title
+			cart_obj.SpecLabel = append(cart_obj.SpecLabel, &product.SpecLabel{
 				Name:  cart_info.Name,
 				Label: cart_info.Label,
 			})
+			cart_obj.Count = utils.StringToInt64(val)
 		}
-		resp.Count = utils.StringToInt64(val)
+		resp.Carts = append(resp.Carts, &cart_obj)
 	}
 	return resp, nil
 }

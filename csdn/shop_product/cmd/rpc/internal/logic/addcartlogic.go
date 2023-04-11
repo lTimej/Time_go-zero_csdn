@@ -29,14 +29,15 @@ func NewAddCartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddCartLo
 func (l *AddCartLogic) AddCart(in *product.AddCartRequest) (*product.AddCartResponse, error) {
 	// todo: add your logic here and delete this line
 	fmt.Println(in.SkuId, "+++++++++++++++++++")
-	key := ""
-	if in.UserId == "0" {
+	key := fmt.Sprintf(globalkey.UserCartList, in.UserId)
+	// if in.UserId == "0" {
 
-		key = globalkey.AnonymityUserCartList
-		fmt.Println(key)
-	} else {
-		key = fmt.Sprintf(globalkey.UserCartList, in.UserId)
-	}
+	// 	key = globalkey.AnonymityUserCartList
+	// 	fmt.Println(key)
+	// } else {
+	// 	key = fmt.Sprintf(globalkey.UserCartList, in.UserId)
+	// }
+	// l.svcCtx.RedisClient.Hset(key, utils.Int64ToString(in.SkuId), utils.Int64ToString(in.Count))
 	data, _ := json.Marshal(in.SkuId)
 	l.svcCtx.RedisClient.Hset(key, string(data), utils.Int64ToString(in.Count))
 	return &product.AddCartResponse{}, nil

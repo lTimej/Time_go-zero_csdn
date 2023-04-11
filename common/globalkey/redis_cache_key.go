@@ -29,5 +29,5 @@ const (
 	ProductCategory       = "product:category"
 	ProductSkuDesc        = "product:sku:desc:%d"
 	UserCartList          = "user:cart:%s"
-	AnonymityUserCartList = "anonymity:user:cart"
+	AnonymityUserCartList = "anonymity_user_cart"
 )

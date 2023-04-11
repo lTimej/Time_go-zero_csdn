@@ -26,10 +26,12 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		header := r.Header.Get("Authorization")
 		fmt.Println("header:::::", header)
 		if !strings.HasPrefix(header, "Bearer") {
+			fmt.Println("没有header!!!!!!!!")
 			return
 		}
 		token := strings.Split(header, " ")[1]
 		if token == "null" {
+			fmt.Println(r.URL.Path, "path============")
 			if _, ok := blackWhiteList.BlackWhiteList[r.URL.Path]; ok {
 				ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, "0")
 				r = r.WithContext(ctx)

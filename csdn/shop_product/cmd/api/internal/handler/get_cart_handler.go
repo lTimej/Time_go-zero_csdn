@@ -19,7 +19,7 @@ func GetCartHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := logic.NewGetCartLogic(r.Context(), svcCtx)
-		resp, err := l.GetCart(&req)
+		resp, err := l.GetCart(&req, r)
 		httpResp.HttpResp(w, r, resp, err)
 	}
 }

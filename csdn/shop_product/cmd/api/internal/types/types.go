@@ -92,10 +92,14 @@ type SpecLabel struct {
 	Name  string `json:"name"`
 }
 
-type GetCartResponse struct {
+type Carts struct {
 	Title        string      `json:"title"`
 	DefaultImage string      `json:"default_image"`
 	Count        int64       `json:"count"`
 	Price        float32     `json:"price"`
 	SpecLabel    []SpecLabel `json:"spec_label"`
+}
+
+type GetCartResponse struct {
+	Carts []Carts `json:"carts"`
 }

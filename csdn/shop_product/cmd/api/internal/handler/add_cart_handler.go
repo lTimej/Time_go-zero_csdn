@@ -21,7 +21,7 @@ func AddCartHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 		fmt.Println(r, "==============")
 		l := logic.NewAddCartLogic(r.Context(), svcCtx)
-		resp, err := l.AddCart(&req)
+		resp, err := l.AddCart(&req, w, r)
 		httpResp.HttpResp(w, r, resp, err)
 	}
 }
