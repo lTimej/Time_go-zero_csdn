@@ -86,8 +86,14 @@ message ProductSpuListResponse {
   repeated ProductSpuList ProductSpus = 1;
 }
 
+message SpecStruct{
+    string name = 1;
+    string count = 2;
+}
+
 message GetCartRequest{
   string user_id = 1;
+  repeated SpecStruct spec_structs = 2;
 }
 
 message SpecLabel{

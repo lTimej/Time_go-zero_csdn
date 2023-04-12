@@ -29,6 +29,7 @@ type (
 	SkuSpec                 = product.SkuSpec
 	SpecLabel               = product.SpecLabel
 	SpecList                = product.SpecList
+	SpecStruct              = product.SpecStruct
 	Specs                   = product.Specs
 	SpuDesc                 = product.SpuDesc
 	SubCategory             = product.SubCategory

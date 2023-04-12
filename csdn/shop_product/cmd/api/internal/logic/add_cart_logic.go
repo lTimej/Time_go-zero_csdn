@@ -35,18 +35,15 @@ func NewAddCartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddCartLo
 func (l *AddCartLogic) AddCart(req *types.AddCartRequest, w http.ResponseWriter, r *http.Request) (resp *types.AddCartResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	fmt.Println(user_id, "hhhhhhhh")
 	if user_id == "0" {
 		name := globalkey.AnonymityUserCartList
 		skus := make(map[string]int64)
 		rc, _ := r.Cookie(name)
-		fmt.Println(rc, "1111111111")
 		if rc != nil {
 			c := rc.Value
 			cks := strings.Split(c, "-")
 			for _, ck := range cks {
 				sku_str := strings.Split(ck, ":")
-				fmt.Println(sku_str, "======================")
 				skus[sku_str[0]] = utils.StringToInt64(sku_str[1])
 			}
 		}
@@ -69,6 +66,7 @@ func (l *AddCartLogic) AddCart(req *types.AddCartRequest, w http.ResponseWriter,
 		http.SetCookie(w, &cookie)
 		return
 	}
+	fmt.Println(user_id, "99999999999999999")
 	_, err = l.svcCtx.ProductRpc.AddCart(l.ctx, &productclient.AddCartRequest{UserId: user_id, SkuId: req.SkuId, Count: req.Count})
 	if err != nil {
 		return nil, err

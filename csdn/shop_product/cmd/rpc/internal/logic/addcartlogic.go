@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"liujun/Time_go-zero_csdn/common/globalkey"
-	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/shop_product/cmd/rpc/types/product"
 
@@ -39,6 +38,6 @@ func (l *AddCartLogic) AddCart(in *product.AddCartRequest) (*product.AddCartResp
 	// }
 	// l.svcCtx.RedisClient.Hset(key, utils.Int64ToString(in.SkuId), utils.Int64ToString(in.Count))
 	data, _ := json.Marshal(in.SkuId)
-	l.svcCtx.RedisClient.Hset(key, string(data), utils.Int64ToString(in.Count))
+	l.svcCtx.RedisClient.Hincrby(key, string(data), int(in.Count))
 	return &product.AddCartResponse{}, nil
 }

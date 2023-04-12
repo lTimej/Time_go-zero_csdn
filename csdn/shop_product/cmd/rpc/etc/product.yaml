@@ -22,4 +22,4 @@ JwtAuth:
 
 Log:
   ServiceName: product-rpc
-  Level: error
+  Level: info

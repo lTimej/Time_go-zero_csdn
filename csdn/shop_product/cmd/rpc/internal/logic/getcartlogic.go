@@ -30,10 +30,19 @@ func NewGetCartLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCartLo
 func (l *GetCartLogic) GetCart(in *product.GetCartRequest) (*product.GetCartResponse, error) {
 	// todo: add your logic here and delete this line
 	key := fmt.Sprintf(globalkey.UserCartList, in.UserId)
+	spec_structs := in.SpecStructs
 	carts, err := l.svcCtx.RedisClient.Hgetall(key)
 	if err != nil {
 		fmt.Println(err, "1111111111")
 		return nil, err
+	}
+	for _, spec_struct := range spec_structs {
+		if _, ok := carts[spec_struct.Name]; ok {
+			count := utils.StringToInt64(carts[spec_struct.Name]) + utils.StringToInt64(spec_struct.Count)
+			carts[spec_struct.Name] = utils.Int64ToString(count)
+		} else {
+			carts[spec_struct.Name] = spec_struct.Count
+		}
 	}
 	resp := new(product.GetCartResponse)
 	for key, val := range carts {

@@ -915,18 +915,74 @@ func (x *ProductSpuListResponse) GetProductSpus() []*ProductSpuList {
 	return nil
 }
 
+type SpecStruct struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name  string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Count string `protobuf:"bytes,2,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (x *SpecStruct) Reset() {
+	*x = SpecStruct{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_product_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SpecStruct) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SpecStruct) ProtoMessage() {}
+
+func (x *SpecStruct) ProtoReflect() protoreflect.Message {
+	mi := &file_product_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SpecStruct.ProtoReflect.Descriptor instead.
+func (*SpecStruct) Descriptor() ([]byte, []int) {
+	return file_product_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SpecStruct) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SpecStruct) GetCount() string {
+	if x != nil {
+		return x.Count
+	}
+	return ""
+}
+
 type GetCartRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId      string        `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	SpecStructs []*SpecStruct `protobuf:"bytes,2,rep,name=spec_structs,json=specStructs,proto3" json:"spec_structs,omitempty"`
 }
 
 func (x *GetCartRequest) Reset() {
 	*x = GetCartRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_product_proto_msgTypes[15]
+		mi := &file_product_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -939,7 +995,7 @@ func (x *GetCartRequest) String() string {
 func (*GetCartRequest) ProtoMessage() {}
 
 func (x *GetCartRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_product_proto_msgTypes[15]
+	mi := &file_product_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -952,7 +1008,7 @@ func (x *GetCartRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCartRequest.ProtoReflect.Descriptor instead.
 func (*GetCartRequest) Descriptor() ([]byte, []int) {
-	return file_product_proto_rawDescGZIP(), []int{15}
+	return file_product_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetCartRequest) GetUserId() string {
@@ -960,6 +1016,13 @@ func (x *GetCartRequest) GetUserId() string {
 		return x.UserId
 	}
 	return ""
+}
+
+func (x *GetCartRequest) GetSpecStructs() []*SpecStruct {
+	if x != nil {
+		return x.SpecStructs
+	}
+	return nil
 }
 
 type SpecLabel struct {
@@ -974,7 +1037,7 @@ type SpecLabel struct {
 func (x *SpecLabel) Reset() {
 	*x = SpecLabel{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_product_proto_msgTypes[16]
+		mi := &file_product_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -987,7 +1050,7 @@ func (x *SpecLabel) String() string {
 func (*SpecLabel) ProtoMessage() {}
 
 func (x *SpecLabel) ProtoReflect() protoreflect.Message {
-	mi := &file_product_proto_msgTypes[16]
+	mi := &file_product_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1000,7 +1063,7 @@ func (x *SpecLabel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SpecLabel.ProtoReflect.Descriptor instead.
 func (*SpecLabel) Descriptor() ([]byte, []int) {
-	return file_product_proto_rawDescGZIP(), []int{16}
+	return file_product_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *SpecLabel) GetLabel() string {
@@ -1032,7 +1095,7 @@ type Carts struct {
 func (x *Carts) Reset() {
 	*x = Carts{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_product_proto_msgTypes[17]
+		mi := &file_product_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1045,7 +1108,7 @@ func (x *Carts) String() string {
 func (*Carts) ProtoMessage() {}
 
 func (x *Carts) ProtoReflect() protoreflect.Message {
-	mi := &file_product_proto_msgTypes[17]
+	mi := &file_product_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1058,7 +1121,7 @@ func (x *Carts) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Carts.ProtoReflect.Descriptor instead.
 func (*Carts) Descriptor() ([]byte, []int) {
-	return file_product_proto_rawDescGZIP(), []int{17}
+	return file_product_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *Carts) GetTitle() string {
@@ -1107,7 +1170,7 @@ type GetCartResponse struct {
 func (x *GetCartResponse) Reset() {
 	*x = GetCartResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_product_proto_msgTypes[18]
+		mi := &file_product_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1120,7 +1183,7 @@ func (x *GetCartResponse) String() string {
 func (*GetCartResponse) ProtoMessage() {}
 
 func (x *GetCartResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_product_proto_msgTypes[18]
+	mi := &file_product_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1133,7 +1196,7 @@ func (x *GetCartResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCartResponse.ProtoReflect.Descriptor instead.
 func (*GetCartResponse) Descriptor() ([]byte, []int) {
-	return file_product_proto_rawDescGZIP(), []int{18}
+	return file_product_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetCartResponse) GetCarts() []*Carts {
@@ -1237,9 +1300,16 @@ var file_product_proto_rawDesc = []byte{
 	0x53, 0x70, 0x75, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x70, 0x72, 0x6f,
 	0x64, 0x75, 0x63, 0x74, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x53, 0x70, 0x75, 0x4c,
 	0x69, 0x73, 0x74, 0x52, 0x0b, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x53, 0x70, 0x75, 0x73,
-	0x22, 0x29, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x43, 0x61, 0x72, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x35, 0x0a, 0x09, 0x53,
+	0x22, 0x36, 0x0a, 0x0a, 0x53, 0x70, 0x65, 0x63, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x61, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x43,
+	0x61, 0x72, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65,
+	0x72, 0x49, 0x64, 0x12, 0x36, 0x0a, 0x0c, 0x73, 0x70, 0x65, 0x63, 0x5f, 0x73, 0x74, 0x72, 0x75,
+	0x63, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x64,
+	0x75, 0x63, 0x74, 0x2e, 0x53, 0x70, 0x65, 0x63, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x0b,
+	0x73, 0x70, 0x65, 0x63, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x73, 0x22, 0x35, 0x0a, 0x09, 0x53,
 	0x70, 0x65, 0x63, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65,
 	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x12,
 	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
@@ -1296,7 +1366,7 @@ func file_product_proto_rawDescGZIP() []byte {
 	return file_product_proto_rawDescData
 }
 
-var file_product_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_product_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_product_proto_goTypes = []interface{}{
 	(*ProductSpuList)(nil),          // 0: product.ProductSpuList
 	(*SubCategory)(nil),             // 1: product.SubCategory
@@ -1313,10 +1383,11 @@ var file_product_proto_goTypes = []interface{}{
 	(*ProductCategoryResponse)(nil), // 12: product.ProductCategoryResponse
 	(*ProductSpuListRequest)(nil),   // 13: product.ProductSpuListRequest
 	(*ProductSpuListResponse)(nil),  // 14: product.ProductSpuListResponse
-	(*GetCartRequest)(nil),          // 15: product.GetCartRequest
-	(*SpecLabel)(nil),               // 16: product.SpecLabel
-	(*Carts)(nil),                   // 17: product.Carts
-	(*GetCartResponse)(nil),         // 18: product.GetCartResponse
+	(*SpecStruct)(nil),              // 15: product.SpecStruct
+	(*GetCartRequest)(nil),          // 16: product.GetCartRequest
+	(*SpecLabel)(nil),               // 17: product.SpecLabel
+	(*Carts)(nil),                   // 18: product.Carts
+	(*GetCartResponse)(nil),         // 19: product.GetCartResponse
 }
 var file_product_proto_depIdxs = []int32{
 	1,  // 0: product.CategoryList.SubCategorys:type_name -> product.SubCategory
@@ -1326,23 +1397,24 @@ var file_product_proto_depIdxs = []int32{
 	6,  // 4: product.ProductDescResponse.sku_spec:type_name -> product.SkuSpec
 	2,  // 5: product.ProductCategoryResponse.Categorys:type_name -> product.CategoryList
 	0,  // 6: product.ProductSpuListResponse.ProductSpus:type_name -> product.ProductSpuList
-	16, // 7: product.Carts.spec_label:type_name -> product.SpecLabel
-	17, // 8: product.GetCartResponse.carts:type_name -> product.Carts
-	13, // 9: product.Product.ProductSpuList:input_type -> product.ProductSpuListRequest
-	11, // 10: product.Product.ProductCategory:input_type -> product.ProductCategoryRequest
-	7,  // 11: product.Product.ProductDesc:input_type -> product.ProductDescRequest
-	9,  // 12: product.Product.AddCart:input_type -> product.AddCartRequest
-	15, // 13: product.Product.GetCart:input_type -> product.GetCartRequest
-	14, // 14: product.Product.ProductSpuList:output_type -> product.ProductSpuListResponse
-	12, // 15: product.Product.ProductCategory:output_type -> product.ProductCategoryResponse
-	8,  // 16: product.Product.ProductDesc:output_type -> product.ProductDescResponse
-	10, // 17: product.Product.AddCart:output_type -> product.AddCartResponse
-	18, // 18: product.Product.GetCart:output_type -> product.GetCartResponse
-	14, // [14:19] is the sub-list for method output_type
-	9,  // [9:14] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	15, // 7: product.GetCartRequest.spec_structs:type_name -> product.SpecStruct
+	17, // 8: product.Carts.spec_label:type_name -> product.SpecLabel
+	18, // 9: product.GetCartResponse.carts:type_name -> product.Carts
+	13, // 10: product.Product.ProductSpuList:input_type -> product.ProductSpuListRequest
+	11, // 11: product.Product.ProductCategory:input_type -> product.ProductCategoryRequest
+	7,  // 12: product.Product.ProductDesc:input_type -> product.ProductDescRequest
+	9,  // 13: product.Product.AddCart:input_type -> product.AddCartRequest
+	16, // 14: product.Product.GetCart:input_type -> product.GetCartRequest
+	14, // 15: product.Product.ProductSpuList:output_type -> product.ProductSpuListResponse
+	12, // 16: product.Product.ProductCategory:output_type -> product.ProductCategoryResponse
+	8,  // 17: product.Product.ProductDesc:output_type -> product.ProductDescResponse
+	10, // 18: product.Product.AddCart:output_type -> product.AddCartResponse
+	19, // 19: product.Product.GetCart:output_type -> product.GetCartResponse
+	15, // [15:20] is the sub-list for method output_type
+	10, // [10:15] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_product_proto_init() }
@@ -1532,7 +1604,7 @@ func file_product_proto_init() {
 			}
 		}
 		file_product_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCartRequest); i {
+			switch v := v.(*SpecStruct); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1544,7 +1616,7 @@ func file_product_proto_init() {
 			}
 		}
 		file_product_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SpecLabel); i {
+			switch v := v.(*GetCartRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1556,7 +1628,7 @@ func file_product_proto_init() {
 			}
 		}
 		file_product_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Carts); i {
+			switch v := v.(*SpecLabel); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1568,6 +1640,18 @@ func file_product_proto_init() {
 			}
 		}
 		file_product_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Carts); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_product_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetCartResponse); i {
 			case 0:
 				return &v.state
@@ -1586,7 +1670,7 @@ func file_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_product_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
