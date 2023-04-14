@@ -71,3 +71,8 @@ func (s *UserServer) UserInfoEdit(ctx context.Context, in *user.UserInfoEditRequ
 	l := logic.NewUserInfoEditLogic(ctx, s.svcCtx)
 	return l.UserInfoEdit(in)
 }
+
+func (s *UserServer) UserAddress(ctx context.Context, in *user.UserAddressRequest) (*user.UserAddressResponse, error) {
+	l := logic.NewUserAddressLogic(ctx, s.svcCtx)
+	return l.UserAddress(in)
+}

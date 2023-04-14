@@ -25,6 +25,8 @@ type (
 	LoginResponse           = user.LoginResponse
 	SmsRequest              = user.SmsRequest
 	SmsResponse             = user.SmsResponse
+	UserAddressRequest      = user.UserAddressRequest
+	UserAddressResponse     = user.UserAddressResponse
 	UserCurrInfoRequest     = user.UserCurrInfoRequest
 	UserCurrInfoResponse    = user.UserCurrInfoResponse
 	UserFansListRequest     = user.UserFansListRequest
@@ -46,6 +48,7 @@ type (
 		UserFocusList(ctx context.Context, in *UserFocusListRequest, opts ...grpc.CallOption) (*UserFocusListResponse, error)
 		UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error)
 		UserInfoEdit(ctx context.Context, in *UserInfoEditRequest, opts ...grpc.CallOption) (*UserInfoEditResponse, error)
+		UserAddress(ctx context.Context, in *UserAddressRequest, opts ...grpc.CallOption) (*UserAddressResponse, error)
 	}
 
 	defaultUser struct {
@@ -107,4 +110,9 @@ func (m *defaultUser) UserFansList(ctx context.Context, in *UserFansListRequest,
 func (m *defaultUser) UserInfoEdit(ctx context.Context, in *UserInfoEditRequest, opts ...grpc.CallOption) (*UserInfoEditResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserInfoEdit(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserAddress(ctx context.Context, in *UserAddressRequest, opts ...grpc.CallOption) (*UserAddressResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserAddress(ctx, in, opts...)
 }

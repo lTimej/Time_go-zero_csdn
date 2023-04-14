@@ -115,6 +115,17 @@ type UserInfoEditResponse {
 	Areas     string `json:"areas,optional"`
 }
 
+type UserAddressRequest {
+	Receiver   string `json:"receiver"`
+	Mobile     string `json:"mobile"`
+	ProvinceId int64  `json:"province_id"`
+	CityId     int64  `json:"city_id"`
+	DistrictId int64  `json:"district_id"`
+	Place      string `json:"place"`
+}
+
+type UserAddressResponse{}
+
 service api-api {
 	@handler UserPasswordLogin
 	post /v1/user/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
@@ -144,4 +155,6 @@ service api-api {
 	get /v1/user/fans(UserFansListRequest) returns(UserFansListResponse)
 	@handler UserInfoEdit
 	patch /v1/user/curr/user(UserInfoEditRequest) returns(UserInfoEditResponse)
+	@handler UserAddress
+	post /v1/user/add/address(UserAddressRequest) returns(UserAddressResponse)
 }

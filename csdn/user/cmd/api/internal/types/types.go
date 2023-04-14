@@ -123,3 +123,15 @@ type UserInfoEditResponse struct {
 	Birthday  string `json:"birthday,optional"`
 	Areas     string `json:"areas,optional"`
 }
+
+type UserAddressRequest struct {
+	Receiver   string `json:"receiver"`
+	Mobile     string `json:"mobile"`
+	ProvinceId int64  `json:"province_id"`
+	CityId     int64  `json:"city_id"`
+	DistrictId int64  `json:"district_id"`
+	Place      string `json:"place"`
+}
+
+type UserAddressResponse struct {
+}

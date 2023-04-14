@@ -145,14 +145,15 @@ CREATE TABLE `address` (
   `mobile` varchar(11) DEFAULT NULL COMMENT '手机',
   `tel` varchar(20) DEFAULT NULL COMMENT '固定电话',
   `email` varchar(30) DEFAULT NULL COMMENT '电子邮箱',
+  `is_default` tinyint(1)  COMMENT '默认地址',
   `is_deleted` tinyint(1)  COMMENT '逻辑删除',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `province_id` (`province_id`),
   KEY `city_id` (`city_id`),
-  KEY `district_id` (`district_id`)
---   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user_basic` (`user_id`) ON DELETE CASCADE,
---   CONSTRAINT `province_id` FOREIGN KEY (`province_id`) REFERENCES `city` (`id`) ON DELETE CASCADE,
---   CONSTRAINT `city_id` FOREIGN KEY (`city_id`) REFERENCES `city` (`id`) ON DELETE CASCADE,
---   CONSTRAINT `district_id` FOREIGN KEY (`district_id`) REFERENCES `city` (`id`) ON DELETE CASCADE
+  KEY `district_id` (`district_id`),
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user_basic` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `province_id` FOREIGN KEY (`province_id`) REFERENCES `city` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `city_id` FOREIGN KEY (`city_id`) REFERENCES `city` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `district_id` FOREIGN KEY (`district_id`) REFERENCES `city` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户地址';

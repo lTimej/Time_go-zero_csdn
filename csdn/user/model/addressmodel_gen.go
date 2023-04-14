@@ -38,18 +38,18 @@ type (
 	}
 
 	Address struct {
-		Id         int64          `db:"id"`
-		UserId     string         `db:"user_id"`     // 用户id
-		Title      sql.NullString `db:"title"`       // 地址名称
-		Receiver   string         `db:"receiver"`    // 收货人
-		ProvinceId int64          `db:"province_id"` // 省
-		CityId     int64          `db:"city_id"`     // 市
-		DistrictId int64          `db:"district_id"` // 区/县
-		Place      string         `db:"place"`       // 地址
-		Mobile     sql.NullString `db:"mobile"`      // 手机
-		Tel        sql.NullString `db:"tel"`         // 固定电话
-		Email      sql.NullString `db:"email"`       // 电子邮箱
-		IsDeleted  sql.NullInt64  `db:"is_deleted"`  // 逻辑删除
+		Id         int64  `db:"id"`
+		UserId     string `db:"user_id"`     // 用户id
+		Title      string `db:"title"`       // 地址名称
+		Receiver   string `db:"receiver"`    // 收货人
+		ProvinceId int64  `db:"province_id"` // 省
+		CityId     int64  `db:"city_id"`     // 市
+		DistrictId int64  `db:"district_id"` // 区/县
+		Place      string `db:"place"`       // 地址
+		Mobile     string `db:"mobile"`      // 手机
+		Tel        string `db:"tel"`         // 固定电话
+		Email      string `db:"email"`       // 电子邮箱
+		IsDeleted  int64  `db:"is_deleted"`  // 逻辑删除
 	}
 )
 
