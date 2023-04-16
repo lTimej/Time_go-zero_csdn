@@ -106,7 +106,8 @@ message Carts{
 	string default_image = 2;
 	int64 count = 3;
 	float price = 4;
-	repeated SpecLabel spec_label = 5;
+  int64 SkuId = 5;
+	repeated SpecLabel spec_label = 6;
 }
 
 message GetCartResponse{

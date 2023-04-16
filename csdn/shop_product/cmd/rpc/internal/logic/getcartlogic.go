@@ -31,6 +31,7 @@ func (l *GetCartLogic) GetCart(in *product.GetCartRequest) (*product.GetCartResp
 	// todo: add your logic here and delete this line
 	key := fmt.Sprintf(globalkey.UserCartList, in.UserId)
 	spec_structs := in.SpecStructs
+	fmt.Println(spec_structs, "=========================")
 	carts, err := l.svcCtx.RedisClient.Hgetall(key)
 	if err != nil {
 		fmt.Println(err, "1111111111")
@@ -49,16 +50,19 @@ func (l *GetCartLogic) GetCart(in *product.GetCartRequest) (*product.GetCartResp
 		cart_obj := product.Carts{}
 		var sku_ids []int64
 		json.Unmarshal([]byte(key), &sku_ids)
-		for _, sku_id := range sku_ids {
+		for index, sku_id := range sku_ids {
 			builderByskuId := l.svcCtx.ProductSkuModel.BuilderBySkuId()
 			cart_info, err := l.svcCtx.ProductSkuModel.FindOneSkuInfoBySkuId(l.ctx, builderByskuId, sku_id)
 			if err != nil {
 				fmt.Println(err, "2222222222")
 				return nil, err
 			}
-			cart_obj.DefaultImage = cart_info.DefaultImage
-			cart_obj.Price = cart_info.Price
-			cart_obj.Title = cart_info.Title
+			if index == 0 {
+				cart_obj.SkuId = sku_id
+				cart_obj.DefaultImage = cart_info.DefaultImage
+				cart_obj.Price = cart_info.Price
+				cart_obj.Title = cart_info.Title
+			}
 			cart_obj.SpecLabel = append(cart_obj.SpecLabel, &product.SpecLabel{
 				Name:  cart_info.Name,
 				Label: cart_info.Label,

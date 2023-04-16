@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/common/globalkey"
 	"liujun/Time_go-zero_csdn/common/utils"
@@ -62,11 +61,18 @@ func (l *AddCartLogic) AddCart(req *types.AddCartRequest, w http.ResponseWriter,
 		}
 		value = value[:len(value)-1]
 		expire := time.Now().Add(time.Duration(l.svcCtx.Config.JwtAuth.AccessExpire) * time.Second)
-		cookie := http.Cookie{Name: name, Value: value, Expires: expire}
+		cookie := http.Cookie{
+			Name:     name,
+			Value:    value,
+			Expires:  expire,
+			Path:     "/",
+			Domain:   "172.20.16.20",
+			Secure:   false,
+			HttpOnly: true,
+		}
 		http.SetCookie(w, &cookie)
 		return
 	}
-	fmt.Println(user_id, "99999999999999999")
 	_, err = l.svcCtx.ProductRpc.AddCart(l.ctx, &productclient.AddCartRequest{UserId: user_id, SkuId: req.SkuId, Count: req.Count})
 	if err != nil {
 		return nil, err

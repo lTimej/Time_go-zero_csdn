@@ -97,6 +97,7 @@ type Carts struct {
 	DefaultImage string      `json:"default_image"`
 	Count        int64       `json:"count"`
 	Price        float32     `json:"price"`
+	SkuId        int64       `json:"sku_id"`
 	SpecLabel    []SpecLabel `json:"spec_label"`
 }
 
