@@ -71,8 +71,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/v1/user/add/address",
+					Path:    "/v1/user/address",
 					Handler: UserAddressHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPatch,
+					Path:    "/v1/user/address",
+					Handler: UpdateUserAddressHandler(serverCtx),
 				},
 			}...,
 		),

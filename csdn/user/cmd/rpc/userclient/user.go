@@ -13,29 +13,31 @@ import (
 )
 
 type (
-	CancelFocusUserRequest  = user.CancelFocusUserRequest
-	CancelFocusUserResponse = user.CancelFocusUserResponse
-	FocusUserRequest        = user.FocusUserRequest
-	FocusUserResponse       = user.FocusUserResponse
-	GenerateTokenRequest    = user.GenerateTokenRequest
-	GenerateTokenResponse   = user.GenerateTokenResponse
-	IsFocusUserRequest      = user.IsFocusUserRequest
-	IsFocusUserResponse     = user.IsFocusUserResponse
-	LoginRequest            = user.LoginRequest
-	LoginResponse           = user.LoginResponse
-	SmsRequest              = user.SmsRequest
-	SmsResponse             = user.SmsResponse
-	UserAddressRequest      = user.UserAddressRequest
-	UserAddressResponse     = user.UserAddressResponse
-	UserCurrInfoRequest     = user.UserCurrInfoRequest
-	UserCurrInfoResponse    = user.UserCurrInfoResponse
-	UserFansListRequest     = user.UserFansListRequest
-	UserFansListResponse    = user.UserFansListResponse
-	UserFocus               = user.UserFocus
-	UserFocusListRequest    = user.UserFocusListRequest
-	UserFocusListResponse   = user.UserFocusListResponse
-	UserInfoEditRequest     = user.UserInfoEditRequest
-	UserInfoEditResponse    = user.UserInfoEditResponse
+	CancelFocusUserRequest    = user.CancelFocusUserRequest
+	CancelFocusUserResponse   = user.CancelFocusUserResponse
+	FocusUserRequest          = user.FocusUserRequest
+	FocusUserResponse         = user.FocusUserResponse
+	GenerateTokenRequest      = user.GenerateTokenRequest
+	GenerateTokenResponse     = user.GenerateTokenResponse
+	IsFocusUserRequest        = user.IsFocusUserRequest
+	IsFocusUserResponse       = user.IsFocusUserResponse
+	LoginRequest              = user.LoginRequest
+	LoginResponse             = user.LoginResponse
+	SmsRequest                = user.SmsRequest
+	SmsResponse               = user.SmsResponse
+	UpdateUserAddressRequest  = user.UpdateUserAddressRequest
+	UpdateUserAddressResponse = user.UpdateUserAddressResponse
+	UserAddressRequest        = user.UserAddressRequest
+	UserAddressResponse       = user.UserAddressResponse
+	UserCurrInfoRequest       = user.UserCurrInfoRequest
+	UserCurrInfoResponse      = user.UserCurrInfoResponse
+	UserFansListRequest       = user.UserFansListRequest
+	UserFansListResponse      = user.UserFansListResponse
+	UserFocus                 = user.UserFocus
+	UserFocusListRequest      = user.UserFocusListRequest
+	UserFocusListResponse     = user.UserFocusListResponse
+	UserInfoEditRequest       = user.UserInfoEditRequest
+	UserInfoEditResponse      = user.UserInfoEditResponse
 
 	User interface {
 		UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
@@ -49,6 +51,7 @@ type (
 		UserFansList(ctx context.Context, in *UserFansListRequest, opts ...grpc.CallOption) (*UserFansListResponse, error)
 		UserInfoEdit(ctx context.Context, in *UserInfoEditRequest, opts ...grpc.CallOption) (*UserInfoEditResponse, error)
 		UserAddress(ctx context.Context, in *UserAddressRequest, opts ...grpc.CallOption) (*UserAddressResponse, error)
+		UserUpdateAddress(ctx context.Context, in *UpdateUserAddressRequest, opts ...grpc.CallOption) (*UpdateUserAddressResponse, error)
 	}
 
 	defaultUser struct {
@@ -115,4 +118,9 @@ func (m *defaultUser) UserInfoEdit(ctx context.Context, in *UserInfoEditRequest,
 func (m *defaultUser) UserAddress(ctx context.Context, in *UserAddressRequest, opts ...grpc.CallOption) (*UserAddressResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserAddress(ctx, in, opts...)
+}
+
+func (m *defaultUser) UserUpdateAddress(ctx context.Context, in *UpdateUserAddressRequest, opts ...grpc.CallOption) (*UpdateUserAddressResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.UserUpdateAddress(ctx, in, opts...)
 }
