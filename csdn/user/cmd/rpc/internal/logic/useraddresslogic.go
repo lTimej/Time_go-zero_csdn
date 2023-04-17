@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
@@ -38,6 +39,7 @@ func (l *UserAddressLogic) UserAddress(in *user.UserAddressRequest) (*user.UserA
 
 	_, err := l.svcCtx.UserAddressModel.Insert(l.ctx, address)
 	if err != nil {
+		fmt.Println(err, "!!!!!!!!!!!")
 		return nil, err
 	}
 	return &user.UserAddressResponse{}, nil

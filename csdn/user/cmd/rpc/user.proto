@@ -153,6 +153,25 @@ message UpdateUserAddressRequest{
 }
 message UpdateUserAddressResponse{}
 
+message UserAddress{
+  int64 address_id = 1;
+  string receiver = 2;
+  string mobile = 3;
+  int64 province_id = 4;
+  int64 city_id = 5;
+  int64 district_id = 6;
+  string province = 7;
+  string city = 8;
+  string district = 9;
+  string place = 10;
+}
+
+message GetUserAddressRequest{
+    string user_id = 1;
+}
+message GetUserAddressResponse{
+    repeated UserAddress UserAddress = 1;
+}
 
 service User {
   rpc UserLogin(LoginRequest) returns(LoginResponse);
@@ -167,4 +186,5 @@ service User {
   rpc UserInfoEdit(UserInfoEditRequest) returns(UserInfoEditResponse);
   rpc UserAddress(UserAddressRequest) returns(UserAddressResponse);
   rpc UserUpdateAddress(UpdateUserAddressRequest) returns(UpdateUserAddressResponse);
+  rpc UserGetAddress(GetUserAddressRequest) returns(GetUserAddressResponse);
 }

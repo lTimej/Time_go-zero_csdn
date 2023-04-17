@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/userclient"
 
@@ -28,6 +29,7 @@ func NewUserAddressLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserA
 func (l *UserAddressLogic) UserAddress(req *types.UserAddressRequest) (resp *types.UserAddressResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
+	fmt.Println(user_id, "@@@@@@@@@@@@@@")
 	_, err = l.svcCtx.UserRpc.UserAddress(l.ctx, &userclient.UserAddressRequest{
 		UserId:     user_id,
 		Receiver:   req.Receiver,

@@ -81,3 +81,8 @@ func (s *UserServer) UserUpdateAddress(ctx context.Context, in *user.UpdateUserA
 	l := logic.NewUserUpdateAddressLogic(ctx, s.svcCtx)
 	return l.UserUpdateAddress(in)
 }
+
+func (s *UserServer) UserGetAddress(ctx context.Context, in *user.GetUserAddressRequest) (*user.GetUserAddressResponse, error) {
+	l := logic.NewUserGetAddressLogic(ctx, s.svcCtx)
+	return l.UserGetAddress(in)
+}

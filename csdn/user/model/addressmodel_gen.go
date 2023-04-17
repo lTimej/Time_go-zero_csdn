@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -19,15 +20,17 @@ var (
 	addressFieldNames          = builder.RawFieldNames(&Address{})
 	addressRows                = strings.Join(addressFieldNames, ",")
 	addressRowsExpectAutoSet   = strings.Join(stringx.Remove(addressFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
-	addressRowsWithPlaceHolder = strings.Join(stringx.Remove(addressFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	addressRowsWithPlaceHolder = strings.Join(stringx.Remove(addressFieldNames, "`id`", "`user_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
 	cacheAddressIdPrefix = "cache:address:id:"
 )
 
 type (
 	addressModel interface {
+		AddressBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *Address) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Address, error)
+		FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*UserAddress, error)
 		Update(ctx context.Context, data *Address) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -50,6 +53,18 @@ type (
 		Tel        string `db:"tel"`         // 固定电话
 		Email      string `db:"email"`       // 电子邮箱
 		IsDeleted  int64  `db:"is_deleted"`  // 逻辑删除
+	}
+	UserAddress struct {
+		AddressId  int64  `db:"address_id"`
+		Receiver   string `db:"receiver"`
+		Mobile     string `db:"mobile"`
+		ProvinceId int64  `db:"province_id"`
+		CityId     int64  `db:"city_id"`
+		DistrictId int64  `db:"district_id"`
+		Province   string `db:"province"`
+		City       string `db:"city"`
+		District   string `db:"district"`
+		Place      string `db:"place"`
 	}
 )
 
@@ -86,6 +101,23 @@ func (m *defaultAddressModel) FindOne(ctx context.Context, id int64) (*Address, 
 	}
 }
 
+func (m *defaultAddressModel) FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*UserAddress, error) {
+	query, values, err := builder.Join("city as c1,city as c2,city as c3 where address.province_id=c1.id and address.city_id=c2.id and address.district_id=c3.id").ToSql()
+	query = fmt.Sprintf("%s and address.user_id = %s", query, user_id)
+	fmt.Println(query, "********************")
+	if err != nil {
+		return nil, err
+	}
+	var resp []*UserAddress
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultAddressModel) Insert(ctx context.Context, data *Address) (sql.Result, error) {
 	addressIdKey := fmt.Sprintf("%s%v", cacheAddressIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -99,7 +131,7 @@ func (m *defaultAddressModel) Update(ctx context.Context, data *Address) error {
 	addressIdKey := fmt.Sprintf("%s%v", cacheAddressIdPrefix, data.Id)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, addressRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Receiver, data.ProvinceId, data.CityId, data.DistrictId, data.Place, data.Mobile, data.Tel, data.Email, data.IsDeleted, data.Id)
+		return conn.ExecCtx(ctx, query, data.Title, data.Receiver, data.ProvinceId, data.CityId, data.DistrictId, data.Place, data.Mobile, data.Tel, data.Email, data.IsDeleted, data.Id)
 	}, addressIdKey)
 	return err
 }
@@ -115,4 +147,8 @@ func (m *defaultAddressModel) queryPrimary(ctx context.Context, conn sqlx.SqlCon
 
 func (m *defaultAddressModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultAddressModel) AddressBuilder() squirrel.SelectBuilder {
+	return squirrel.Select("address.place,address.id as address_id,c1.name as province,c2.name as city,c3.name as district,address.receiver,address.province_id,address.city_id,address.district_id, address.mobile").From(m.table)
 }

@@ -148,3 +148,23 @@ type UpdateUserAddressRequest struct {
 
 type UpdateUserAddressResponse struct {
 }
+
+type UserAddress struct {
+	AddressId  int64  `json:"address_id"`
+	Receiver   string `json:"receiver"`
+	Mobile     string `json:"mobile"`
+	ProvinceId int64  `json:"province_id"`
+	CityId     int64  `json:"city_id"`
+	DistrictId int64  `json:"district_id"`
+	Province   string `json:"province"`
+	City       string `json:"city"`
+	District   string `json:"district"`
+	Place      string `json:"place"`
+}
+
+type GetUserAddressRequest struct {
+}
+
+type GetUserAddressResponse struct {
+	UserAddress []*UserAddress `json:"user_address"`
+}

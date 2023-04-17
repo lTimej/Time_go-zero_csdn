@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
@@ -38,6 +39,7 @@ func (l *UserUpdateAddressLogic) UserUpdateAddress(in *user.UpdateUserAddressReq
 	}
 	addr, err := l.svcCtx.UserAddressModel.FindOne(l.ctx, in.AddressId)
 	if err != nil {
+		fmt.Println(err, "#################")
 		return nil, err
 	}
 	if addr == nil {
