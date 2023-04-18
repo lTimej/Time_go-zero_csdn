@@ -1,0 +1,30 @@
+type Sku {
+	SkuId  int64  `json:"sku_id"`
+	SpecId string `json:"spec_id"`
+	Specs  string `json:"specs"`
+}
+
+type OrderCreateRequest {
+	AddressId  int64   `json:"address_id"`
+	UserId     string  `json:"user_id"`
+	TotalCount int64   `json:"total_count"`
+	TotalPrice float32 `json:"total_price"`
+	Freight    float32 `json:"freight"`
+	Version    int64   `json:"version"`
+	Sn         string  `json:"sn"`
+	Sku        []Sku   `json:"sku"`
+}
+
+type OrderCreateResponse {
+	Sn string `json:"sn"`
+}
+
+@server (
+	// jwt: JwtAuth
+	middleware: SetUidToCtxMiddleware
+)
+
+service api-api {
+	@handler OrderCreate
+	post /v1/order/add(OrderCreateRequest) returns (OrderCreateResponse)
+}

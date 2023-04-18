@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package order;
+option go_package = "./order";
+
+message Sku{
+    int64 sku_id = 6;
+    string spec_id = 7;
+    string specs = 8;
+}
+
+message OrderCreateRequest{
+    int64 address_id = 1;
+    string user_id = 2;
+    int64 total_count = 3;
+    float total_price = 4;
+    float freight = 5;
+    int64 version = 6;
+    string sn = 7;
+    repeated Sku sku = 8;
+}
+
+message OrderCreateResponse{
+    string sn = 1;
+}
+
+service Order {
+  rpc OrderCreate(OrderCreateRequest) returns (OrderCreateResponse);
+}

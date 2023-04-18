@@ -1,11 +1,12 @@
 Name: api-api
 Host: 0.0.0.0
-Port: 8891
-ProductRpc:
+Port: 8893
+
+OrderRpc:
   Etcd:
     Hosts:
       - 172.20.16.20:12379
-    Key: product.rpc
+    Key: order.rpc
 JwtAuth:
   AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
   AccessExpire: 31536000
