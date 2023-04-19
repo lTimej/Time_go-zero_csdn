@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  myapp:
+    image: app:v1
+    container_name: mycsdn
+    restart: unless-stopped
+    privileged: true
+    ports:
+     # - "0.0.0.0:8888:8888"  #user
+      - "0.0.0.0:8893:8893"  #order
+      - "0.0.0.0:8889:8889"  #article
+      - "0.0.0.0:8890:8890"  #im
+      - "0.0.0.0:8891:8891"  #product
+      - "0.0.0.0:8895:8895"  #city
