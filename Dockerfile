@@ -23,6 +23,9 @@ RUN go build -o /data/server/im-rpc  -v csdn/im/cmd/rpc/im.go
 RUN go build -o /data/server/im-api  -v csdn/im/cmd/api/api.go
 RUN go build -o /data/server/product-rpc  -v csdn/shop_product/cmd/rpc/product.go
 RUN go build -o /data/server/product-api  -v csdn/shop_product/cmd/api/api.go
+RUN go build -o /data/server/order-rpc  -v csdn/order/cmd/rpc/order.go
+RUN go build -o /data/server/order-api  -v csdn/order/cmd/api/api.go
+RUN go build -o /data/server/city-api  -v csdn/city/cmd/api/api.go
 
 COPY csdn/user/cmd/rpc/etc/user.yaml /etc/user/user.yaml
 COPY csdn/user/cmd/api/etc/api-api.yaml /etc/user/api-api.yaml
@@ -32,6 +35,9 @@ COPY csdn/im/cmd/rpc/etc/im.yaml /etc/im/im.yaml
 COPY csdn/im/cmd/api/etc/api-api.yaml /etc/im/api-api.yaml
 COPY csdn/shop_product/cmd/rpc/etc/product.yaml /etc/product/product.yaml
 COPY csdn/shop_product/cmd/api/etc/api-api.yaml /etc/product/api-api.yaml
+COPY csdn/order/cmd/rpc/etc/order.yaml /etc/order/order.yaml
+COPY csdn/order/cmd/api/etc/api-api.yaml /etc/order/api-api.yaml
+COPY csdn/city/cmd/api/etc/api-api.yaml /etc/city/api-api.yaml
 
 COPY modd.conf /modd.conf
 COPY modd /modd
