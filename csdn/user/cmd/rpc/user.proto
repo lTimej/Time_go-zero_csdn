@@ -139,6 +139,7 @@ message UserAddressRequest{
     int64 city_id = 5;
     int64 district_id = 6;
     string place = 7;
+    string email = 8;
 }
 message UserAddressResponse{}
 
