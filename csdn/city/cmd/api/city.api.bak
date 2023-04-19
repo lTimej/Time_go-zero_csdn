@@ -1,0 +1,52 @@
+type CityInfo {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+	Pid  int64  `json:"pid"`
+}
+
+type CityPid {
+	Pid []CityInfo `json:"pid"`
+}
+
+type  ChinaMapRequest{}
+
+type ChinaMapResponse {
+	Province CityPid `json:"province"`
+	City     CityPid `json:"city"`
+	District CityPid `json:"district"`
+}
+
+type ProvinceRequest {
+	Pid int64 `json:"pid"`
+}
+
+type ProvinceResponse {
+	Province []CityInfo `json:"province"`
+}
+
+type CityRequest {
+	Pid int64 `json:"pid"`
+}
+
+type CityResponse {
+	City []CityInfo `json:"city"`
+}
+
+type DistrictRequest {
+	Pid int64 `json:"pid"`
+}
+
+type DistrictResponse {
+	District []CityInfo `json:"district"`
+}
+
+service api-api {
+	@handler ChinaMapList
+	get /v1/city/china/map(ChinaMapRequest) returns (ChinaMapResponse)
+	@handler ProvinceList
+	get /v1/city/province(ProvinceRequest) returns (ProvinceResponse)
+	@handler CityList
+	get /v1/city/city(CityRequest) returns (CityResponse)
+	@handler DistrictList
+	get /v1/city/district(DistrictRequest) returns (DistrictResponse)
+}

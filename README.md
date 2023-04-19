@@ -24,6 +24,11 @@ goctl model mysql ddl -src="./sql/article.sql" -dir="./csdn/channel/model" -c
 goctl model mysql ddl -src="./sql/im.sql" -dir="./csdn/im/model" -c
 goctl model mysql ddl -src="./sql/shop_product.sql" -dir="./csdn/shop_product/model" -c
 goctl model mysql ddl -src="./sql/order.sql" -dir="./csdn/order/model" -c
+goctl model mysql ddl -src="./sql/city.sql" -dir="./csdn/city/model" -c
+
+# 单体服务
+goctl api go -api city.api -dir . -style go_zero
+
 ### user.proto
 syntax = "proto3";
 

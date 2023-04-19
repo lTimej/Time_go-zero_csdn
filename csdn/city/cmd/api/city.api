@@ -1,0 +1,32 @@
+type CityInfo {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+	Pid  int64  `json:"pid"`
+}
+
+type CityPid {
+	Pid []CityInfo `json:"pid"`
+}
+
+type  ChinaMapRequest{}
+
+type ChinaMapResponse {
+	Province CityPid `json:"province"`
+	City     CityPid `json:"city"`
+	District CityPid `json:"district"`
+}
+
+type CityRequest {
+	Pid int64 `json:"pid,optional"`
+}
+
+type CityResponse {
+	City []CityInfo `json:"city"`
+}
+
+service api-api {
+	@handler ChinaMapList
+	get /v1/city/china/map(ChinaMapRequest) returns (ChinaMapResponse)
+	@handler CityList
+	get /v1/city/city(CityRequest) returns (CityResponse)
+}

@@ -31,3 +31,9 @@ const (
 	UserCartList          = "user:cart:%s"
 	AnonymityUserCartList = "anonymity_user_cart"
 )
+
+const (
+	CityByPid = "city:pid:%d"
+        ChinaMap = "china:map"
+
+)
