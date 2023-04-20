@@ -131,6 +131,7 @@ type UserAddressRequest struct {
 	CityId     int64  `json:"city_id"`
 	DistrictId int64  `json:"district_id"`
 	Place      string `json:"place"`
+	Email      string `json:"email"`
 }
 
 type UserAddressResponse struct {

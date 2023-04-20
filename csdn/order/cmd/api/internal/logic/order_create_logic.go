@@ -5,6 +5,8 @@ import (
 	"liujun/Time_go-zero_csdn/common/ctxdata"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/orderclient"
 
+	"github.com/jinzhu/copier"
+
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/api/internal/types"
 
@@ -28,6 +30,8 @@ func NewOrderCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Order
 func (l *OrderCreateLogic) OrderCreate(req *types.OrderCreateRequest) (resp *types.OrderCreateResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
+	var sku []*orderclient.Sku
+	copier.Copy(&sku, req.Sku)
 	data, err := l.svcCtx.OrderRpc.OrderCreate(l.ctx, &orderclient.OrderCreateRequest{
 		UserId:     user_id,
 		AddressId:  req.AddressId,
@@ -36,6 +40,7 @@ func (l *OrderCreateLogic) OrderCreate(req *types.OrderCreateRequest) (resp *typ
 		Freight:    req.Freight,
 		Version:    req.Version,
 		Sn:         req.Sn,
+		Sku:        sku,
 	})
 	if err != nil {
 		return nil, err

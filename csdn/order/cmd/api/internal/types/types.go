@@ -5,11 +5,11 @@ type Sku struct {
 	SkuId  int64  `json:"sku_id"`
 	SpecId string `json:"spec_id"`
 	Specs  string `json:"specs"`
+	Count  int64  `json:"count"`
 }
 
 type OrderCreateRequest struct {
 	AddressId  int64   `json:"address_id"`
-	UserId     string  `json:"user_id"`
 	TotalCount int64   `json:"total_count"`
 	TotalPrice float32 `json:"total_price"`
 	Freight    float32 `json:"freight"`
@@ -20,4 +20,24 @@ type OrderCreateRequest struct {
 
 type OrderCreateResponse struct {
 	Sn string `json:"sn"`
+}
+
+type OrderGetRequest struct {
+}
+
+type Orders struct {
+	Title        string  `json:"title"`
+	DefaultImage string  `json:"default_image"`
+	Price        float32 `json:"price"`
+	Count        int64   `json:"count"`
+	Sn           string  `json:"sn"`
+	Freight      float32 `json:"freight"`
+	SkuId        int64   `json:"sku_id"`
+	SpecId       string  `json:"spec_id"`
+	Specs        string  `json:"specs"`
+	OrderId      int64   `json:"order_id"`
+}
+
+type OrderGetResponse struct {
+	Orders []Orders `json:"orders"`
 }

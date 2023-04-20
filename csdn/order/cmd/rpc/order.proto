@@ -4,9 +4,10 @@ package order;
 option go_package = "./order";
 
 message Sku{
-    int64 sku_id = 6;
-    string spec_id = 7;
-    string specs = 8;
+    int64 sku_id = 1;
+    string spec_id = 2;
+    string specs = 3;
+    int64 count = 4;
 }
 
 message OrderCreateRequest{
@@ -24,6 +25,28 @@ message OrderCreateResponse{
     string sn = 1;
 }
 
+message OrderGetRequest{
+    string user_id = 1;
+}
+
+message Orders{
+  string title = 1;
+  string default_image = 2;
+  float price = 3;
+  int64 count = 4;
+  string sn = 5;
+  float freight = 6;
+  int64 sku_id = 7;
+  string spec_id = 8;
+  string specs = 9;
+  int64 order_id = 10;
+}
+
+message OrderGetResponse{
+  repeated Orders orders = 1;
+}
+
 service Order {
   rpc OrderCreate(OrderCreateRequest) returns (OrderCreateResponse);
+  rpc OrderGet(OrderGetRequest) returns (OrderGetResponse);
 }

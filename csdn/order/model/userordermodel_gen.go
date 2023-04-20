@@ -44,6 +44,7 @@ type (
 		SkuId       int64     `db:"sku_id"`       // 商品id
 		SpecId      string    `db:"spec_id"`      // 商品属性id;"1,2"
 		Specs       string    `db:"specs"`        // 商品属性
+		Count       int64     `db:"count"`        //商品个数
 		Comment     string    `db:"comment"`      // 商品评价
 		Score       int64     `db:"score"`        // 商品评分
 		CreateTime  time.Time `db:"create_time"`  // 支付创建时间
@@ -89,8 +90,8 @@ func (m *defaultUserOrderModel) FindOne(ctx context.Context, id int64) (*UserOrd
 func (m *defaultUserOrderModel) Insert(ctx context.Context, data *UserOrder) (sql.Result, error) {
 	userOrderIdKey := fmt.Sprintf("%s%v", cacheUserOrderIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, userOrderRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.OrderId, data.SkuId, data.SpecId, data.Specs, data.Comment, data.Score, data.IsAnonymous, data.IsCommented)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?,?)", m.table, userOrderRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.OrderId, data.SkuId, data.SpecId, data.Specs, data.Count, data.Comment, data.Score, data.IsAnonymous, data.IsCommented)
 	}, userOrderIdKey)
 	return ret, err
 }

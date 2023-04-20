@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
+
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -28,9 +30,11 @@ var (
 
 type (
 	orderModel interface {
+		Builder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *Order) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Order, error)
 		FindOneBySn(ctx context.Context, sn string) (*Order, error)
+		FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*OrderInfo, error)
 		Update(ctx context.Context, data *Order) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -54,12 +58,24 @@ type (
 		UpdateTime time.Time `db:"update_time"` // 支付修改时间
 		IsDeleted  int64     `db:"is_deleted"`  // 逻辑删除
 	}
+	OrderInfo struct {
+		Title        string  `db:"title"`
+		DefaultImage string  `db:"default_image"`
+		Price        float32 `db:"price"`
+		Count        int64   `db:"count"`
+		Sn           string  `db:"sn"`
+		Freight      float32 `db:"freight"`
+		SkuId        int64   `db:"sku_id"`
+		SpecId       string  `db:"spec_id"`
+		Specs        string  `db:"specs"`
+		OrderId      int64   `db:"order_id"`
+	}
 )
 
 func newOrderModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultOrderModel {
 	return &defaultOrderModel{
 		CachedConn: sqlc.NewConn(conn, c),
-		table:      "`order`",
+		table:      "`orders`",
 	}
 }
 
@@ -106,12 +122,29 @@ func (m *defaultOrderModel) FindOneBySn(ctx context.Context, sn string) (*Order,
 	}
 }
 
+func (m *defaultOrderModel) FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*OrderInfo, error) {
+	query, values, err := builder.Join("user_order,tb_sku where user_order.sku_id=tb_sku.id and orders.id=user_order.order_id").ToSql()
+	query = fmt.Sprintf("%s and user_id = %s", query, user_id)
+	if err != nil {
+		return nil, err
+	}
+	var resp []*OrderInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultOrderModel) Insert(ctx context.Context, data *Order) (sql.Result, error) {
 	orderIdKey := fmt.Sprintf("%s%v", cacheOrderIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, orderRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.AddressId, data.TotalCount, data.TotalPrice, data.Freight, data.Version, data.Sn, data.PayStatus, data.IsDeleted)
+		return conn.ExecCtx(ctx, query, data.UserId, data.AddressId, data.TotalCount, data.TotalPrice, data.Freight, data.Version, data.Sn)
 	}, orderIdKey)
+	fmt.Println(ret, err, "***************&&&&&&&&&&&")
 	return ret, err
 }
 
@@ -135,4 +168,8 @@ func (m *defaultOrderModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn,
 
 func (m *defaultOrderModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultOrderModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select("(orders.freight + tb_sku.price) as price, tb_sku.title,tb_sku.default_image, orders.id as order_id,user_order.sku_id,user_order.spec_id,user_order.specs,user_order.count,orders.sn,orders.freight").From(m.table)
 }

@@ -26,3 +26,8 @@ func (s *OrderServer) OrderCreate(ctx context.Context, in *order.OrderCreateRequ
 	l := logic.NewOrderCreateLogic(ctx, s.svcCtx)
 	return l.OrderCreate(in)
 }
+
+func (s *OrderServer) OrderGet(ctx context.Context, in *order.OrderGetRequest) (*order.OrderGetResponse, error) {
+	l := logic.NewOrderGetLogic(ctx, s.svcCtx)
+	return l.OrderGet(in)
+}

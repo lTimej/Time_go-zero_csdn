@@ -15,10 +15,14 @@ import (
 type (
 	OrderCreateRequest  = order.OrderCreateRequest
 	OrderCreateResponse = order.OrderCreateResponse
+	OrderGetRequest     = order.OrderGetRequest
+	OrderGetResponse    = order.OrderGetResponse
+	Orders              = order.Orders
 	Sku                 = order.Sku
 
 	Order interface {
 		OrderCreate(ctx context.Context, in *OrderCreateRequest, opts ...grpc.CallOption) (*OrderCreateResponse, error)
+		OrderGet(ctx context.Context, in *OrderGetRequest, opts ...grpc.CallOption) (*OrderGetResponse, error)
 	}
 
 	defaultOrder struct {
@@ -35,4 +39,9 @@ func NewOrder(cli zrpc.Client) Order {
 func (m *defaultOrder) OrderCreate(ctx context.Context, in *OrderCreateRequest, opts ...grpc.CallOption) (*OrderCreateResponse, error) {
 	client := order.NewOrderClient(m.cli.Conn())
 	return client.OrderCreate(ctx, in, opts...)
+}
+
+func (m *defaultOrder) OrderGet(ctx context.Context, in *OrderGetRequest, opts ...grpc.CallOption) (*OrderGetResponse, error) {
+	client := order.NewOrderClient(m.cli.Conn())
+	return client.OrderGet(ctx, in, opts...)
 }
