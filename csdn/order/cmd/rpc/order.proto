@@ -26,17 +26,23 @@ message OrderGetRequest{
     string user_id = 1;
 }
 
+message Spu{
+    int64 sku_id = 1;
+    string spec_id = 2;
+    string specs = 3;
+    int64 count = 4;
+    float price = 5;
+}
 message Orders{
-  string title = 1;
+  int64 address_id = 1;
   string default_image = 2;
-  float price = 3;
-  int64 count = 4;
+  float total_price = 3;
+  int64 total_count = 4;
   string sn = 5;
-  float freight = 6;
-  int64 sku_id = 7;
-  string spec_id = 8;
-  string specs = 9;
-  int64 order_id = 10;
+  int64 pay_status = 6;
+  int64 order_id = 7;
+  float freight = 8;
+  repeated Spu spu = 9;
 }
 
 message OrderGetResponse{

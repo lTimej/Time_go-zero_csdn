@@ -34,7 +34,8 @@ type (
 		Insert(ctx context.Context, data *Order) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Order, error)
 		FindOneBySn(ctx context.Context, sn string) (*Order, error)
-		FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*OrderInfo, error)
+		FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder) ([]*Order, error)
+		FindAllByOrderId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*OrderInfo, error)
 		Update(ctx context.Context, data *Order) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -58,17 +59,23 @@ type (
 		UpdateTime time.Time `db:"update_time"` // 支付修改时间
 		IsDeleted  int64     `db:"is_deleted"`  // 逻辑删除
 	}
+	Spu struct {
+		SkuId  int64   `db:"sku_id"`
+		SpecId string  `db:"spec_id"`
+		Specs  string  `db:"specs"`
+		Count  int64   `db:"count"`
+		Price  float32 `db:"price"`
+	}
 	OrderInfo struct {
-		Title        string  `db:"title"`
 		DefaultImage string  `db:"default_image"`
-		Price        float32 `db:"price"`
-		Count        int64   `db:"count"`
+		TotalPrice   float32 `db:"total_price"`
+		TotalCount   int64   `db:"total_count"`
 		Sn           string  `db:"sn"`
 		Freight      float32 `db:"freight"`
-		SkuId        int64   `db:"sku_id"`
-		SpecId       string  `db:"spec_id"`
-		Specs        string  `db:"specs"`
 		OrderId      int64   `db:"order_id"`
+		AddressId    int64   `db:"address_id"`
+		PayStatus    int64   `db:"pay_status"`
+		Spu          []Spu   `db:"spu"`
 	}
 )
 
@@ -122,13 +129,28 @@ func (m *defaultOrderModel) FindOneBySn(ctx context.Context, sn string) (*Order,
 	}
 }
 
-func (m *defaultOrderModel) FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*OrderInfo, error) {
+func (m *defaultOrderModel) FindAllByOrderId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*OrderInfo, error) {
 	query, values, err := builder.Join("user_order,tb_sku where user_order.sku_id=tb_sku.id and orders.id=user_order.order_id").ToSql()
 	query = fmt.Sprintf("%s and user_id = %s", query, user_id)
 	if err != nil {
 		return nil, err
 	}
 	var resp []*OrderInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultOrderModel) FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder) ([]*Order, error) {
+	query, values, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	var resp []*Order
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:

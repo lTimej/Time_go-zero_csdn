@@ -28,8 +28,10 @@ func NewOrderGetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrderGet
 
 func (l *OrderGetLogic) OrderGet(in *order.OrderGetRequest) (*order.OrderGetResponse, error) {
 	// todo: add your logic here and delete this line
+	builder := l.svcCtx.OrderModel.Builder().Where("user_id = ?", in.UserId)
+	orders, err := l.svcCtx.OrderModel(l.ctx, builder)
 	builder := l.svcCtx.OrderModel.Builder()
-	data, err := l.svcCtx.OrderModel.FindAllByUserId(l.ctx, builder, in.UserId)
+	data, err := l.svcCtx.OrderModel.FindAllByOrderId(l.ctx, builder, in.UserId)
 	if err != nil {
 		return nil, err
 	}
