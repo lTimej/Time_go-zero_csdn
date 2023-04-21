@@ -12,9 +12,6 @@ type OrderCreateRequest struct {
 	AddressId  int64   `json:"address_id"`
 	TotalCount int64   `json:"total_count"`
 	TotalPrice float32 `json:"total_price"`
-	Freight    float32 `json:"freight"`
-	Version    int64   `json:"version"`
-	Sn         string  `json:"sn"`
 	Sku        []Sku   `json:"sku"`
 }
 

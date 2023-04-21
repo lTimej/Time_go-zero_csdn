@@ -23,3 +23,8 @@ JwtAuth:
 Log:
   ServiceName: product-rpc
   Level: info
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4003
+  Path: /metrics

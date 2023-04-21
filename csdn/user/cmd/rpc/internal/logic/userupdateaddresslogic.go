@@ -36,12 +36,15 @@ func (l *UserUpdateAddressLogic) UserUpdateAddress(in *user.UpdateUserAddressReq
 		CityId:     in.CityId,
 		DistrictId: in.DistrictId,
 		Place:      in.Place,
+		IsDefault:  in.IsDefault,
+		Email:      in.Email,
 	}
 	addr, err := l.svcCtx.UserAddressModel.FindOne(l.ctx, in.AddressId)
 	if err != nil {
 		fmt.Println(err, "#################")
 		return nil, err
 	}
+	fmt.Println(addr, "--------------", in.IsDefault)
 	if addr == nil {
 		return nil, errors.New("地址不存在")
 	}

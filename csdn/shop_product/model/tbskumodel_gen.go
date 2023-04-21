@@ -163,7 +163,7 @@ func (m *defaultTbSkuModel) FindOneSkuInfoBySkuId(ctx context.Context, builder s
 	var resp CartInfo
 	err := m.QueryRowCtx(ctx, &resp, tbSkuIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s join tb_spu_specification,tb_specification_option where tb_spu_specification.spu_id in (select tb_spu_specification.spu_id from tb_sku_specification,tb_spu_specification where sku_id = %d and tb_spu_specification.id = tb_sku_specification.spec_id) and tb_spu_specification.id = tb_specification_option.spec_id and tb_sku.id = ? limit 1", cartInfoBySkuId, m.table, sku_id)
-		fmt.Println(query, "********************")
+		fmt.Println(query, "********好的************")
 		return conn.QueryRowCtx(ctx, v, query, sku_id)
 	})
 	switch err {

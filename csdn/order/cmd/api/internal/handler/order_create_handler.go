@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"liujun/Time_go-zero_csdn/common/httpResp"
 	"net/http"
 
@@ -15,6 +16,7 @@ func OrderCreateHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.OrderCreateRequest
 		if err := httpx.Parse(r, &req); err != nil {
+			fmt.Println(err, "哈哈哈哈哈哈哈")
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}

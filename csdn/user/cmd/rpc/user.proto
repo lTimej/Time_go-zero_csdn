@@ -151,6 +151,8 @@ message UpdateUserAddressRequest{
     int64 city_id = 5;
     int64 district_id = 6;
     string place = 7;
+    string email = 8;
+    int64 is_default = 9;
 }
 message UpdateUserAddressResponse{}
 
@@ -165,6 +167,8 @@ message UserAddress{
   string city = 8;
   string district = 9;
   string place = 10;
+  int64 is_default = 11;
+  string email = 12;
 }
 
 message GetUserAddressRequest{

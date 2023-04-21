@@ -26,7 +26,7 @@ func NewUpdateUserAddressLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *UpdateUserAddressLogic) UpdateUserAddress(req *types.UpdateUserAddressRequest) (resp *types.UpdateUserAddressResponse, err error) {
 	// todo: add your logic here and delete this line
-	_,err = l.svcCtx.UserRpc.UserUpdateAddress(l.ctx, &userclient.UpdateUserAddressRequest{
+	_, err = l.svcCtx.UserRpc.UserUpdateAddress(l.ctx, &userclient.UpdateUserAddressRequest{
 		AddressId:  req.AddressId,
 		Receiver:   req.Receiver,
 		Mobile:     req.Mobile,
@@ -34,9 +34,11 @@ func (l *UpdateUserAddressLogic) UpdateUserAddress(req *types.UpdateUserAddressR
 		CityId:     req.CityId,
 		DistrictId: req.DistrictId,
 		Place:      req.Place,
+		Email:      req.Email,
+		IsDefault:  req.IsDefault,
 	})
-	if err != nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 	return
 }

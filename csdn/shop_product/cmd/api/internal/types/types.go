@@ -88,8 +88,9 @@ type GetCartRequest struct {
 }
 
 type SpecLabel struct {
-	Label string `json:"label"`
-	Name  string `json:"name"`
+	Label  string `json:"label"`
+	Name   string `json:"name"`
+	SpecId int64  `json:"spec_id"`
 }
 
 type Carts struct {

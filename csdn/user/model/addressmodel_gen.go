@@ -21,8 +21,8 @@ var (
 	addressRows                = strings.Join(addressFieldNames, ",")
 	addressRowsExpectAutoSet   = strings.Join(stringx.Remove(addressFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	addressRowsWithPlaceHolder = strings.Join(stringx.Remove(addressFieldNames, "`id`", "`user_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
-
-	cacheAddressIdPrefix = "cache:address:id:"
+	addressRowsWithPlace       = strings.Join(stringx.Remove(addressFieldNames, "`id`", "`is_deleted`", "`title`", "`tel`", "`user_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	cacheAddressIdPrefix       = "cache:address:id:"
 )
 
 type (
@@ -52,6 +52,7 @@ type (
 		Mobile     string `db:"mobile"`      // 手机
 		Tel        string `db:"tel"`         // 固定电话
 		Email      string `db:"email"`       // 电子邮箱
+		IsDefault  int64  `db:"is_default"`  //默认地址
 		IsDeleted  int64  `db:"is_deleted"`  // 逻辑删除
 	}
 	UserAddress struct {
@@ -65,6 +66,8 @@ type (
 		City       string `db:"city"`
 		District   string `db:"district"`
 		Place      string `db:"place"`
+		IsDefault  int64  `db:"is_default"`
+		Email      string `db:"email"`
 	}
 )
 
@@ -102,9 +105,10 @@ func (m *defaultAddressModel) FindOne(ctx context.Context, id int64) (*Address, 
 }
 
 func (m *defaultAddressModel) FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*UserAddress, error) {
+
 	query, values, err := builder.Join("city as c1,city as c2,city as c3 where address.province_id=c1.id and address.city_id=c2.id and address.district_id=c3.id").ToSql()
-	query = fmt.Sprintf("%s and address.user_id = %s", query, user_id)
-	fmt.Println(query, "********************")
+	query = fmt.Sprintf("%s and address.user_id = %s order by is_default desc,address_id desc", query, user_id)
+	fmt.Println(query, "**********111111111111111**********")
 	if err != nil {
 		return nil, err
 	}
@@ -121,8 +125,8 @@ func (m *defaultAddressModel) FindAllByUserId(ctx context.Context, builder squir
 func (m *defaultAddressModel) Insert(ctx context.Context, data *Address) (sql.Result, error) {
 	addressIdKey := fmt.Sprintf("%s%v", cacheAddressIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, addressRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Receiver, data.ProvinceId, data.CityId, data.DistrictId, data.Place, data.Mobile, data.Tel, data.Email, data.IsDeleted)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)", m.table, addressRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.UserId, data.Title, data.Receiver, data.ProvinceId, data.CityId, data.DistrictId, data.Place, data.Mobile, data.Tel, data.Email, data.IsDefault, data.IsDeleted)
 	}, addressIdKey)
 	return ret, err
 }
@@ -130,8 +134,13 @@ func (m *defaultAddressModel) Insert(ctx context.Context, data *Address) (sql.Re
 func (m *defaultAddressModel) Update(ctx context.Context, data *Address) error {
 	addressIdKey := fmt.Sprintf("%s%v", cacheAddressIdPrefix, data.Id)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, addressRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.Title, data.Receiver, data.ProvinceId, data.CityId, data.DistrictId, data.Place, data.Mobile, data.Tel, data.Email, data.IsDeleted, data.Id)
+		var query string
+		if data.IsDefault == 1 {
+			query = fmt.Sprintf("update %s set is_default=0 where is_default = 1", m.table)
+			conn.ExecCtx(ctx, query)
+		}
+		query = fmt.Sprintf("update %s set %s where `id` = ?", m.table, addressRowsWithPlace)
+		return conn.ExecCtx(ctx, query, data.Receiver, data.ProvinceId, data.CityId, data.DistrictId, data.Place, data.Mobile, data.Email, data.IsDefault, data.Id)
 	}, addressIdKey)
 	return err
 }
@@ -150,5 +159,5 @@ func (m *defaultAddressModel) tableName() string {
 }
 
 func (m *defaultAddressModel) AddressBuilder() squirrel.SelectBuilder {
-	return squirrel.Select("address.place,address.id as address_id,c1.name as province,c2.name as city,c3.name as district,address.receiver,address.province_id,address.city_id,address.district_id, address.mobile").From(m.table)
+	return squirrel.Select("address.place,address.is_default,address.email,address.id as address_id,c1.name as province,c2.name as city,c3.name as district,address.receiver,address.province_id,address.city_id,address.district_id, address.mobile").From(m.table)
 }

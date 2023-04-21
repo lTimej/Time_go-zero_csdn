@@ -59,6 +59,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		}
 		ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, claim.UserId)
 		r = r.WithContext(ctx)
+		fmt.Println("#############通过####################")
 		next(w, r)
 	}
 }

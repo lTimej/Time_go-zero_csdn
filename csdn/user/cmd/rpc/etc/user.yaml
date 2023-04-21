@@ -23,3 +23,8 @@ JwtAuth:
 Log:
   ServiceName: usercenter-rpc
   Level: error
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4009
+  Path: /metrics

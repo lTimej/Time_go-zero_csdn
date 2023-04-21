@@ -26,3 +26,8 @@ Log:
   
 Es:
   Host: http://172.20.16.20:9200
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4007
+  Path: /metrics

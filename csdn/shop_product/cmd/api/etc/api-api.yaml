@@ -25,3 +25,8 @@ Cache:
 Log:
   Mode: console
   Level: info
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4002
+  Path: /metrics

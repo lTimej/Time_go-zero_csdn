@@ -39,6 +39,7 @@ func (l *UserAddressLogic) UserAddress(in *user.UserAddressRequest) (*user.UserA
 		Title:      "",
 		IsDeleted:  0,
 		Tel:        "",
+		IsDefault:  0,
 	}
 
 	_, err := l.svcCtx.UserAddressModel.Insert(l.ctx, address)

@@ -64,8 +64,9 @@ func (l *GetCartLogic) GetCart(in *product.GetCartRequest) (*product.GetCartResp
 				cart_obj.Title = cart_info.Title
 			}
 			cart_obj.SpecLabel = append(cart_obj.SpecLabel, &product.SpecLabel{
-				Name:  cart_info.Name,
-				Label: cart_info.Label,
+				SpecId: sku_id,
+				Name:   cart_info.Name,
+				Label:  cart_info.Label,
 			})
 			cart_obj.Count = utils.StringToInt64(val)
 		}

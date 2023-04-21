@@ -146,6 +146,7 @@ type UpdateUserAddressRequest struct {
 	DistrictId int64  `json:"district_id"`
 	Place      string `json:"place"`
 	Email      string `json:"email"`
+	IsDefault  int64  `json:"is_default"`
 }
 
 type UpdateUserAddressResponse struct {
@@ -162,6 +163,8 @@ type UserAddress struct {
 	City       string `json:"city"`
 	District   string `json:"district"`
 	Place      string `json:"place"`
+	IsDefault  int64  `json:"is_default"`
+	Email      string `json:"email"`
 }
 
 type GetUserAddressRequest struct {

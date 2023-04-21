@@ -15,9 +15,6 @@ message OrderCreateRequest{
     string user_id = 2;
     int64 total_count = 3;
     float total_price = 4;
-    float freight = 5;
-    int64 version = 6;
-    string sn = 7;
     repeated Sku sku = 8;
 }
 

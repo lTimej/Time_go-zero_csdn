@@ -99,6 +99,7 @@ message GetCartRequest{
 message SpecLabel{
 	string label = 1;
 	string name = 2;
+  int64 spec_id = 3;
 }
 
 message Carts{

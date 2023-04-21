@@ -28,5 +28,10 @@ JwtAuth:
   AccessExpire: 31536000
 
 Log:
-  ServiceName: usercenter-rpc
+  ServiceName: im-rpc
   Level: error
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4005
+  Path: /metrics

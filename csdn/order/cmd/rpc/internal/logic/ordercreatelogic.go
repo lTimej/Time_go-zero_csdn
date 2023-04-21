@@ -4,7 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
+	"liujun/Time_go-zero_csdn/common/order_var"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/types/order"
 	"liujun/Time_go-zero_csdn/csdn/order/model"
@@ -28,21 +29,22 @@ func NewOrderCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Order
 
 func (l *OrderCreateLogic) OrderCreate(in *order.OrderCreateRequest) (*order.OrderCreateResponse, error) {
 	// todo: add your logic here and delete this line
+	sn := utils.GetSN("LJ")
 	orders := model.Order{
 		UserId:     in.UserId,
 		AddressId:  in.AddressId,
 		TotalCount: in.TotalCount,
 		TotalPrice: in.TotalPrice,
-		Freight:    in.Freight,
-		Version:    in.Version,
-		Sn:         in.Sn,
+		Freight:    order_var.Freight,
+		Version:    order_var.Version,
+		Sn:         sn,
 	}
 	_, err := l.svcCtx.OrderModel.Insert(l.ctx, &orders)
 	if err != nil {
 		fmt.Println(err, "11111111111111")
 		return nil, err
 	}
-	o, err := l.svcCtx.OrderModel.FindOneBySn(l.ctx, in.Sn)
+	o, err := l.svcCtx.OrderModel.FindOneBySn(l.ctx, sn)
 	if err != nil {
 		fmt.Println(err, "222222222222")
 		return nil, err
@@ -71,7 +73,8 @@ func (l *OrderCreateLogic) OrderCreate(in *order.OrderCreateRequest) (*order.Ord
 			return nil, err
 		}
 	}
+
 	return &order.OrderCreateResponse{
-		Sn: o.Sn,
+		Sn: sn,
 	}, nil
 }
