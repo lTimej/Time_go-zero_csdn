@@ -2,11 +2,12 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"liujun/Time_go-zero_csdn/common/ctxdata"
+	"liujun/Time_go-zero_csdn/common/xerr"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/orderclient"
 
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/api/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/api/internal/types"
@@ -31,7 +32,6 @@ func NewOrderCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Order
 func (l *OrderCreateLogic) OrderCreate(req *types.OrderCreateRequest) (resp *types.OrderCreateResponse, err error) {
 	// todo: add your logic here and delete this line
 	user_id := ctxdata.GetUidFromCtx(l.ctx)
-	fmt.Println(user_id, "@@@@@@@@@@@@@@@@@@@")
 	var sku []*orderclient.Sku
 	copier.Copy(&sku, req.Sku)
 	data, err := l.svcCtx.OrderRpc.OrderCreate(l.ctx, &orderclient.OrderCreateRequest{
@@ -42,8 +42,7 @@ func (l *OrderCreateLogic) OrderCreate(req *types.OrderCreateRequest) (resp *typ
 		Sku:        sku,
 	})
 	if err != nil {
-		fmt.Println(err, "-------222222233333")
-		return nil, err
+		return nil, errors.Wrapf(xerr.ErrDBError, "err:%v", err)
 	}
 	resp = new(types.OrderCreateResponse)
 	resp.Sn = data.Sn

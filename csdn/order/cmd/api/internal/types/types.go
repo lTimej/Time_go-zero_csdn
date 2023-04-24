@@ -20,28 +20,29 @@ type OrderCreateResponse struct {
 }
 
 type OrderGetRequest struct {
+	PayStatus int64 `json:"pay_status,optional"`
 }
 
-type Spu struct {
-	SkuId  int64   `json:"sku_id"`
-	SpecId string  `json:"spec_id"`
-	Specs  string  `json:"specs"`
-	Count  int64   `json:"count"`
-	Price  float32 `json:"price"`
-}
-
-type Orders struct {
+type OrderSpec struct {
+	SkuId        int64   `json:"sku_id"`
+	SpecId       string  `json:"spec_id"`
+	Specs        string  `json:"specs"`
+	Count        int64   `json:"count"`
+	Price        float32 `json:"price"`
 	DefaultImage string  `json:"default_image"`
-	TotalPrice   float32 `json:"total_price"`
-	TotalCount   int64   `json:"total_count"`
-	Sn           string  `json:"sn"`
-	Freight      float32 `json:"freight"`
-	OrderId      int64   `json:"order_id"`
-	AddressId    int64   `json:"address_id"`
-	PayStatus    int64   `json:"pay_status"`
-	Spu          []Spu   `json:"spu"`
+	Title        string  `json:"title"`
+}
+
+type OrderInfo struct {
+	TotalPrice float32      `json:"total_price"`
+	TotalCount int64        `json:"total_count"`
+	Sn         string       `json:"sn"`
+	Freight    float32      `json:"freight"`
+	AddressId  int64        `json:"address_id"`
+	PayStatus  int64        `json:"pay_status"`
+	OrderSpec  []*OrderSpec `json:"order_spec"`
 }
 
 type OrderGetResponse struct {
-	Orders []Orders `json:"orders"`
+	OrderInfo []*OrderInfo `json:"order_info"`
 }

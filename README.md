@@ -64,3 +64,9 @@ Message string `json:"message"`
 service api-api {
 @handler ApiHandler
 get /from/:name(Request) returns (Response)
+
+
+# 返回错误模板
+"github.com/pkg/errors"
+"liujun/Time_go-zero_csdn/common/xerr"
+return nil, errors.Wrapf(xerr.ErrDBError, "err:%v", err)

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"google.golang.org/grpc/status"
 )
@@ -15,7 +16,7 @@ func HttpResp(w http.ResponseWriter, r *http.Request, resp interface{}, err erro
 		httpx.WriteJson(w, http.StatusCreated, r)
 	} else {
 		//错误返回
-		errcode := xerr.OTHER_ERROR
+		errcode := xerr.SERVER_COMMON_ERROR
 		errmsg := "服务器开小差啦，稍后再来试一试"
 		causeErr := errors.Cause(err)
 		if e, ok := causeErr.(*xerr.CodeError); ok { //自定义错误类型
@@ -31,6 +32,7 @@ func HttpResp(w http.ResponseWriter, r *http.Request, resp interface{}, err erro
 				}
 			}
 		}
+		logx.WithContext(r.Context()).Errorf("【===========API-ERR===========】 : %+v ", err)
 		errs := Error(errcode, errmsg)
 		httpx.WriteJson(w, int(errs.Code), errs)
 	}

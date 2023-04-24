@@ -160,7 +160,7 @@ func (m *defaultUserRelationModel) FindByUserIdTargetUserId(ctx context.Context,
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
-		return nil, nil
+		return nil, ErrNotFound
 	default:
 		return nil, err
 	}

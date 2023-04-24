@@ -24,29 +24,29 @@ message OrderCreateResponse{
 
 message OrderGetRequest{
     string user_id = 1;
+    int64 pay_status = 2;
 }
 
-message Spu{
+message OrderSpec{
     int64 sku_id = 1;
     string spec_id = 2;
     string specs = 3;
     int64 count = 4;
     float price = 5;
+    string default_image = 6;
+    string title = 7;
 }
-message Orders{
-  int64 address_id = 1;
-  string default_image = 2;
-  float total_price = 3;
-  int64 total_count = 4;
-  string sn = 5;
-  int64 pay_status = 6;
-  int64 order_id = 7;
-  float freight = 8;
-  repeated Spu spu = 9;
+message OrderInfo{
+  float total_price = 1;
+  int64 total_count = 2;
+  string sn = 3;
+  int64 pay_status = 4;
+  float freight = 5;
+  int64 address_id = 6;
+  repeated OrderSpec order_spec = 7;
 }
-
 message OrderGetResponse{
-  repeated Orders orders = 1;
+  repeated OrderInfo order_info = 1;
 }
 
 service Order {

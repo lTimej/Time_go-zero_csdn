@@ -2,11 +2,13 @@ package logic
 
 import (
 	"context"
+	"liujun/Time_go-zero_csdn/common/xerr"
 	"liujun/Time_go-zero_csdn/csdn/user/model"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
 
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -27,8 +29,8 @@ func NewCancelFocueUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *C
 func (l *CancelFocueUserLogic) CancelFocueUser(in *user.CancelFocusUserRequest) (*user.CancelFocusUserResponse, error) {
 	// todo: add your logic here and delete this line
 	relation, err := l.svcCtx.UserRelationModel.FindByUserIdTargetUserId(l.ctx, in.UserId, in.TargetId)
-	if err != nil {
-		return nil, err
+	if err != nil && err != model.ErrNotFound {
+		return nil, errors.Wrapf(xerr.ErrDBError, "err:%v", err)
 	}
 	user_relation := model.UserRelation{
 		RelationId:   relation.RelationId,

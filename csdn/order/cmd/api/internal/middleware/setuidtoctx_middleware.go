@@ -25,22 +25,19 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		// TODO generate middleware implement function, delete after code implementation
 
 		header := r.Header.Get("Authorization")
-		fmt.Println("header:::::", header)
 		if !strings.HasPrefix(header, "Bearer") {
-			fmt.Println("没有header!!!!!!!!")
+			httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.TOKEN_EXPIRE_ERROR, "token认证失败"))
 			return
 		}
 		token := strings.Split(header, " ")[1]
 		if token == "null" {
-			fmt.Println(r.URL.Path, "path============")
 			if _, ok := blackWhiteList.BlackWhiteList[r.URL.Path]; ok {
 				ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, "0")
 				r = r.WithContext(ctx)
-				fmt.Println("劲来了！！！！！！！！！！！！！！！！！！！！！！！！")
 				next(w, r)
 				return
 			} else {
-				httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "未登录"))
+				httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.TOKEN_EXPIRE_ERROR, "未登录"))
 				return
 			}
 			// if r.URL.Path == "/v1/article/status" {
@@ -54,7 +51,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		r.Header.Set("Authorization", token)
 		claim, err := ctxdata.ParseToken(token, m.Config.JwtAuth.AccessSecret)
 		if err != nil {
-			httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "token认证失败"))
+			httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.TOKEN_EXPIRE_ERROR, "token认证失败"))
 			return
 		}
 		ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, claim.UserId)

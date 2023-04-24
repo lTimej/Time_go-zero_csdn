@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
@@ -21,14 +22,17 @@ var (
 	userOrderRows                = strings.Join(userOrderFieldNames, ",")
 	userOrderRowsExpectAutoSet   = strings.Join(stringx.Remove(userOrderFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	userOrderRowsWithPlaceHolder = strings.Join(stringx.Remove(userOrderFieldNames, "`id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
-
-	cacheUserOrderIdPrefix = "cache:userOrder:id:"
+	orderInfoRows                = "default_image,price,count,sku_id,spec_id,specs,title"
+	cacheUserOrderIdPrefix       = "cache:userOrder:id:"
+	cacheOrderInfoOrderIdPrefix  = "cache:orderinfo:order:id:"
 )
 
 type (
 	userOrderModel interface {
+		Builder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *UserOrder) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*UserOrder, error)
+		FindOneByOrderId(ctx context.Context, builder squirrel.SelectBuilder) ([]*OrderInfo, error)
 		Update(ctx context.Context, data *UserOrder) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -51,6 +55,15 @@ type (
 		UpdateTime  time.Time `db:"update_time"`  // 支付修改时间
 		IsAnonymous int64     `db:"is_anonymous"` // 是否匿名
 		IsCommented int64     `db:"is_commented"` // 是否评论
+	}
+	OrderInfo struct {
+		DefaultImage string  `db:"default_image"`
+		Price        float32 `db:"price"`
+		Count        int64   `db:"count"`
+		SkuId        int64   `db:"sku_id"`
+		SpecId       string  `db:"spec_id"`
+		Specs        string  `db:"specs"`
+		Title        string  `db:"title"`
 	}
 )
 
@@ -87,6 +100,25 @@ func (m *defaultUserOrderModel) FindOne(ctx context.Context, id int64) (*UserOrd
 	}
 }
 
+func (m *defaultUserOrderModel) FindOneByOrderId(ctx context.Context, builder squirrel.SelectBuilder) ([]*OrderInfo, error) {
+	fmt.Println("6666666666666666666666666666")
+	query, values, err := builder.LeftJoin("tb_sku on user_order.sku_id = tb_sku.id").ToSql()
+	fmt.Println(query, "55555555555555")
+	if err != nil {
+		return nil, err
+	}
+	var resp []*OrderInfo
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserOrderModel) Insert(ctx context.Context, data *UserOrder) (sql.Result, error) {
 	userOrderIdKey := fmt.Sprintf("%s%v", cacheUserOrderIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
@@ -116,4 +148,8 @@ func (m *defaultUserOrderModel) queryPrimary(ctx context.Context, conn sqlx.SqlC
 
 func (m *defaultUserOrderModel) tableName() string {
 	return m.table
+}
+
+func (m *defaultUserOrderModel) Builder() squirrel.SelectBuilder {
+	return squirrel.Select(orderInfoRows).From(m.table)
 }

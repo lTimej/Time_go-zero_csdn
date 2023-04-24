@@ -62,7 +62,7 @@ func (l *UserLoginLogic) UserNameLogin(username, password string) (string, error
 	user_basic, err := l.svcCtx.UserModel.FindOneByUserName(l.ctx, username)
 	if err != nil && err != model.ErrNotFound {
 		//code = Unknown desc = 根据用户名查询用户信息失败，user_name:19971251761,err:sql: Scan error on column index 8, name \"last_login\": unsupported Scan, storing driver.Value type \u003cnil\u003e into type *time.Time: ErrCode:403，ErrMsg:数据库错误"
-		return "", errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "根据用户名查询用户信息失败，user_name:%s,err:%v", username, err)
+		return "", errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "根据用户名查询用户信息失败，user_name:%s,err:%v", username, err)
 	}
 	if user_basic == nil {
 		return "", errors.Wrapf(ErrUserNoExistsError, "user_name：%s", username)
@@ -77,7 +77,7 @@ func (l *UserLoginLogic) PhoneLogin(phone, code string) (string, error) {
 	key := "sms:code:" + phone
 	user_basic, err := l.svcCtx.UserModel.FindOneByMobile(l.ctx, phone)
 	if err != nil && err != model.ErrNotFound {
-		return "", errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "根据手机号查询用户信息失败，phone:%s,err:%v", phone, err)
+		return "", errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "根据手机号查询用户信息失败，phone:%s,err:%v", phone, err)
 	}
 	//手机号不存在则注册
 	if user_basic == nil {
@@ -92,14 +92,14 @@ func (l *UserLoginLogic) PhoneLogin(phone, code string) (string, error) {
 		l.svcCtx.UserModel.Insert(l.ctx, &user_basic)
 	}
 	if ok, _ := l.svcCtx.RedisClient.Exists(key); !ok {
-		return "", errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码已过期")
+		return "", errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "验证码已过期")
 	}
 	val, err := l.svcCtx.RedisClient.Get(key)
 	if err != nil {
-		return "", errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码获取失败")
+		return "", errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "验证码获取失败")
 	}
 	if val != code {
-		return "", errors.Wrapf(xerr.NewErrCode(xerr.OTHER_ERROR), "验证码输入错误")
+		return "", errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "验证码输入错误")
 	}
 	return user_basic.UserId, nil
 }

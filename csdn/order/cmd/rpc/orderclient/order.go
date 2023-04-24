@@ -17,9 +17,9 @@ type (
 	OrderCreateResponse = order.OrderCreateResponse
 	OrderGetRequest     = order.OrderGetRequest
 	OrderGetResponse    = order.OrderGetResponse
-	Orders              = order.Orders
+	OrderInfo           = order.OrderInfo
+	OrderSpec           = order.OrderSpec
 	Sku                 = order.Sku
-	Spu                 = order.Spu
 
 	Order interface {
 		OrderCreate(ctx context.Context, in *OrderCreateRequest, opts ...grpc.CallOption) (*OrderCreateResponse, error)
