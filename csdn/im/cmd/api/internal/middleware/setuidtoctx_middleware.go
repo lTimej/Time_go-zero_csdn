@@ -37,7 +37,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 				next(w, r)
 				return
 			} else {
-				httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "未登录"))
+				httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.SERVER_COMMON_ERROR, "未登录"))
 				return
 			}
 		}
@@ -48,7 +48,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		r.Header.Set("Authorization", token)
 		claim, err := ctxdata.ParseToken(token, m.Config.JwtAuth.AccessSecret)
 		if err != nil {
-			httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "token认证失败"))
+			httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.SERVER_COMMON_ERROR, "token认证失败"))
 			return
 		}
 		ctx := context.WithValue(context.Background(), ctxdata.CtxKeyJwtUserId, claim.UserId)

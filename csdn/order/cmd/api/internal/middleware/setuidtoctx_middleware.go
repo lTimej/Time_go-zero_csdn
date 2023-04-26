@@ -44,7 +44,7 @@ func (m *SetUidToCtxMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			// 	next(w, r)
 			// 	return
 			// } else {
-			// 	httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.OTHER_ERROR, "未登录"))
+			// 	httpResp.HttpResp(w, r, nil, xerr.NewErrCodeMsg(xerr.SERVER_COMMON_ERROR, "未登录"))
 			// 	return
 			// }
 		}
