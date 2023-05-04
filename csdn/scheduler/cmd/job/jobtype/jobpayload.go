@@ -5,3 +5,7 @@ type DeferSaveArticleStatisticPayload struct {
 	UserId    string
 	TargetId  string
 }
+
+type DeferCloseProductOrderPayload struct {
+	Sn string
+}

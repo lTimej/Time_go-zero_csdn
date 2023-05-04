@@ -30,6 +30,8 @@ func (l *CronJob) Register() *asynq.ServeMux {
 	mux.Handle(jobtype.ScheduleSaveArticleStatistic, NewSaveArticleStatisticHandler(l.svcCtx))
 	//queue job , asynq support queue job
 	// wait you fill..
+	//defer job
+	mux.Handle(jobtype.DeferCloseProductOrder, NewCloseProductOrderHandler(l.svcCtx))
 
 	return mux
 }

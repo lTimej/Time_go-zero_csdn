@@ -2,18 +2,23 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"liujun/Time_go-zero_csdn/common/order_var"
 	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/common/xerr"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/types/order"
 	"liujun/Time_go-zero_csdn/csdn/order/model"
+	"time"
 
+	"liujun/Time_go-zero_csdn/csdn/scheduler/cmd/job/jobtype"
+
+	"github.com/hibiken/asynq"
 	"github.com/pkg/errors"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+const CloseOrderTimeMinutes = 30 //defer close order time
 type OrderCreateLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
@@ -70,6 +75,16 @@ func (l *OrderCreateLogic) OrderCreate(in *order.OrderCreateRequest) (*order.Ord
 		}
 	}
 
+	//2、Delayed closing of order tasks.
+	payload, err := json.Marshal(jobtype.DeferCloseProductOrderPayload{Sn: sn})
+	if err != nil {
+		logx.WithContext(l.ctx).Errorf("create defer close order task json Marshal fail err :%+v , sn : %s", err, sn)
+	} else {
+		_, err = l.svcCtx.AsynqClient.Enqueue(asynq.NewTask(jobtype.DeferCloseProductOrder, payload), asynq.ProcessIn(CloseOrderTimeMinutes*time.Minute))
+		if err != nil {
+			logx.WithContext(l.ctx).Errorf("create defer close order task insert queue fail err :%+v , sn : %s", err, sn)
+		}
+	}
 	return &order.OrderCreateResponse{
 		Sn: sn,
 	}, nil
