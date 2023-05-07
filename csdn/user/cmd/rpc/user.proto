@@ -178,6 +178,13 @@ message GetUserAddressResponse{
     repeated UserAddress UserAddress = 1;
 }
 
+message GetAddressRequest{
+    int64 address_id = 1;
+}
+message GetAddressResponse{
+    UserAddress UserAddress = 1;
+}
+
 service User {
   rpc UserLogin(LoginRequest) returns(LoginResponse);
   rpc generateToken(GenerateTokenRequest) returns(GenerateTokenResponse);
@@ -192,4 +199,5 @@ service User {
   rpc UserAddress(UserAddressRequest) returns(UserAddressResponse);
   rpc UserUpdateAddress(UpdateUserAddressRequest) returns(UpdateUserAddressResponse);
   rpc UserGetAddress(GetUserAddressRequest) returns(GetUserAddressResponse);
+  rpc GetAddress(GetAddressRequest) returns(GetAddressResponse);
 }

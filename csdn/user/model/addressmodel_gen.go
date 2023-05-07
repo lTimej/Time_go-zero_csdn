@@ -31,6 +31,7 @@ type (
 		Insert(ctx context.Context, data *Address) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*Address, error)
 		FindAllByUserId(ctx context.Context, builder squirrel.SelectBuilder, user_id string) ([]*UserAddress, error)
+		FindOneByAddressId(ctx context.Context, builder squirrel.SelectBuilder, address_id int64) (*UserAddress, error)
 		Update(ctx context.Context, data *Address) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -113,6 +114,24 @@ func (m *defaultAddressModel) FindAllByUserId(ctx context.Context, builder squir
 		return nil, err
 	}
 	var resp []*UserAddress
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultAddressModel) FindOneByAddressId(ctx context.Context, builder squirrel.SelectBuilder, address_id int64) (*UserAddress, error) {
+
+	query, values, err := builder.Join("city as c1,city as c2,city as c3 where address.province_id=c1.id and address.city_id=c2.id and address.district_id=c3.id").ToSql()
+	query = fmt.Sprintf("%s and address.address_id = %d", query, address_id)
+	fmt.Println(query, "**********111111111111111**********")
+	if err != nil {
+		return nil, err
+	}
+	var resp *UserAddress
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:

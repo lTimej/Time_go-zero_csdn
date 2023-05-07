@@ -173,3 +173,11 @@ type GetUserAddressRequest struct {
 type GetUserAddressResponse struct {
 	UserAddress []*UserAddress `json:"user_address"`
 }
+
+type GetAddressRequest struct {
+	AddressId int64 `json:"address_id"`
+}
+
+type GetAddressResponse struct {
+	UserAddress *UserAddress `json:"user_address"`
+}

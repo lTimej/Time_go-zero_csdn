@@ -163,6 +163,14 @@ type GetUserAddressResponse {
 	UserAddress []*UserAddress `json:"user_address"`
 }
 
+type GetAddressRequest {
+	AddressId int64 `json:"address_id"`
+}
+
+type GetAddressResponse {
+	UserAddress *UserAddress `json:"user_address"`
+}
+
 service api-api {
 	@handler UserPasswordLogin
 	post /v1/user/login(UserPasswordLoginRequest) returns (UserPasswordLoginResponse)
@@ -198,4 +206,6 @@ service api-api {
 	patch /v1/user/address(UpdateUserAddressRequest) returns(UpdateUserAddressResponse)
 	@handler GetUserAddress
 	get /v1/user/address(GetUserAddressRequest) returns(GetUserAddressResponse)
+	@handler GetOrderAddress
+	get /v1/user/order/address(GetAddressRequest) returns(GetAddressResponse)
 }

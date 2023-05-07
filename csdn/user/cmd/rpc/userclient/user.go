@@ -19,6 +19,8 @@ type (
 	FocusUserResponse         = user.FocusUserResponse
 	GenerateTokenRequest      = user.GenerateTokenRequest
 	GenerateTokenResponse     = user.GenerateTokenResponse
+	GetAddressRequest         = user.GetAddressRequest
+	GetAddressResponse        = user.GetAddressResponse
 	GetUserAddressRequest     = user.GetUserAddressRequest
 	GetUserAddressResponse    = user.GetUserAddressResponse
 	IsFocusUserRequest        = user.IsFocusUserRequest
@@ -56,6 +58,7 @@ type (
 		UserAddress(ctx context.Context, in *UserAddressRequest, opts ...grpc.CallOption) (*UserAddressResponse, error)
 		UserUpdateAddress(ctx context.Context, in *UpdateUserAddressRequest, opts ...grpc.CallOption) (*UpdateUserAddressResponse, error)
 		UserGetAddress(ctx context.Context, in *GetUserAddressRequest, opts ...grpc.CallOption) (*GetUserAddressResponse, error)
+		GetAddress(ctx context.Context, in *GetAddressRequest, opts ...grpc.CallOption) (*GetAddressResponse, error)
 	}
 
 	defaultUser struct {
@@ -132,4 +135,9 @@ func (m *defaultUser) UserUpdateAddress(ctx context.Context, in *UpdateUserAddre
 func (m *defaultUser) UserGetAddress(ctx context.Context, in *GetUserAddressRequest, opts ...grpc.CallOption) (*GetUserAddressResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserGetAddress(ctx, in, opts...)
+}
+
+func (m *defaultUser) GetAddress(ctx context.Context, in *GetAddressRequest, opts ...grpc.CallOption) (*GetAddressResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetAddress(ctx, in, opts...)
 }
