@@ -42,6 +42,15 @@ type OrderGetResponse {
 	OrderInfo []*OrderInfo `json:"order_info"`
 }
 
+type OrderUpdateRequest {
+	Sn        string `json:"sn"`
+	PayStatus int64  `json:"pay_status"`
+}
+
+type OrderUpdateResponse {
+	Sn string `json:"sn"`
+}
+
 @server (
 	// jwt: JwtAuth
 	middleware: SetUidToCtxMiddleware
@@ -52,4 +61,6 @@ service api-api {
 	post /v1/order/add(OrderCreateRequest) returns (OrderCreateResponse)
 	@handler OrderGet
 	get /v1/order/get(OrderGetRequest) returns (OrderGetResponse)
+	@handler OrderUpdate
+	patch /v1/order/update(OrderUpdateRequest) returns (OrderUpdateResponse)
 }

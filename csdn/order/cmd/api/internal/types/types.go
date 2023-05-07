@@ -46,3 +46,12 @@ type OrderInfo struct {
 type OrderGetResponse struct {
 	OrderInfo []*OrderInfo `json:"order_info"`
 }
+
+type OrderUpdateRequest struct {
+	Sn        string `json:"sn"`
+	PayStatus int64  `json:"pay_status"`
+}
+
+type OrderUpdateResponse struct {
+	Sn string `json:"sn"`
+}
