@@ -13,4 +13,5 @@ type Config struct {
 	SettleRpcConf  zrpc.RpcClientConf
 	ChannelRpcConf zrpc.RpcClientConf
 	UserRpcConf    zrpc.RpcClientConf
+	OrderRpcConf   zrpc.RpcClientConf
 }

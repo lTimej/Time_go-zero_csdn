@@ -53,7 +53,7 @@ type (
 		Freight    float32   `db:"freight"`     // 运费
 		Version    int64     `db:"version"`     // 乐观锁版本号
 		Sn         string    `db:"sn"`          // 流水单号
-		PayStatus  int64     `db:"pay_status"`  // 支付状态
+		PayStatus  int64     `db:"pay_status"`  // 支付状态 0: 已取消 1:待支付 2:未使用 3:已使用  4:已过期  5:代发货  6:待收货  7:待评价  8:售后
 		CreateTime time.Time `db:"create_time"` // 支付创建时间
 		UpdateTime time.Time `db:"update_time"` // 支付修改时间
 		IsDeleted  int64     `db:"is_deleted"`  // 逻辑删除

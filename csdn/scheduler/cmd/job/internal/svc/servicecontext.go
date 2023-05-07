@@ -2,6 +2,7 @@ package svc
 
 import (
 	"liujun/Time_go-zero_csdn/csdn/channel/cmd/rpc/channelclient"
+	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/orderclient"
 	"liujun/Time_go-zero_csdn/csdn/scheduler/cmd/job/internal/config"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/userclient"
 
@@ -17,6 +18,7 @@ type ServiceContext struct {
 	ChannelRpc  channelclient.Channel
 	UserRpc     userclient.User
 	RedisClient *redis.Redis
+	OrderRpc    orderclient.Order
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -29,5 +31,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			r.Type = c.Redis.Type
 			r.Pass = c.Redis.Pass
 		}),
+		OrderRpc: orderclient.NewOrder(zrpc.MustNewClient(c.OrderRpcConf)),
 	}
 }

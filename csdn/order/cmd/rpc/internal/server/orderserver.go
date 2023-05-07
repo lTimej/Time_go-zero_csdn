@@ -31,3 +31,13 @@ func (s *OrderServer) OrderGet(ctx context.Context, in *order.OrderGetRequest) (
 	l := logic.NewOrderGetLogic(ctx, s.svcCtx)
 	return l.OrderGet(in)
 }
+
+func (s *OrderServer) OrderDesc(ctx context.Context, in *order.OrderDescRequest) (*order.OrderDescResponse, error) {
+	l := logic.NewOrderDescLogic(ctx, s.svcCtx)
+	return l.OrderDesc(in)
+}
+
+func (s *OrderServer) OrderUpdate(ctx context.Context, in *order.OrderUpdateRequest) (*order.OrderUpdateResponse, error) {
+	l := logic.NewOrderUpdateLogic(ctx, s.svcCtx)
+	return l.OrderUpdate(in)
+}

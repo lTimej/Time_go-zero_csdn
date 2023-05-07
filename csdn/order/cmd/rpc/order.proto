@@ -36,6 +36,7 @@ message OrderSpec{
     string default_image = 6;
     string title = 7;
 }
+
 message OrderInfo{
   float total_price = 1;
   int64 total_count = 2;
@@ -45,11 +46,41 @@ message OrderInfo{
   int64 address_id = 6;
   repeated OrderSpec order_spec = 7;
 }
+
 message OrderGetResponse{
   repeated OrderInfo order_info = 1;
+}
+
+message OrderDescInfo{
+  float total_price = 1;
+  int64 total_count = 2;
+  string sn = 3;
+  int64 pay_status = 4;
+  float freight = 5;
+  int64 address_id = 6;
+  int64 id = 7;
+}
+
+message OrderDescRequest{
+    string sn = 1;
+}
+
+message OrderDescResponse{
+  OrderDescInfo order_desc_info = 1;
+}
+
+message OrderUpdateRequest{
+    string sn = 1;
+    int64 pay_status = 2;
+}
+
+message OrderUpdateResponse{
+  string sn = 1;
 }
 
 service Order {
   rpc OrderCreate(OrderCreateRequest) returns (OrderCreateResponse);
   rpc OrderGet(OrderGetRequest) returns (OrderGetResponse);
+  rpc OrderDesc(OrderDescRequest) returns (OrderDescResponse);
+  rpc OrderUpdate(OrderUpdateRequest) returns (OrderUpdateResponse);
 }
