@@ -1,0 +1,17 @@
+{
+	"ulid": "01GZZE3309S148VEB6H8K1V4JM",
+	"minTime": 1683597603568,
+	"maxTime": 1683604800000,
+	"stats": {
+		"numSamples": 885000,
+		"numSeries": 1028,
+		"numChunks": 7375
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01GZZE3309S148VEB6H8K1V4JM"
+		]
+	},
+	"version": 1
+}

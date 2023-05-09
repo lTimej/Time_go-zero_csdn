@@ -1,0 +1,87 @@
+global:
+  scrape_interval:
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s  #global catch time
+    static_configs:
+      - targets: ['127.0.0.1:9090']
+  - job_name: 'city-api'
+    static_configs:
+      - targets: [ 'myapp:3998' ]
+        labels:
+          job: city-api
+          app: city-api
+          env: dev
+  - job_name: 'order-api'
+    static_configs:
+      - targets: [ 'myapp:3999' ]
+        labels:
+          job: order-api
+          app: order-api
+          env: dev
+  - job_name: 'order-rpc'
+    static_configs:
+      - targets: [ 'myapp:4001' ]
+        labels:
+          job: order-rpc
+          app: order-rpc
+          env: dev
+  - job_name: 'product-api'
+    static_configs:
+      - targets: [ 'myapp:4002' ]
+        labels:
+          job: product-api
+          app: product-api
+          env: dev
+  - job_name: 'product-rpc'
+    static_configs:
+      - targets: [ 'myapp:4003' ]
+        labels:
+          job: product-rpc
+          app: product-rpc
+          env: dev
+  - job_name: 'im-api'
+    static_configs:
+      - targets: [ 'myapp:4004' ]
+        labels:
+          job: im-api
+          app: im-api
+          env: dev
+  - job_name: 'im-rpc'
+    static_configs:
+      - targets: [ 'myapp:4005' ]
+        labels:
+          job: im-rpc
+          app: im-rpc
+          env: dev
+  - job_name: 'channel-api'
+    static_configs:
+      - targets: [ 'myapp:4006' ]
+        labels:
+          job: channel-api
+          app: channel-api
+          env: dev
+  - job_name: 'channel-rpc'
+    static_configs:
+      - targets: [ 'myapp:4007' ]
+        labels:
+          job: channel-rpc
+          app: channel-rpc
+          env: dev
+  - job_name: 'user-api'
+    static_configs:
+      - targets: ['myapp:4008']
+        labels:
+          job: user-api
+          app: user-api
+          env: dev
+  - job_name: 'usercenter-rpc'
+    static_configs:
+      - targets: ['myapp:4009']
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev

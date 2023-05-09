@@ -1,0 +1,17 @@
+{
+	"ulid": "01GZZ778BN40XZTN44CAJSYCBY",
+	"minTime": 1683590403567,
+	"maxTime": 1683597600000,
+	"stats": {
+		"numSamples": 821138,
+		"numSeries": 1028,
+		"numChunks": 6798
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01GZZ778BN40XZTN44CAJSYCBY"
+		]
+	},
+	"version": 1
+}

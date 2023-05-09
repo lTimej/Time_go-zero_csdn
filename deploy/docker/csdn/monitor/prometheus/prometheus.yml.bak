@@ -1,0 +1,80 @@
+global:
+  scrape_interval:
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s  #global catch time
+    static_configs:
+      - targets: ['172.20.16.20:9090']
+  - job_name: 'order-api'
+    static_configs:
+      - targets: [ '172.20.16.20:8893' ]
+        labels:
+          job: order-api
+          app: order-api
+          env: dev
+  - job_name: 'order-rpc'
+    static_configs:
+      - targets: [ '172.20.16.20:8087' ]
+        labels:
+          job: order-rpc
+          app: order-rpc
+          env: dev
+  - job_name: 'product-api'
+    static_configs:
+      - targets: [ '172.20.16.20:8891' ]
+        labels:
+          job: product-api
+          app: product-api
+          env: dev
+  - job_name: 'product-rpc'
+    static_configs:
+      - targets: [ '172.20.16.20:8085' ]
+        labels:
+          job: product-rpc
+          app: product-rpc
+          env: dev
+  - job_name: 'im-api'
+    static_configs:
+      - targets: [ '172.20.16.20:8890' ]
+        labels:
+          job: im-api
+          app: im-api
+          env: dev
+  - job_name: 'im-rpc'
+    static_configs:
+      - targets: [ '172.20.16.20:8083' ]
+        labels:
+          job: im-rpc
+          app: im-rpc
+          env: dev
+  - job_name: 'channel-api'
+    static_configs:
+      - targets: [ '172.20.16.20:8889' ]
+        labels:
+          job: channel-api
+          app: channel-api
+          env: dev
+  - job_name: 'channel-rpc'
+    static_configs:
+      - targets: [ '172.20.16.20:8081' ]
+        labels:
+          job: channel-rpc
+          app: channel-rpc
+          env: dev
+  - job_name: 'user-api'
+    static_configs:
+      - targets: ['172.20.16.20:8888']
+        labels:
+          job: user-api
+          app: user-api
+          env: dev
+  - job_name: 'usercenter-rpc'
+    static_configs:
+      - targets: ['172.20.16.20:8079']
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
