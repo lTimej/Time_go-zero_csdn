@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  asynqmon:
+    image: hibiken/asynqmon:latest
+    container_name: asynqmon_asynq
+    ports:
+      - 8980:8080
+    command:
+      - '--redis-addr=redis:6379'
+      - '--redis-password=liujun'
+    restart: always
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+    container_name: redis_asynq
+    ports:
+      - 63779:6379
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./data/redis/data:/data:rw
+    command: "redis-server --requirepass liujun  --appendonly yes"
+    privileged: true
+    restart: always

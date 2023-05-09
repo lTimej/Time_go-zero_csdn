@@ -1,0 +1,88 @@
+version: "3.3"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: mynginx
+    volumes:
+      - /home/go/data/csdn/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /home/go/data/csdn/nginx/conf/conf.d:/etc/nginx/conf.d
+      - /home/go/data/csdn/nginx/log:/var/log/nginx
+      - /home/go/data/csdn/nginx/html:/usr/share/nginx/html
+      - /home/go/data/csdn/web:/web
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+    ports:
+      - "0.0.0.0:8998:80"
+    restart: unless-stopped
+    privileged: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  redis:
+    image: redis:latest
+    container_name: myredis
+    volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+      #  - /data/redis/redis.conf:/etc/redis/redis.conf
+      - /home/go/data/csdn/redis/data:/data
+    ports:
+      - "0.0.0.0:16379:6379"
+    restart: unless-stopped
+    command: --requirepass "liujun"
+    privileged: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  mysql:
+    image: mysql:8.0
+    container_name: mymysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: liujun
+      MYSQL_DATABASE: test
+      LANG: C.UTF-8
+    volumes:
+      - /home/go/data/csdn/mysql/data:/var/lib/mysql
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    ports:
+      - 13306:3306
+    restart: unless-stopped
+    privileged: true
+  etcd:
+    image: quay.io/coreos/etcd
+    container_name: myetcd
+    command: etcd -name etcd -advertise-client-urls http://0.0.0.0:2379 -listen-client-urls http://0.0.0.0:2379 -listen-peer-urls http://0.0.0.0:2380
+    ports:
+      - 12379:2379
+      - 12380:2380
+    volumes:
+      - /home/go/data/csdn/etcd/data:/etcd-data
+    networks:
+      - myetcd_single
+    restart: always
+  etcdkeeper:
+    image: deltaprojects/etcdkeeper
+    container_name: etcdkeeper_single
+    ports:
+      - 8088:8080
+    networks:
+      - myetcd_single
+    restart: always
+  minio:
+    image: minio/minio:latest
+    container_name: myminio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin123
+    command: server --console-address ':9001' /data
+    volumes:
+      - /home/go/data/csdn/minIO/data:/data
+      - /home/go/data/csdn/minIO/config:/root/.minio/
+      - /etc/localtime:/etc/localtime
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: always
+networks:
+  myetcd_single:
