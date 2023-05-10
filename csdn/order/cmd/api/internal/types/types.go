@@ -40,6 +40,7 @@ type OrderInfo struct {
 	Freight    float32      `json:"freight"`
 	AddressId  int64        `json:"address_id"`
 	PayStatus  int64        `json:"pay_status"`
+	CreateTime string       `json:"create_time"`
 	OrderSpec  []*OrderSpec `json:"order_spec"`
 }
 

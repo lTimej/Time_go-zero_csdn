@@ -2,7 +2,10 @@ package logic
 
 import (
 	"context"
+	"liujun/Time_go-zero_csdn/common/constants"
+	"liujun/Time_go-zero_csdn/common/utils"
 	"liujun/Time_go-zero_csdn/csdn/order/model"
+	"time"
 
 	"liujun/Time_go-zero_csdn/common/xerr"
 	"liujun/Time_go-zero_csdn/csdn/order/cmd/rpc/internal/svc"
@@ -41,6 +44,7 @@ func (l *OrderGetLogic) OrderGet(in *order.OrderGetRequest) (*order.OrderGetResp
 	if err != nil && err != model.ErrNotFound {
 		return nil, errors.Wrapf(xerr.ErrDBError, "err:%v", err)
 	}
+	order_cancel_time, _ := time.ParseDuration(constants.OrderCancelTime)
 	for _, or := range orders {
 		var order_info order.OrderInfo
 		order_info.AddressId = or.AddressId
@@ -49,6 +53,7 @@ func (l *OrderGetLogic) OrderGet(in *order.OrderGetRequest) (*order.OrderGetResp
 		order_info.Sn = or.Sn
 		order_info.Freight = or.Freight
 		order_info.PayStatus = or.PayStatus
+		order_info.CreateTime = utils.TimeToString(or.CreateTime.Add(order_cancel_time))
 		order_info.OrderSpec = []*order.OrderSpec{}
 		obuilder := l.svcCtx.OrderUserModel.Builder().Where("order_id = ?", or.Id)
 		spus, err := l.svcCtx.OrderUserModel.FindOneByOrderId(l.ctx, obuilder)

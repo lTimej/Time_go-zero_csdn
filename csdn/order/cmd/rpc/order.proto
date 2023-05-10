@@ -44,7 +44,8 @@ message OrderInfo{
   int64 pay_status = 4;
   float freight = 5;
   int64 address_id = 6;
-  repeated OrderSpec order_spec = 7;
+  string create_time = 7;
+  repeated OrderSpec order_spec = 8;
 }
 
 message OrderGetResponse{
