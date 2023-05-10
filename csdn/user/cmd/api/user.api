@@ -164,7 +164,7 @@ type GetUserAddressResponse {
 }
 
 type GetAddressRequest {
-	AddressId int64 `json:"address_id"`
+	AddressId int64 `json:"address_id,optional"`
 }
 
 type GetAddressResponse {

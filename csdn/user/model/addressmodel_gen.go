@@ -124,22 +124,40 @@ func (m *defaultAddressModel) FindAllByUserId(ctx context.Context, builder squir
 }
 
 func (m *defaultAddressModel) FindOneByAddressId(ctx context.Context, builder squirrel.SelectBuilder, address_id int64) (*UserAddress, error) {
-
-	query, values, err := builder.Join("city as c1,city as c2,city as c3 where address.province_id=c1.id and address.city_id=c2.id and address.district_id=c3.id").ToSql()
-	query = fmt.Sprintf("%s and address.address_id = %d", query, address_id)
-	fmt.Println(query, "**********111111111111111**********")
-	if err != nil {
-		return nil, err
-	}
-	var resp *UserAddress
-	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	addressIdKey := fmt.Sprintf("%s%v", cacheAddressIdPrefix, address_id)
+	var resp UserAddress
+	err := m.QueryRowCtx(ctx, &resp, addressIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
+		query, _, _ := builder.Join("city as c1,city as c2,city as c3 where address.province_id=c1.id and address.city_id=c2.id and address.district_id=c3.id").ToSql()
+		// query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", addressRows, m.table)
+		return conn.QueryRowCtx(ctx, v, query)
+	})
 	switch err {
 	case nil:
-		return resp, nil
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
 	default:
 		return nil, err
 	}
 }
+
+// func (m *defaultAddressModel) FindOneByAddressId(ctx context.Context, builder squirrel.SelectBuilder, address_id int64) (*UserAddress, error) {
+
+// 	query, values, err := builder.Join("city as c1,city as c2,city as c3 where address.province_id=c1.id and address.city_id=c2.id and address.district_id=c3.id").ToSql()
+// 	query = fmt.Sprintf("%s and address.id = %d", query, address_id)
+// 	fmt.Println(query, "**********111111111111111**********")
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	var resp *UserAddress
+// 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+// 	switch err {
+// 	case nil:
+// 		return resp, nil
+// 	default:
+// 		return nil, err
+// 	}
+// }
 
 func (m *defaultAddressModel) Insert(ctx context.Context, data *Address) (sql.Result, error) {
 	addressIdKey := fmt.Sprintf("%s%v", cacheAddressIdPrefix, data.Id)

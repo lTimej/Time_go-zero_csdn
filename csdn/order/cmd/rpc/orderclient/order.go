@@ -13,6 +13,8 @@ import (
 )
 
 type (
+	CreateRequest       = order.CreateRequest
+	CreateResponse      = order.CreateResponse
 	OrderCreateRequest  = order.OrderCreateRequest
 	OrderCreateResponse = order.OrderCreateResponse
 	OrderDescInfo       = order.OrderDescInfo
@@ -31,6 +33,9 @@ type (
 		OrderGet(ctx context.Context, in *OrderGetRequest, opts ...grpc.CallOption) (*OrderGetResponse, error)
 		OrderDesc(ctx context.Context, in *OrderDescRequest, opts ...grpc.CallOption) (*OrderDescResponse, error)
 		OrderUpdate(ctx context.Context, in *OrderUpdateRequest, opts ...grpc.CallOption) (*OrderUpdateResponse, error)
+		// 分布式事务
+		Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+		CreateRollback(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	}
 
 	defaultOrder struct {
@@ -62,4 +67,15 @@ func (m *defaultOrder) OrderDesc(ctx context.Context, in *OrderDescRequest, opts
 func (m *defaultOrder) OrderUpdate(ctx context.Context, in *OrderUpdateRequest, opts ...grpc.CallOption) (*OrderUpdateResponse, error) {
 	client := order.NewOrderClient(m.cli.Conn())
 	return client.OrderUpdate(ctx, in, opts...)
+}
+
+// 分布式事务
+func (m *defaultOrder) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	client := order.NewOrderClient(m.cli.Conn())
+	return client.Create(ctx, in, opts...)
+}
+
+func (m *defaultOrder) CreateRollback(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	client := order.NewOrderClient(m.cli.Conn())
+	return client.CreateRollback(ctx, in, opts...)
 }

@@ -79,9 +79,21 @@ message OrderUpdateResponse{
   string sn = 1;
 }
 
+message CreateRequest {
+  int64 goodsId = 1;
+  int64 userId = 2;
+  int64 num = 3;
+}
+
+message CreateResponse {
+}
+
 service Order {
   rpc OrderCreate(OrderCreateRequest) returns (OrderCreateResponse);
   rpc OrderGet(OrderGetRequest) returns (OrderGetResponse);
   rpc OrderDesc(OrderDescRequest) returns (OrderDescResponse);
   rpc OrderUpdate(OrderUpdateRequest) returns (OrderUpdateResponse);
+  //分布式事务
+  rpc create(CreateRequest)returns(CreateResponse);
+  rpc createRollback(CreateRequest)returns(CreateResponse);
 }

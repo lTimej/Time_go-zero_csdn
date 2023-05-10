@@ -175,7 +175,7 @@ type GetUserAddressResponse struct {
 }
 
 type GetAddressRequest struct {
-	AddressId int64 `json:"address_id"`
+	AddressId int64 `json:"address_id,optional"`
 }
 
 type GetAddressResponse struct {

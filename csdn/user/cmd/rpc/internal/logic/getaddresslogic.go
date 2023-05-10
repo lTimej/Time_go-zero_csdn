@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/internal/svc"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/types/user"
 
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,7 +31,23 @@ func (l *GetAddressLogic) GetAddress(in *user.GetAddressRequest) (*user.GetAddre
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(data, "8888888888888")
 	resp := new(user.GetAddressResponse)
-	copier.Copy(&resp.UserAddress, data)
+	resp.UserAddress = &user.UserAddress{
+		AddressId:  data.AddressId,
+		Receiver:   data.Receiver,
+		Mobile:     data.Mobile,
+		ProvinceId: data.ProvinceId,
+		CityId:     data.CityId,
+		DistrictId: data.DistrictId,
+		Province:   data.Province,
+		City:       data.City,
+		District:   data.District,
+		Place:      data.Place,
+		IsDefault:  data.IsDefault,
+		Email:      data.Email,
+	}
+	// copier.Copy(&resp.UserAddress, data)
+	fmt.Println(resp.UserAddress, "777777777777")
 	return resp, nil
 }

@@ -26,6 +26,9 @@ type OrderClient interface {
 	OrderGet(ctx context.Context, in *OrderGetRequest, opts ...grpc.CallOption) (*OrderGetResponse, error)
 	OrderDesc(ctx context.Context, in *OrderDescRequest, opts ...grpc.CallOption) (*OrderDescResponse, error)
 	OrderUpdate(ctx context.Context, in *OrderUpdateRequest, opts ...grpc.CallOption) (*OrderUpdateResponse, error)
+	// 分布式事务
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	CreateRollback(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 }
 
 type orderClient struct {
@@ -72,6 +75,24 @@ func (c *orderClient) OrderUpdate(ctx context.Context, in *OrderUpdateRequest, o
 	return out, nil
 }
 
+func (c *orderClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	out := new(CreateResponse)
+	err := c.cc.Invoke(ctx, "/order.Order/create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderClient) CreateRollback(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	out := new(CreateResponse)
+	err := c.cc.Invoke(ctx, "/order.Order/createRollback", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServer is the server API for Order service.
 // All implementations must embed UnimplementedOrderServer
 // for forward compatibility
@@ -80,6 +101,9 @@ type OrderServer interface {
 	OrderGet(context.Context, *OrderGetRequest) (*OrderGetResponse, error)
 	OrderDesc(context.Context, *OrderDescRequest) (*OrderDescResponse, error)
 	OrderUpdate(context.Context, *OrderUpdateRequest) (*OrderUpdateResponse, error)
+	// 分布式事务
+	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	CreateRollback(context.Context, *CreateRequest) (*CreateResponse, error)
 	mustEmbedUnimplementedOrderServer()
 }
 
@@ -98,6 +122,12 @@ func (UnimplementedOrderServer) OrderDesc(context.Context, *OrderDescRequest) (*
 }
 func (UnimplementedOrderServer) OrderUpdate(context.Context, *OrderUpdateRequest) (*OrderUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderUpdate not implemented")
+}
+func (UnimplementedOrderServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedOrderServer) CreateRollback(context.Context, *CreateRequest) (*CreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRollback not implemented")
 }
 func (UnimplementedOrderServer) mustEmbedUnimplementedOrderServer() {}
 
@@ -184,6 +214,42 @@ func _Order_OrderUpdate_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Order_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.Order/create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).Create(ctx, req.(*CreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Order_CreateRollback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).CreateRollback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.Order/createRollback",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).CreateRollback(ctx, req.(*CreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Order_ServiceDesc is the grpc.ServiceDesc for Order service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +272,14 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderUpdate",
 			Handler:    _Order_OrderUpdate_Handler,
+		},
+		{
+			MethodName: "create",
+			Handler:    _Order_Create_Handler,
+		},
+		{
+			MethodName: "createRollback",
+			Handler:    _Order_CreateRollback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

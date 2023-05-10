@@ -8,7 +8,6 @@ import (
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/api/internal/types"
 	"liujun/Time_go-zero_csdn/csdn/user/cmd/rpc/userclient"
 
-	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -34,6 +33,20 @@ func (l *GetOrderAddressLogic) GetOrderAddress(req *types.GetAddressRequest) (re
 		return nil, err
 	}
 	resp = new(types.GetAddressResponse)
-	copier.Copy(&resp.UserAddress, data.UserAddress)
+	// copier.Copy(&resp.UserAddress, data.UserAddress)
+	resp.UserAddress = &types.UserAddress{
+		AddressId:  data.UserAddress.AddressId,
+		Receiver:   data.UserAddress.Receiver,
+		Mobile:     data.UserAddress.Mobile,
+		ProvinceId: data.UserAddress.ProvinceId,
+		CityId:     data.UserAddress.CityId,
+		DistrictId: data.UserAddress.DistrictId,
+		Province:   data.UserAddress.Province,
+		City:       data.UserAddress.City,
+		District:   data.UserAddress.District,
+		Place:      data.UserAddress.Place,
+		IsDefault:  data.UserAddress.IsDefault,
+		Email:      data.UserAddress.Email,
+	}
 	return
 }

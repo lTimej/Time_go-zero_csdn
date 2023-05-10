@@ -41,3 +41,14 @@ func (s *OrderServer) OrderUpdate(ctx context.Context, in *order.OrderUpdateRequ
 	l := logic.NewOrderUpdateLogic(ctx, s.svcCtx)
 	return l.OrderUpdate(in)
 }
+
+// 分布式事务
+func (s *OrderServer) Create(ctx context.Context, in *order.CreateRequest) (*order.CreateResponse, error) {
+	l := logic.NewCreateLogic(ctx, s.svcCtx)
+	return l.Create(in)
+}
+
+func (s *OrderServer) CreateRollback(ctx context.Context, in *order.CreateRequest) (*order.CreateResponse, error) {
+	l := logic.NewCreateRollbackLogic(ctx, s.svcCtx)
+	return l.CreateRollback(in)
+}
