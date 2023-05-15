@@ -6,9 +6,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/Masterminds/squirrel"
 	"strings"
 	"time"
+
+	"github.com/Masterminds/squirrel"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -18,7 +19,7 @@ import (
 )
 
 var (
-	newsArticleAllInfo = "news_article_basic.article_id as article_id,news_article_basic.user_id as user_id,channel_id,title,news_article_basic.create_time as create_time,allow_comment,content,user_name,profile_photo,career,code_year"
+	newsArticleAllInfo                  = "news_article_basic.article_id as article_id,news_article_basic.user_id as user_id,channel_id,title,news_article_basic.create_time as create_time,allow_comment,content,user_name,profile_photo,career,code_year"
 	newsArticleBasicFieldNames          = builder.RawFieldNames(&NewsArticleBasic{})
 	newsArticleBasicRows                = strings.Join(newsArticleBasicFieldNames, ",")
 	newsArticleBasicRowsExpectAutoSet   = strings.Join(stringx.Remove(newsArticleBasicFieldNames, "`article_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
@@ -33,8 +34,8 @@ type (
 		Insert(ctx context.Context, data *NewsArticleBasic) (sql.Result, error)
 		FindOne(ctx context.Context, articleId int64) (*NewsArticleBasic, error)
 		FindOneByArticleId(ctx context.Context, articleId int64) (*AllArticleInfo, error)
-		FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error)
-		FindAllArticleByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder,user_id string,page,page_num int32)([]*AllArticleInfo,error)
+		FindAllArticle(ctx context.Context, rowBuilder squirrel.SelectBuilder, channel_id int64, page, page_num int32) ([]*AllArticleInfo, error)
+		FindAllArticleByUserId(ctx context.Context, rowBuilder squirrel.SelectBuilder, user_id string, page, page_num int32) ([]*AllArticleInfo, error)
 		Update(ctx context.Context, data *NewsArticleBasic) error
 		Delete(ctx context.Context, articleId int64) error
 	}
@@ -46,7 +47,7 @@ type (
 
 	NewsArticleBasic struct {
 		ArticleId     int64     `db:"article_id"`     // 文章ID
-		UserId        string     `db:"user_id"`        // 用户ID
+		UserId        string    `db:"user_id"`        // 用户ID
 		ChannelId     int64     `db:"channel_id"`     // 频道ID
 		Title         string    `db:"title"`          // 标题
 		IsAdvertising int64     `db:"is_advertising"` // 是否投放广告，0-不投放，1-投放
@@ -61,17 +62,17 @@ type (
 		AllowComment  int64     `db:"allow_comment"`  // 是否允许评论，0-不允许，1-允许
 	}
 	AllArticleInfo struct {
-		ArtId     int64     `db:"article_id"`     // 文章ID
-		UserId        string     `db:"user_id"`        // 用户ID
-		ChannelId     int64     `db:"channel_id"`     // 频道ID
-		Title         string    `db:"title"`          // 标题
-		CreateTime    string `db:"create_time"`    // 创建时间
-		AllowComment  int32    `db:"allow_comment"`  // 是否允许评论，0-不允许，1-允许
-		Content string `db:"content"`
-		UserName string `db:"user_name"`
-		HeadPhoto string `db:"profile_photo"`
-		Career string `db:"career"`
-		CodeYear int32 `db:"code_year"`
+		ArtId        int64  `db:"article_id"`    // 文章ID
+		UserId       string `db:"user_id"`       // 用户ID
+		ChannelId    int64  `db:"channel_id"`    // 频道ID
+		Title        string `db:"title"`         // 标题
+		CreateTime   string `db:"create_time"`   // 创建时间
+		AllowComment int32  `db:"allow_comment"` // 是否允许评论，0-不允许，1-允许
+		Content      string `db:"content"`
+		UserName     string `db:"user_name"`
+		HeadPhoto    string `db:"profile_photo"`
+		Career       string `db:"career"`
+		CodeYear     int32  `db:"code_year"`
 		//ReadNum int32 `db:"read_num"`
 		//CommentNum int32 `db:"comment_num"`
 		//LikeNum int32 `db:"like_num"`
@@ -98,7 +99,7 @@ func (m *defaultNewsArticleBasicModel) Delete(ctx context.Context, articleId int
 func (m *defaultNewsArticleBasicModel) FindOne(ctx context.Context, articleId int64) (*NewsArticleBasic, error) {
 	newsArticleBasicArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleBasicArticleIdPrefix, articleId)
 	var resp NewsArticleBasic
-	err := m.QueryRowCtx(ctx, &resp, newsArticleBasicArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsArticleBasicArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleBasicRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, articleId)
 	})
@@ -112,10 +113,10 @@ func (m *defaultNewsArticleBasicModel) FindOne(ctx context.Context, articleId in
 	}
 }
 
-func (m *defaultNewsArticleBasicModel) FindOneByArticleId(ctx context.Context, articleId int64) (*AllArticleInfo, error){
+func (m *defaultNewsArticleBasicModel) FindOneByArticleId(ctx context.Context, articleId int64) (*AllArticleInfo, error) {
 	newsArticleBasicArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleBasicArticleIdPrefix, articleId)
 	var resp AllArticleInfo
-	err := m.QueryRowCtx(ctx, &resp, newsArticleBasicArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsArticleBasicArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleBasicRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, articleId)
 	})
@@ -128,13 +129,13 @@ func (m *defaultNewsArticleBasicModel) FindOneByArticleId(ctx context.Context, a
 		return nil, err
 	}
 }
-func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context,rowBuilder squirrel.SelectBuilder,channel_id int64,page,page_num int32)([]*AllArticleInfo,error){
-	if page <= 0{
+func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context, rowBuilder squirrel.SelectBuilder, channel_id int64, page, page_num int32) ([]*AllArticleInfo, error) {
+	if page <= 0 {
 		page = 1
 	}
 	offset := (page - 1) * page_num
-	q,values,err := rowBuilder.Join("news_article_content,user_basic,user_profile where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_article_basic.channel_id = %d limit %d,%d").ToSql()
-	query := fmt.Sprintf(q,channel_id,offset,page_num)
+	q, values, err := rowBuilder.Join("news_article_content,user_basic,user_profile where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_article_basic.channel_id = %d limit %d,%d").ToSql()
+	query := fmt.Sprintf(q, channel_id, offset, page_num)
 	if err != nil {
 		return nil, err
 	}
@@ -149,13 +150,13 @@ func (m *defaultNewsArticleBasicModel) FindAllArticle(ctx context.Context,rowBui
 	}
 }
 
-func(m *defaultNewsArticleBasicModel) FindAllArticleByUserId(ctx context.Context,rowBuilder squirrel.SelectBuilder,user_id string,page,page_num int32)([]*AllArticleInfo,error){
-	if page <= 0{
+func (m *defaultNewsArticleBasicModel) FindAllArticleByUserId(ctx context.Context, rowBuilder squirrel.SelectBuilder, user_id string, page, page_num int32) ([]*AllArticleInfo, error) {
+	if page <= 0 {
 		page = 1
 	}
 	offset := (page - 1) * page_num
-	q,values,err := rowBuilder.Join("news_article_content,user_basic,user_profile,news_collection where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_collection.user_id = %s limit %d,%d").ToSql()
-	query := fmt.Sprintf(q,user_id,offset,page_num)
+	q, values, err := rowBuilder.Join("news_article_content,user_basic,user_profile,news_collection where news_article_basic.article_id = news_article_content.article_id and news_article_basic.user_id = user_basic.user_id and user_basic.user_id = user_profile.user_id and news_collection.user_id = %s limit %d,%d").ToSql()
+	query := fmt.Sprintf(q, user_id, offset, page_num)
 	if err != nil {
 		return nil, err
 	}
@@ -188,11 +189,11 @@ func (m *defaultNewsArticleBasicModel) Update(ctx context.Context, data *NewsArt
 	return err
 }
 
-func (m *defaultNewsArticleBasicModel) formatPrimary(primary any) string {
+func (m *defaultNewsArticleBasicModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsArticleBasicArticleIdPrefix, primary)
 }
 
-func (m *defaultNewsArticleBasicModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsArticleBasicModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleBasicRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

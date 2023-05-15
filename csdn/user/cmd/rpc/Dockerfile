@@ -15,7 +15,7 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY ./etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/rpc .
+RUN go build -ldflags="-s -w" -o /app/user user.go
 
 
 FROM scratch
@@ -25,7 +25,7 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
-COPY --from=builder /app/rpc /app/rpc
+COPY --from=builder /app/user /app/user
 COPY --from=builder /app/etc /app/etc
 
-CMD ["./rpc", "-f", "etc/user.yaml"]
+CMD ["./user", "-f", "etc/user.yaml"]

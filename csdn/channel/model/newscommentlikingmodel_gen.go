@@ -75,7 +75,7 @@ func (m *defaultNewsCommentLikingModel) Delete(ctx context.Context, likingId int
 func (m *defaultNewsCommentLikingModel) FindOne(ctx context.Context, likingId int64) (*NewsCommentLiking, error) {
 	newsCommentLikingLikingIdKey := fmt.Sprintf("%s%v", cacheNewsCommentLikingLikingIdPrefix, likingId)
 	var resp NewsCommentLiking
-	err := m.QueryRowCtx(ctx, &resp, newsCommentLikingLikingIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsCommentLikingLikingIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `liking_id` = ? limit 1", newsCommentLikingRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, likingId)
 	})
@@ -92,7 +92,7 @@ func (m *defaultNewsCommentLikingModel) FindOne(ctx context.Context, likingId in
 func (m *defaultNewsCommentLikingModel) FindOneByUserIdCommentId(ctx context.Context, userId int64, commentId int64) (*NewsCommentLiking, error) {
 	newsCommentLikingUserIdCommentIdKey := fmt.Sprintf("%s%v:%v", cacheNewsCommentLikingUserIdCommentIdPrefix, userId, commentId)
 	var resp NewsCommentLiking
-	err := m.QueryRowIndexCtx(ctx, &resp, newsCommentLikingUserIdCommentIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, newsCommentLikingUserIdCommentIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `comment_id` = ? limit 1", newsCommentLikingRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, userId, commentId); err != nil {
 			return nil, err
@@ -134,11 +134,11 @@ func (m *defaultNewsCommentLikingModel) Update(ctx context.Context, newData *New
 	return err
 }
 
-func (m *defaultNewsCommentLikingModel) formatPrimary(primary any) string {
+func (m *defaultNewsCommentLikingModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsCommentLikingLikingIdPrefix, primary)
 }
 
-func (m *defaultNewsCommentLikingModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsCommentLikingModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `liking_id` = ? limit 1", newsCommentLikingRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

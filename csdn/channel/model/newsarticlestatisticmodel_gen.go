@@ -75,7 +75,7 @@ func (m *defaultNewsArticleStatisticModel) FindOne(ctx context.Context, articleI
 	newsArticleStatisticArticleIdKey := fmt.Sprintf(globalkey.ArticleStatus, utils.Int64ToString(articleId))
 	var resp NewsArticleStatistic
 
-	err := m.QueryRowCtx(ctx, &resp, newsArticleStatisticArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsArticleStatisticArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleStatisticRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, articleId)
 	})
@@ -130,11 +130,11 @@ func (m *defaultNewsArticleStatisticModel) Update(ctx context.Context, data *New
 	return err
 }
 
-func (m *defaultNewsArticleStatisticModel) formatPrimary(primary any) string {
+func (m *defaultNewsArticleStatisticModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsArticleStatisticArticleIdPrefix, primary)
 }
 
-func (m *defaultNewsArticleStatisticModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsArticleStatisticModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleStatisticRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

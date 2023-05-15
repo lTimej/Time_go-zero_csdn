@@ -86,7 +86,7 @@ func (m *defaultNewsUserChannelModel) Delete(ctx context.Context, userChannelId 
 func (m *defaultNewsUserChannelModel) FindOne(ctx context.Context, ChannelId int64) (*NewsUserChannel, error) {
 	newsUserChannelUserChannelIdKey := fmt.Sprintf("%s%v", cacheNewsUserChannelUserChannelIdPrefix, ChannelId)
 	var resp NewsUserChannel
-	err := m.QueryRowCtx(ctx, &resp, newsUserChannelUserChannelIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsUserChannelUserChannelIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `channel_id` = ? limit 1", newsUserChannelRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, ChannelId)
 	})
@@ -122,7 +122,7 @@ func (m *defaultNewsUserChannelModel) FindAllByUserId(ctx context.Context, rowBu
 func (m *defaultNewsUserChannelModel) FindOneByUserIdChannelId(ctx context.Context, userId string, channelId int64) (*NewsUserChannel, error) {
 	newsUserChannelUserIdChannelIdKey := fmt.Sprintf("%s%v:%v", cacheNewsUserChannelUserIdChannelIdPrefix, userId, channelId)
 	var resp NewsUserChannel
-	err := m.QueryRowIndexCtx(ctx, &resp, newsUserChannelUserIdChannelIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, newsUserChannelUserIdChannelIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `channel_id` = ? limit 1", newsUserChannelRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, userId, channelId); err != nil {
 			return nil, err
@@ -165,11 +165,11 @@ func (m *defaultNewsUserChannelModel) Update(ctx context.Context, newData *NewsU
 	return err
 }
 
-func (m *defaultNewsUserChannelModel) formatPrimary(primary any) string {
+func (m *defaultNewsUserChannelModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsUserChannelUserChannelIdPrefix, primary)
 }
 
-func (m *defaultNewsUserChannelModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsUserChannelModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `user_channel_id` = ? limit 1", newsUserChannelRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

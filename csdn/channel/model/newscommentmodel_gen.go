@@ -77,7 +77,7 @@ func (m *defaultNewsCommentModel) Delete(ctx context.Context, commentId int64) e
 func (m *defaultNewsCommentModel) FindOne(ctx context.Context, commentId int64) (*NewsComment, error) {
 	newsCommentCommentIdKey := fmt.Sprintf("%s%v", cacheNewsCommentCommentIdPrefix, commentId)
 	var resp NewsComment
-	err := m.QueryRowCtx(ctx, &resp, newsCommentCommentIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsCommentCommentIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `comment_id` = ? limit 1", newsCommentRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, commentId)
 	})
@@ -110,7 +110,7 @@ func (m *defaultNewsCommentModel) FindAll(ctx context.Context, builder squirrel.
 func (m *defaultNewsCommentModel) FindOneByArticleIdUserIdParentId(ctx context.Context, ArticleId int64, UserId string, ParentId int64) (*NewsComment, error) {
 	newsCommentCommentIdKey := fmt.Sprintf("%s%v:%v:%v", cacheNewsCommentArticleIdUserIdPrefix, ArticleId, UserId, ParentId)
 	var resp NewsComment
-	err := m.QueryRowCtx(ctx, &resp, newsCommentCommentIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsCommentCommentIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `article_id` = ? and `user_id` = ? and `parent_id` = ? limit 1", newsCommentRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, ArticleId, UserId, ParentId)
 	})
@@ -143,11 +143,11 @@ func (m *defaultNewsCommentModel) Update(ctx context.Context, data *NewsComment)
 	return err
 }
 
-func (m *defaultNewsCommentModel) formatPrimary(primary any) string {
+func (m *defaultNewsCommentModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsCommentCommentIdPrefix, primary)
 }
 
-func (m *defaultNewsCommentModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsCommentModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `comment_id` = ? limit 1", newsCommentRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

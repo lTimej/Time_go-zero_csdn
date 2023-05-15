@@ -62,7 +62,7 @@ func (m *defaultNewsArticleContentModel) Delete(ctx context.Context, articleId i
 func (m *defaultNewsArticleContentModel) FindOne(ctx context.Context, articleId int64) (*NewsArticleContent, error) {
 	newsArticleContentArticleIdKey := fmt.Sprintf("%s%v", cacheNewsArticleContentArticleIdPrefix, articleId)
 	var resp NewsArticleContent
-	err := m.QueryRowCtx(ctx, &resp, newsArticleContentArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsArticleContentArticleIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleContentRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, articleId)
 	})
@@ -94,11 +94,11 @@ func (m *defaultNewsArticleContentModel) Update(ctx context.Context, data *NewsA
 	return err
 }
 
-func (m *defaultNewsArticleContentModel) formatPrimary(primary any) string {
+func (m *defaultNewsArticleContentModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsArticleContentArticleIdPrefix, primary)
 }
 
-func (m *defaultNewsArticleContentModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsArticleContentModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `article_id` = ? limit 1", newsArticleContentRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

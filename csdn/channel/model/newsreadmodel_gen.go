@@ -41,8 +41,8 @@ type (
 	}
 
 	NewsRead struct {
-		ReadId     string     `db:"read_id"`     // 主键id
-		UserId     string     `db:"user_id"`     // 用户ID
+		ReadId     string    `db:"read_id"`     // 主键id
+		UserId     string    `db:"user_id"`     // 用户ID
 		ArticleId  int64     `db:"article_id"`  // 文章ID
 		CreateTime time.Time `db:"create_time"` // 创建时间
 		UpdateTime time.Time `db:"update_time"` // 更新时间
@@ -74,7 +74,7 @@ func (m *defaultNewsReadModel) Delete(ctx context.Context, readId string) error 
 func (m *defaultNewsReadModel) FindOne(ctx context.Context, readId string) (*NewsRead, error) {
 	newsReadReadIdKey := fmt.Sprintf("%s%v", cacheNewsReadReadIdPrefix, readId)
 	var resp NewsRead
-	err := m.QueryRowCtx(ctx, &resp, newsReadReadIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsReadReadIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `read_id` = ? limit 1", newsReadRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, readId)
 	})
@@ -91,7 +91,7 @@ func (m *defaultNewsReadModel) FindOne(ctx context.Context, readId string) (*New
 func (m *defaultNewsReadModel) FindOneByUserIdArticleId(ctx context.Context, userId string, articleId int64) (*NewsRead, error) {
 	newsReadUserIdArticleIdKey := fmt.Sprintf("%s%v:%v", cacheNewsReadUserIdArticleIdPrefix, userId, articleId)
 	var resp NewsRead
-	err := m.QueryRowIndexCtx(ctx, &resp, newsReadUserIdArticleIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, newsReadUserIdArticleIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `user_id` = ? and `article_id` = ? limit 1", newsReadRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, userId, articleId); err != nil {
 			return nil, err
@@ -133,11 +133,11 @@ func (m *defaultNewsReadModel) Update(ctx context.Context, newData *NewsRead) er
 	return err
 }
 
-func (m *defaultNewsReadModel) formatPrimary(primary any) string {
+func (m *defaultNewsReadModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsReadReadIdPrefix, primary)
 }
 
-func (m *defaultNewsReadModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsReadModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `read_id` = ? limit 1", newsReadRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }

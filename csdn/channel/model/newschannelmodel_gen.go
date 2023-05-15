@@ -6,9 +6,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/Masterminds/squirrel"
 	"strings"
 	"time"
+
+	"github.com/Masterminds/squirrel"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -20,7 +21,7 @@ import (
 var (
 	newsChannelFieldNames          = builder.RawFieldNames(&NewsChannel{})
 	newsChannelRows                = strings.Join(newsChannelFieldNames, ",")
-	newsAllChannelRows = "news_channel.channel_id,news_channel.channel_name,news_channel.sequence"
+	newsAllChannelRows             = "news_channel.channel_id,news_channel.channel_name,news_channel.sequence"
 	newsChannelRowsExpectAutoSet   = strings.Join(stringx.Remove(newsChannelFieldNames, "`channel_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	newsChannelRowsWithPlaceHolder = strings.Join(stringx.Remove(newsChannelFieldNames, "`channel_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 
@@ -30,11 +31,11 @@ var (
 
 type (
 	newsChannelModel interface {
-		RowDefaultBuilder()squirrel.SelectBuilder
+		RowDefaultBuilder() squirrel.SelectBuilder
 		RowBuilder() squirrel.SelectBuilder
 		Insert(ctx context.Context, data *NewsChannel) (sql.Result, error)
 		FindOne(ctx context.Context, channelId int64) (*NewsChannel, error)
-		FindAllDefaultChannel(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string)([]*NewsAllChannel, error)
+		FindAllDefaultChannel(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsAllChannel, error)
 		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*NewsAllChannel, error)
 		FindOneByChannelName(ctx context.Context, channelName string) (*NewsChannel, error)
 		Update(ctx context.Context, data *NewsChannel) error
@@ -56,9 +57,9 @@ type (
 		IsDefault   int64     `db:"is_default"`   // 是否默认
 	}
 	NewsAllChannel struct {
-		ChannelId   int64     `db:"channel_id"`   // 频道ID
-		ChannelName string    `db:"channel_name"` // 频道名称
-		Sequence    int64     `db:"sequence"`     // 序号
+		ChannelId   int64  `db:"channel_id"`   // 频道ID
+		ChannelName string `db:"channel_name"` // 频道名称
+		Sequence    int64  `db:"sequence"`     // 序号
 	}
 )
 
@@ -87,7 +88,7 @@ func (m *defaultNewsChannelModel) Delete(ctx context.Context, channelId int64) e
 func (m *defaultNewsChannelModel) FindOne(ctx context.Context, channelId int64) (*NewsChannel, error) {
 	newsChannelChannelIdKey := fmt.Sprintf("%s%v", cacheNewsChannelChannelIdPrefix, channelId)
 	var resp NewsChannel
-	err := m.QueryRowCtx(ctx, &resp, newsChannelChannelIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+	err := m.QueryRowCtx(ctx, &resp, newsChannelChannelIdKey, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		query := fmt.Sprintf("select %s from %s where `channel_id` = ? limit 1", newsChannelRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, channelId)
 	})
@@ -106,7 +107,7 @@ func (m *defaultNewsChannelModel) FindAllDefaultChannel(ctx context.Context, row
 	} else {
 		rowBuilder = rowBuilder.OrderBy("news_channel." + orderBy)
 	}
-	query,values,err := rowBuilder.ToSql()
+	query, values, err := rowBuilder.ToSql()
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +126,8 @@ func (m *defaultNewsChannelModel) FindAll(ctx context.Context, rowBuilder squirr
 	} else {
 		rowBuilder = rowBuilder.OrderBy("news_channel." + orderBy)
 	}
-	query,values,err := rowBuilder.RightJoin("news_user_channel on news_channel.channel_id = news_user_channel.channel_id").ToSql()
-	q := fmt.Sprintf("select %s from %s where channel_id not in (%s) and is_default = 0",newsAllChannelRows,m.table,query)
+	query, values, err := rowBuilder.RightJoin("news_user_channel on news_channel.channel_id = news_user_channel.channel_id").ToSql()
+	q := fmt.Sprintf("select %s from %s where channel_id not in (%s) and is_default = 0", newsAllChannelRows, m.table, query)
 	//query, values, err := rowBuilder.Where("del_state = ?", globalkey.DelStateNo).ToSql()
 	if err != nil {
 		return nil, err
@@ -145,7 +146,7 @@ func (m *defaultNewsChannelModel) FindAll(ctx context.Context, rowBuilder squirr
 func (m *defaultNewsChannelModel) FindOneByChannelName(ctx context.Context, channelName string) (*NewsChannel, error) {
 	newsChannelChannelNameKey := fmt.Sprintf("%s%v", cacheNewsChannelChannelNamePrefix, channelName)
 	var resp NewsChannel
-	err := m.QueryRowIndexCtx(ctx, &resp, newsChannelChannelNameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+	err := m.QueryRowIndexCtx(ctx, &resp, newsChannelChannelNameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) (i interface{}, e error) {
 		query := fmt.Sprintf("select %s from %s where `channel_name` = ? limit 1", newsChannelRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, channelName); err != nil {
 			return nil, err
@@ -187,11 +188,11 @@ func (m *defaultNewsChannelModel) Update(ctx context.Context, newData *NewsChann
 	return err
 }
 
-func (m *defaultNewsChannelModel) formatPrimary(primary any) string {
+func (m *defaultNewsChannelModel) formatPrimary(primary interface{}) string {
 	return fmt.Sprintf("%s%v", cacheNewsChannelChannelIdPrefix, primary)
 }
 
-func (m *defaultNewsChannelModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
+func (m *defaultNewsChannelModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary interface{}) error {
 	query := fmt.Sprintf("select %s from %s where `channel_id` = ? limit 1", newsChannelRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }
@@ -199,6 +200,7 @@ func (m *defaultNewsChannelModel) queryPrimary(ctx context.Context, conn sqlx.Sq
 func (m *defaultNewsChannelModel) tableName() string {
 	return m.table
 }
+
 // export logic
 func (m *defaultNewsChannelModel) RowBuilder() squirrel.SelectBuilder {
 	return squirrel.Select("news_channel.channel_id").From(m.table)
