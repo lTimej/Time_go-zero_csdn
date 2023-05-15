@@ -24,4 +24,4 @@ goctl kube deploy -replicas 2 -nodePort 31006 -requestCpu 200 -requestMem 50 -li
 
 goctl kube deploy -replicas 2 -nodePort 32006 -requestCpu 200 -requestMem 50 -limitCpu 300 -limitMem 100 -name job -namespace csdn -image job:v1 -o yml/scheduler/job.yml -port 2006
 
-goctl kube deploy-replicas 2 -nodePort 32007 -requestCpu 200 -requestMem 50 -limitCpu 300 -limitMem 100 -name city-api -namespace csdn -image city_api:v1 -o yml/city/api.yml -port 2005
+goctl kube deploy-replicas 2 -nodePort 32007 -requestCpu 200 -requestMem 50 -limitCpu 300 -limitMem 100 -name city-api -namespace csdn -image city_api:v1 -o yml/city/api.yml -port 2007

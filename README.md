@@ -70,3 +70,12 @@ get /from/:name(Request) returns (Response)
 "github.com/pkg/errors"
 "liujun/Time_go-zero_csdn/common/xerr"
 return nil, errors.Wrapf(xerr.ErrDBError, "err:%v", err)
+
+# 创建kafka的topic
+ kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 -partitions 1 --topic {topic}
+# 查看消费者组情况
+ kafka-consumer-groups.sh --bootstrap-server kafka:9092 --describe --group {group}
+# 命令行消费
+ ./kafka-console-consumer.sh  --bootstrap-server kafka:9092  --topic looklook-log   --from-beginning
+# 命令生产
+ ./kafka-console-producer.sh --bootstrap-server kafka:9092 --topic second
